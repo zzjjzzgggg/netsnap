@@ -68,6 +68,11 @@ public:
 		TSsParser Ss(fnm);
 		while(Ss.Next()) dat.Add(Ss.GetInt(col));
 	}
+	void static LoadIntSet(const TStr fnm, TIntSet& dat, const int col=0){
+		dat.Clr();
+		TSsParser Ss(fnm);
+		while(Ss.Next()) dat.AddKey(Ss.GetInt(col));
+	}
 	void static LoadFltVec(const TStr fnm, TFltV& dat, const int col=0){
 		dat.Clr();
 		TSsParser Ss(fnm);
