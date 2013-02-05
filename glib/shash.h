@@ -1050,12 +1050,8 @@ private:
   uint GetNextPrime(const uint& Val) const;
   void Resize();
 public:
-  THashSet():
-    PortV(), KeyV(),
-    AutoSizeP(true), FFreeKeyId(-1), FreeKeys(0) { }
-  THashSet(const THashSet& Set):
-    PortV(Set.PortV), KeyV(Set.KeyV), AutoSizeP(Set.AutoSizeP),
-    FFreeKeyId(Set.FFreeKeyId), FreeKeys(Set.FreeKeys) { }
+  THashSet(): PortV(), KeyV(), AutoSizeP(true), FFreeKeyId(-1), FreeKeys(0) { }
+  THashSet(const THashSet& Set): PortV(Set.PortV), KeyV(Set.KeyV), AutoSizeP(Set.AutoSizeP), FFreeKeyId(Set.FFreeKeyId), FreeKeys(Set.FreeKeys) { }
   THashSet(const int& ExpectVals, const bool& _AutoSizeP=false);
   explicit THashSet(const TVec<TKey>& KeyV);
   explicit THashSet(TSIn& SIn):PortV(SIn), KeyV(SIn),AutoSizeP(SIn), FFreeKeyId(SIn), FreeKeys(SIn) {SIn.LoadCs(); }
@@ -1099,10 +1095,7 @@ public:
 
   const TKey& GetKey(const int& KeyId) const {return GetSetKey(KeyId).Key; }
   int GetKeyId(const TKey& Key) const;
-  int GetRndKeyId(TRnd& Rnd) const {
-    IAssert(IsKeyIdEqKeyN());
-    IAssert(Len()>0);
-    return Rnd.GetUniDevInt(Len()); }
+  int GetRndKeyId(TRnd& Rnd) const {IAssert(IsKeyIdEqKeyN());IAssert(Len()>0);return Rnd.GetUniDevInt(Len()); }
   bool IsKey(const TKey& Key) const {return GetKeyId(Key)!=-1;}
   bool IsKey(const TKey& Key, int& KeyId) const {KeyId=GetKeyId(Key); return KeyId!=-1;}
   bool IsKeyId(const int& KeyId) const {return (0<=KeyId)&&(KeyId<KeyV.Len())&&(KeyV[KeyId].HashCd!=-1);}

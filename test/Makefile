@@ -17,7 +17,7 @@ opt: $(MAIN)
 
 # COMPILE
 $(MAIN): $(MAIN).cpp Snap.o
-	g++ -o $(MAIN) -g $(MAIN).cpp Snap.o $(LDFLAGS)
+	g++ -o $(MAIN) $(MAIN).cpp Snap.o $(LDFLAGS)
 
 Snap.o: 
 	g++ -c $(CXXFLAGS) ../snap/Snap.cpp -I../glib -I../snap

@@ -4,3 +4,5 @@
 *.dat
 *.txt
 test/test
+*.Err
+*.exe

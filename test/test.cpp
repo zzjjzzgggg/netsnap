@@ -84,17 +84,17 @@ void test_ref(){
 }
 
 void test_rnd(){
-	TSampler sampler;
-	TFltV dat(5);
-	for(int i=0;i<5;i++) dat[i]=0;
-	TIntV sta(5);
-	for(int i=0;i<200;i++) sta[sampler.sample(dat)]++;
-	for(int i=0;i<5; i++) printf("%d\t%d\n", i, sta[i].Val);
-
-//	TSampler samp;
-//	TRnd rnd(1234);
-//	for(int i=0;i<10;i++) printf("%.6f, ", rnd.GetUniDev());
-//	printf("\n");
+//	TSampler sampler;
+//	TFltV dat(5);
+//	for(int i=0;i<5;i++) dat[i]=0;
+	TIntSet samples, rst;
+	for(int i=0;i<1;i++) samples.AddKey(i);
+	TRandom::Choose(samples, rst, 1);
+	for(int i=0; i<rst.Len(); i++) printf("%d ", rst.GetKey(i).Val);
+	printf("\n");
+	TInt tmp;
+	int x=TRandom::Sample(samples, tmp);
+	printf("%d\n", x);
 }
 
 class MyCMP{
@@ -339,7 +339,7 @@ int main(void) {
 //	test();
 //	test_tm();
 //	testCmp();
-//	test_rnd();
+	test_rnd();
 //	test_hash();
 //	test_orth_lst();
 //	test_graph();
@@ -349,7 +349,7 @@ int main(void) {
 //	count_tri();
 //	test_fun();
 //	test_avg();
-	test_bignet();
+//	test_bignet();
 //	test_zip();
 	return 0;
 }

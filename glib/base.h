@@ -180,6 +180,7 @@
 #include "zipfl.h"
 
 #include "BIO.h"
+#include "random.h"
 
 void BaseTralala();
 

@@ -543,50 +543,6 @@ public:
 	}
 };
 
-/////////////////////////////////////////////////
-// Random (added by jzzhao)
-class TSampler{
-public:
-	static int sample(const TFltV &list){
-		Assert(!list.Empty());
-		double sum=0, esp=1E-6;
-		for(int i=0;i<list.Len();i++) sum+=list[i]+esp;
-		double th=TInt::Rnd.GetUniDev()*sum;
-		int id=0;
-		sum=list[0]+esp;
-		while(sum<th) sum+=list[++id]+esp;
-		return id;
-	}
-	static int sample(const TIntFltH &map){
-		AssertR(!map.Empty(), TStr::Fmt("I cannot sample from an empty set."));
-		double sum=0, esp=1E-6;
-		TIntFltH::TIter it;
-		for(it=map.BegI(); it<map.EndI(); it++) sum+=it.GetDat()+esp;
-		double th=TInt::Rnd.GetUniDev()*sum;
-		it=map.BegI();
-		sum=it.GetDat()+esp;
-		while(sum<th) {
-			it++;
-			sum+=it.GetDat()+esp;
-		}
-		return it.GetKey();
-	}
-	static int sample(const TIntH &map){
-			AssertR(!map.Empty(), TStr::Fmt("I cannot sample from an empty set."));
-			double sum=0, esp=1E-6;
-			TIntH::TIter it;
-			for(it=map.BegI(); it<map.EndI(); it++) sum+=it.GetDat()+esp;
-			double th=TInt::Rnd.GetUniDev()*sum;
-			it=map.BegI();
-			sum=it.GetDat()+esp;
-			while(sum<th) {
-				it++;
-				sum+=it.GetDat()+esp;
-			}
-			return it.GetKey();
-		}
-};
-
 
 /////////////////////////////////////////////////
 // Sparse matrix
