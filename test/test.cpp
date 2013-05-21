@@ -334,12 +334,16 @@ void test_zip(){
 	printf("n=%d, time=%.2fmins\n", n, tm.GetSecs()/60);
 }
 
+void test_gio(){
+	PUNGraph G=TSnap::LoadEdgeList<PUNGraph>(TStr("/data/graphdata/wiki_vote.graph.bz2"));
+
+}
 
 int main(void) {
 //	test();
 //	test_tm();
 //	testCmp();
-	test_rnd();
+//	test_rnd();
 //	test_hash();
 //	test_orth_lst();
 //	test_graph();
@@ -351,6 +355,7 @@ int main(void) {
 //	test_avg();
 //	test_bignet();
 //	test_zip();
+	test_gio();
 	return 0;
 }
 
