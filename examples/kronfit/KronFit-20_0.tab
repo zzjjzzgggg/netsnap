@@ -1,0 +1,20 @@
+Input	/home/jzzhao/workspace/douban/data/20/20_0.digraph
+Command line options
+	i:/home/jzzhao/workspace/douban/data/20/20_0.digraph
+	gi:100
+Loglikelihood	-1834832.40
+Absolute error (based on expected number of edges)	0.010794
+RunTime	980.4
+Estimated initiator	[0.946722, 0.511951; 0.517762, 0.164868]
+Input	/home/jzzhao/workspace/douban/data/20/20_0.digraph
+Command line options
+	i:/home/jzzhao/workspace/douban/data/20/20_0.digraph
+	m:0.9467
+	0.512;
+	0.5178
+	0.1649
+	gi:1000
+Loglikelihood	-1780615.67
+Absolute error (based on expected number of edges)	0.010431
+RunTime	8894.41
+Estimated initiator	[0.920028, 0.553259; 0.559238, 0.130004]

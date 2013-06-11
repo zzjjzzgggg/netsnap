@@ -341,6 +341,9 @@ void test_katz(){
 	TIntFltH katzH;
 	TSnap::GetKatzCentr(Graph, katzH, 0.3);
 	for(int i=0; i<katzH.Len(); i++) printf("%d: %.4f\n", katzH.GetKey(i).Val, katzH[i].Val);
+
+void test_gio(){
+	PUNGraph G=TSnap::LoadEdgeList<PUNGraph>(TStr("/data/graphdata/wiki_vote.graph.bz2"));
 }
 
 int main(void) {
@@ -360,6 +363,7 @@ int main(void) {
 //	test_bignet();
 //	test_zip();
 	test_katz();
+	test_gio();
 	return 0;
 }
 
