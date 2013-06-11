@@ -18,11 +18,12 @@ namespace TRandom{
 template<class TKey> TKey& Sample(const TVec<TKey>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey, TFlt>& samples, TKey& rst);
+template<class TKey> TKey& Sample(const THashSet<TKey, TInt>& samples, TKey& rst);
 template<class TKey> void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n);
 template<class TKey> void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n);
 
 
-
+// Uniformly sample an item from samples
 template<class TKey>
 TKey& Sample(const TVec<TKey>& samples, TKey& rst){
 	AssertR(samples.Len()!=0, TStr::Fmt("Empty samples cannot be sampled!"));
@@ -30,6 +31,7 @@ TKey& Sample(const TVec<TKey>& samples, TKey& rst){
 	return rst;
 }
 
+// Uniformly sample an item from samples
 template<class TKey>
 TKey& Sample(const THashSet<TKey>& samples, TKey& rst){
 	AssertR(samples.Len()!=0, TStr::Fmt("Empty samples cannot be sampled!"));
@@ -37,11 +39,30 @@ TKey& Sample(const THashSet<TKey>& samples, TKey& rst){
 	return rst;
 }
 
+// Sample an item from samples with probability proporation to its value
 template<class TKey>
 TKey& Sample(const THash<TKey, TFlt>& samples, TKey& rst){
-	AssertR(!samples.Empty(), TStr::Fmt("I cannot sample from an empty set."));
+	AssertR(!samples.Empty(), TStr::Fmt("I cannot sample from an empty hashmap."));
 	double sum=0, esp=1E-6;
 	TIntFltH::TIter it;
+	for(it=samples.BegI(); it<samples.EndI(); it++) sum+=it.GetDat()+esp;
+	double th=TInt::Rnd.GetUniDev()*sum;
+	it=samples.BegI();
+	sum=it.GetDat()+esp;
+	while(sum<th) {
+		it++;
+		sum+=it.GetDat()+esp;
+	}
+	rst = it.GetKey();
+	return rst;
+}
+
+// Sample an item from samples with probability proporation to its value
+template<class TKey>
+TKey& Sample(const THash<TKey, TInt>& samples, TKey& rst){
+	AssertR(!samples.Empty(), TStr::Fmt("I cannot sample from an empty hashmap."));
+	double sum=0, esp=1E-6;
+	TIntIntH::TIter it;
 	for(it=samples.BegI(); it<samples.EndI(); it++) sum+=it.GetDat()+esp;
 	double th=TInt::Rnd.GetUniDev()*sum;
 	it=samples.BegI();
