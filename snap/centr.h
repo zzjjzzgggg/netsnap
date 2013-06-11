@@ -20,7 +20,7 @@ void GetEigenVectorCentr(const PUNGraph& Graph, TIntFltH& EigenH, const double& 
 // PageRank, HITS (Hubs and Authorities) and Katz
 template<class PGraph> void GetPageRank(const PGraph& Graph, TIntFltH& PRankH, const double& C = 0.85, const double& Eps = 1e-6, const int& MaxIter = 200);
 template<class PGraph> void GetHits(const PGraph& Graph, TIntFltH& NIdHubH,	TIntFltH& NIdAuthH, const int& MaxIter = 200);
-template<class PGraph> void GetKatzCentr(const PGraph& Graph, TIntFltH& KatzH, const double& alpha, const double& Eps = 1e-6, const int& MaxIter = 200);
+template<class PGraph> void GetKatzCentr(const PGraph& Graph, TIntFltH& KatzH, const double& alpha, const double& Eps = 1e-3, const int& MaxIter = 500);
 
 ////////////////////////////////////////////////
 // Page Rank -- there are two different implementations (uncomment the desired 2 lines):
@@ -58,9 +58,10 @@ void GetPageRank(const PGraph& Graph, TIntFltH& PRankH, const double& C, const d
 		}
 		if (diff < Eps) {
 			printf("Successed. (iter=%d)\n", iter);
-			break;
+			return;
 		}
 	}
+	printf("Warning: Power iteration is not converged!\n");
 }
 
 // HITS: Hubs and Authorities (by J. Kleinberg, see http://en.wikipedia.org/wiki/HITS_algorithm)
@@ -106,8 +107,10 @@ void GetHits(const PGraph& Graph, TIntFltH& NIdHubH, TIntFltH& NIdAuthH, const i
 }
 
 // Katz centrality
+
+// normalized Katz centrality
 template<class PGraph>
-void GetKatzCentr(const PGraph& Graph, TIntFltH& KatzH, const double& alpha, const double& Eps, const int& MaxIter) {
+void GetKatzCentrNorm(const PGraph& Graph, TIntFltH& KatzH, const double& alpha, const double& Eps, const int& MaxIter) {
 	const int NNodes = Graph->GetNodes();
 	const double OneOver = 1.0/NNodes;
 	KatzH.Gen(NNodes);
@@ -127,15 +130,46 @@ void GetKatzCentr(const PGraph& Graph, TIntFltH& KatzH, const double& alpha, con
 		double diff = 0, NewVal;
 //		for (int i=0; i<TmpV.Len(); i++) sum += TmpV[i];
 		for (int i=0; i<KatzH.Len(); i++) {
-			NewVal = TmpV[i]/sum;
+			NewVal = TmpV[i];///sum;
 			diff += fabs(NewVal - KatzH[i]);
 			KatzH[i] = NewVal;
 		}
 		if (diff < Eps) {
 			printf("Iteration number=%d\n", iter);
-			break;
+			return;
 		}
 	}
+	printf("Warning: Power iteration is not converged!\n");
+}
+
+// unnormalized Katz centrality
+template<class PGraph>
+void GetKatzCentr(const PGraph& Graph, TIntFltH& KatzH, const double& alpha, const double& Eps, const int& MaxIter) {
+	const int NNodes = Graph->GetNodes();
+	KatzH.Gen(NNodes);
+	for (typename PGraph::TObj::TNodeI NI=Graph->BegNI(); NI<Graph->EndNI(); NI++) KatzH.AddDat(NI.GetId(), TInt::Rnd.GetUniDev());
+	TFltV TmpV(NNodes);
+	for (int iter=0; iter<MaxIter; iter++) {
+		int j = 0;
+		for (typename PGraph::TObj::TNodeI NI=Graph->BegNI(); NI<Graph->EndNI(); NI++, j++) {
+			TmpV[j] = 0;
+			for (int e=0; e<NI.GetInDeg(); e++) {
+				const int InNId = NI.GetInNId(e);
+				TmpV[j] += KatzH.GetDat(InNId);
+			}
+			TmpV[j] = alpha*TmpV[j]+1;
+		}
+		double diff = 0;
+		for (int i=0; i<KatzH.Len(); i++) {
+			diff += fabs(TmpV[i] - KatzH[i]);
+			KatzH[i] = TmpV[i];
+		}
+		if (diff < Eps) {
+			printf("Iteration number=%d\n", iter);
+			return;
+		}
+	}
+	printf("Warning: Power iteration is not converged!\n");
 }
 
 

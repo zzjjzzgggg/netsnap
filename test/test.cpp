@@ -334,12 +334,20 @@ void test_zip(){
 	printf("n=%d, time=%.2fmins\n", n, tm.GetSecs()/60);
 }
 
+void test_katz(){
+	PUNGraph Graph=TUNGraph::New();
+	Graph->AddNode(1);Graph->AddNode(2);Graph->AddNode(3);Graph->AddNode(4);
+	Graph->AddEdge(1,2);Graph->AddEdge(1,3);Graph->AddEdge(1,4); Graph->AddEdge(3,4);
+	TIntFltH katzH;
+	TSnap::GetKatzCentr(Graph, katzH, 0.3);
+	for(int i=0; i<katzH.Len(); i++) printf("%d: %.4f\n", katzH.GetKey(i).Val, katzH[i].Val);
+}
 
 int main(void) {
 //	test();
 //	test_tm();
 //	testCmp();
-	test_rnd();
+//	test_rnd();
 //	test_hash();
 //	test_orth_lst();
 //	test_graph();
@@ -351,6 +359,7 @@ int main(void) {
 //	test_avg();
 //	test_bignet();
 //	test_zip();
+	test_katz();
 	return 0;
 }
 
