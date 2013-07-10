@@ -7,14 +7,14 @@
 
 namespace BIO {
 
-	void SaveIntVec(TIntV list, TStr fname, TStr anno="");
-	void SaveFltVec(TFltV list, TStr fname, TStr anno="");
-	void SaveIntSet(TIntSet set, TStr fname, TStr anno="");
-	void SaveIntH(TIntH hash, TStr fname, TStr anno="");
-	void SaveIntFltH(TIntFltH hash, TStr fname, TStr anno="");
-	void SaveIntPrIntH(TIntPrIntH hash, TStr fname, TStr anno="");
-	void SaveIntIntPrH(TIntPrH hash, TStr fname, TStr anno="");
-	void SaveIntPrSet(TIntPrSet hash, TStr fname, TStr anno="");
+	void SaveIntVec(const TIntV& list, TStr fname, TStr anno="");
+	void SaveFltVec(const TFltV& list, TStr fname, TStr anno="");
+	void SaveIntSet(const TIntSet& set, TStr fname, TStr anno="");
+	void SaveIntH(const TIntH& hash, TStr fname, TStr anno="");
+	void SaveIntFltH(const TIntFltH& hash, TStr fname, TStr anno="");
+	void SaveIntPrIntH(const TIntPrIntH& hash, TStr fname, TStr anno="");
+	void SaveIntIntPrH(const TIntPrH& hash, TStr fname, TStr anno="");
+	void SaveIntPrSet(const TIntPrSet& hash, TStr fname, TStr anno="");
 
 	void LoadIntVec(const TStr fnm, TIntV& dat, const int col=0);
 	void LoadIntSet(const TStr fnm, TIntSet& dat, const int col=0);
@@ -24,5 +24,9 @@ namespace BIO {
 	void LoadIntPrSet(TStr fnm, TIntPrSet& dat, const int c1=0, const int c2=1);
 	void LoadIntPrVec(TStr fnm, TIntPrV& dat, const int c1=0, const int c2=1);
 
+
+	void SaveIntArray(const int* list, const int len, TStr fname, TStr anno="");
+	void SaveFltArray(const float* list, const int len, TStr fname, TStr anno="");
+	void SaveDubArray(const double* list, const int len, TStr fname, TStr anno="");
 }
 

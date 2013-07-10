@@ -37,6 +37,7 @@ public:
 	double GetGammaDev(const int& Order);
 	double GetPoissonDev(const double& Mean);
 	double GetBinomialDev(const double& Prb, const int& Trials);
+	double GetBetaDev(const double& alpha, const double& beta){return 0;};
 	int GetGeoDev(const double& Prb){return 1+(int)floor(log(1.0-GetUniDev())/log(1.0-Prb));}
 	// power-law degree distribution (AlphaSlope>0)
 	double GetPowerDev(const double& AlphaSlope){IAssert(AlphaSlope>1.0); return pow(1.0-GetUniDev(), -1.0/(AlphaSlope-1.0));}
@@ -190,25 +191,16 @@ private:
   char* Bf;
   void Resize(const int& _MxBfL);
 public:
-  explicit TChA(const int& _MxBfL=256){
-    Bf=new char[(MxBfL=_MxBfL)+1]; Bf[BfL=0]=0;}
-  TChA(const char* CStr){
-    Bf=new char[(MxBfL=BfL=int(strlen(CStr)))+1]; strcpy(Bf, CStr);}
-  TChA(const char* CStr, const int& StrLen) : MxBfL(StrLen), BfL(StrLen) {
-    Bf=new char[StrLen+1]; strncpy(Bf, CStr, StrLen); Bf[StrLen]=0;}
-  TChA(const TChA& ChA){
-    Bf=new char[(MxBfL=ChA.MxBfL)+1]; BfL=ChA.BfL; strcpy(Bf, ChA.CStr());}
+  explicit TChA(const int& _MxBfL=256){ Bf=new char[(MxBfL=_MxBfL)+1]; Bf[BfL=0]=0;}
+  TChA(const char* CStr){ Bf=new char[(MxBfL=BfL=int(strlen(CStr)))+1]; strcpy(Bf, CStr);}
+  TChA(const char* CStr, const int& StrLen) : MxBfL(StrLen), BfL(StrLen) { Bf=new char[StrLen+1]; strncpy(Bf, CStr, StrLen); Bf[StrLen]=0;}
+  TChA(const TChA& ChA){ Bf=new char[(MxBfL=ChA.MxBfL)+1]; BfL=ChA.BfL; strcpy(Bf, ChA.CStr());}
   TChA(const TStr& Str);
-  TChA(const TMem& Mem){
-    Bf=new char[(MxBfL=BfL=Mem.Len())+1]; Bf[MxBfL]=0;
-    memcpy(CStr(), Mem(), Mem.Len());}
+  TChA(const TMem& Mem){ Bf=new char[(MxBfL=BfL=Mem.Len())+1]; Bf[MxBfL]=0; memcpy(CStr(), Mem(), Mem.Len());}
   ~TChA(){delete[] Bf;}
-  explicit TChA(TSIn& SIn){
-    SIn.Load(MxBfL); SIn.Load(BfL); SIn.Load(Bf, MxBfL, BfL);}
-  void Load(TSIn& SIn){ delete[] Bf;
-    SIn.Load(MxBfL); SIn.Load(BfL); SIn.Load(Bf, MxBfL, BfL);}
-  void Save(TSOut& SOut, const bool& SaveCompact=true) const { //J:
-    SOut.Save(SaveCompact?BfL:MxBfL); SOut.Save(BfL); SOut.Save(Bf, BfL);}
+  explicit TChA(TSIn& SIn){ SIn.Load(MxBfL); SIn.Load(BfL); SIn.Load(Bf, MxBfL, BfL);}
+  void Load(TSIn& SIn){ delete[] Bf; SIn.Load(MxBfL); SIn.Load(BfL); SIn.Load(Bf, MxBfL, BfL);}
+  void Save(TSOut& SOut, const bool& SaveCompact=true) const {SOut.Save(SaveCompact?BfL:MxBfL); SOut.Save(BfL); SOut.Save(Bf, BfL);}
   void LoadXml(const PXmlTok& XmlTok, const TStr& Nm);
   void SaveXml(TSOut& SOut, const TStr& Nm) const;
 
@@ -226,13 +218,9 @@ public:
   TChA& operator+=(const TChA& ChA);
   TChA& operator+=(const TStr& Str);
   TChA& operator+=(const char* CStr);
-  TChA& operator+=(const char& Ch){
-    if (BfL==MxBfL){Resize(BfL+1);}
-    Bf[BfL]=Ch; BfL++; Bf[BfL]=0; return *this;}
-  char operator[](const int& ChN) const {
-    Assert((0<=ChN)&&(ChN<BfL)); return Bf[ChN];}
-  char& operator[](const int& ChN){
-    Assert((0<=ChN)&&(ChN<BfL)); return Bf[ChN];}
+  TChA& operator+=(const char& Ch){ if (BfL==MxBfL){Resize(BfL+1);} Bf[BfL]=Ch; BfL++; Bf[BfL]=0; return *this;}
+  char operator[](const int& ChN) const { Assert((0<=ChN)&&(ChN<BfL)); return Bf[ChN];}
+  char& operator[](const int& ChN){ Assert((0<=ChN)&&(ChN<BfL)); return Bf[ChN];}
   int GetMemUsed() const {return 2*sizeof(int)+sizeof(char*)+MxBfL;}
 
   char* operator ()(){return Bf;}
@@ -249,16 +237,12 @@ public:
   void Push(const char& Ch){operator+=(Ch);}
   char Pop(){IAssert(BfL>0); BfL--; char Ch=Bf[BfL]; Bf[BfL]=0; return Ch;}
   void Trunc();
-  void Trunc(const int& _BfL){
-    if ((0<=_BfL)&&(_BfL<=BfL)){Bf[BfL=_BfL]=0;}}
+  void Trunc(const int& _BfL){ if ((0<=_BfL)&&(_BfL<=BfL)){Bf[BfL=_BfL]=0;}}
   void Reverse();
 
-  void AddCh(const char& Ch, const int& MxLen=-1){
-    if ((MxLen==-1)||(BfL<MxLen)){operator+=(Ch);}}
-  void AddChTo(const char& Ch, const int& ToChN){
-    while (Len()<ToChN){AddCh(Ch);}}
-  void PutCh(const int& ChN, const char& Ch){
-    Assert((0<=ChN)&&(ChN<BfL)); Bf[ChN]=Ch;}
+  void AddCh(const char& Ch, const int& MxLen=-1){ if ((MxLen==-1)||(BfL<MxLen)){operator+=(Ch);}}
+  void AddChTo(const char& Ch, const int& ToChN){ while (Len()<ToChN){AddCh(Ch);}}
+  void PutCh(const int& ChN, const char& Ch){ Assert((0<=ChN)&&(ChN<BfL)); Bf[ChN]=Ch;}
   char GetCh(const int& ChN) const {return operator[](ChN);}
   char LastCh() const {return operator[](Len()-1);}
 
@@ -949,43 +933,29 @@ public:
 
   static int Abs(const int& Int){return Int<0?-Int:Int;}
   static int Sign(const int& Int){return Int<0?-1:(Int>0?1:0);}
-  static void Swap(int& Int1, int& Int2){
-    int SwapInt1=Int1; Int1=Int2; Int2=SwapInt1;}
+  static void Swap(int& Int1, int& Int2){int SwapInt1=Int1; Int1=Int2; Int2=SwapInt1;}
   static int GetRnd(const int& Range=0){return Rnd.GetUniDevInt(Range);}
 
   static bool IsOdd(const int& Int){return ((Int%2)==1);}
   static bool IsEven(const int& Int){return ((Int%2)==0);}
 
-  static int GetMn(const int& Int1, const int& Int2){
-    return Int1<Int2?Int1:Int2;}
-  static int GetMx(const int& Int1, const int& Int2){
-    return Int1>Int2?Int1:Int2;}
-  static int GetMn(const int& Int1, const int& Int2, const int& Int3){
-    return GetMn(Int1, GetMn(Int2, Int3));}
+  static int GetMn(const int& Int1, const int& Int2){return Int1<Int2?Int1:Int2;}
+  static int GetMx(const int& Int1, const int& Int2){return Int1>Int2?Int1:Int2;}
+  static int GetMn(const int& Int1, const int& Int2, const int& Int3){return GetMn(Int1, GetMn(Int2, Int3));}
   static int GetMn(const int& Int1, const int& Int2,
-   const int& Int3, const int& Int4){
-    return GetMn(GetMn(Int1, Int2), GetMn(Int3, Int4));}
-  static int GetMx(const int& Int1, const int& Int2, const int& Int3){
-    return GetMx(Int1, GetMx(Int2, Int3));}
-  static int GetMx(const int& Int1, const int& Int2,
-   const int& Int3, const int& Int4){
-    return GetMx(GetMx(Int1, Int2), GetMx(Int3, Int4));}
-  static int GetInRng(const int& Val, const int& Mn, const int& Mx){
-    IAssert(Mn<=Mx); return Val<Mn?Mn:(Val>Mx?Mx:Val);}
+   const int& Int3, const int& Int4){return GetMn(GetMn(Int1, Int2), GetMn(Int3, Int4));}
+  static int GetMx(const int& Int1, const int& Int2, const int& Int3){return GetMx(Int1, GetMx(Int2, Int3));}
+  static int GetMx(const int& Int1, const int& Int2, const int& Int3, const int& Int4){return GetMx(GetMx(Int1, Int2), GetMx(Int3, Int4));}
+  static int GetInRng(const int& Val, const int& Mn, const int& Mx){IAssert(Mn<=Mx); return Val<Mn?Mn:(Val>Mx?Mx:Val);}
 
   TStr GetStr() const {return TInt::GetStr(Val);}
-  static TStr GetStr(const int& Val){
-    char Bf[255]; sprintf(Bf, "%d", Val); return TStr(Bf);}
-  static TStr GetStr(const TInt& Int){
-    return GetStr(Int.Val);}
+  static TStr GetStr(const int& Val){char Bf[255]; sprintf(Bf, "%d", Val); return TStr(Bf);}
+  static TStr GetStr(const TInt& Int){return GetStr(Int.Val);}
   static TStr GetStr(const int& Val, const char* FmtStr);
-  static TStr GetStr(const int& Val, const TStr& FmtStr){
-    return GetStr(Val, FmtStr.CStr());}
+  static TStr GetStr(const int& Val, const TStr& FmtStr){return GetStr(Val, FmtStr.CStr());}
 
-  static TStr GetHexStr(const int& Val){
-    char Bf[255]; sprintf(Bf, "%X", Val); return TStr(Bf);}
-  static TStr GetHexStr(const TInt& Int){
-    return GetHexStr(Int.Val);}
+  static TStr GetHexStr(const int& Val){char Bf[255]; sprintf(Bf, "%X", Val); return TStr(Bf);}
+  static TStr GetHexStr(const TInt& Int){return GetHexStr(Int.Val);}
 
   static TStr GetKiloStr(const int& Val){
     if (Val>=100*1000){return GetStr(Val/1000)+"K";}

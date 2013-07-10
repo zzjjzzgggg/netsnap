@@ -559,60 +559,60 @@ public:
 	}
 
 	template<class TCmp>
-static TIter GetPivotValNCmp(const TIter& BI, const TIter& EI,	const TCmp& Cmp) {
-	TIter MiddleI = BI + (EI - BI) / 2;
-	const TVal& Val1 = *BI;
-	const TVal& Val2 = *MiddleI;
-	const TVal& Val3 = *(EI - 1);
-	if (Cmp(Val1, Val2)) {
-		if (Cmp(Val2, Val3)) return MiddleI;
-		else if (Cmp(Val3, Val1))	return BI;
-		else return EI - 1;
-	} else {
-		if (Cmp(Val1, Val3)) return BI;
-		else if (Cmp(Val3, Val2))	return MiddleI;
-		else return EI - 1;
-	}
-}
-template<class TCmp>
-static TIter PartitionCmp(TIter BI, TIter EI, const TVal Pivot,	const TCmp& Cmp) {
-	forever	{
-		while (Cmp(*BI, Pivot)) ++BI;
-		--EI;
-		while (Cmp(Pivot, *EI)) --EI;
-		if (!(BI < EI)) return BI;
-		SwapI(BI, EI);
-		++BI;
-	}
-}
-template <class TCmp>
-static void BSortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
-	for (TIter i = BI; i != EI; ++i) {
-		for (TIter j = EI-1; j != i; --j) {
-			if (Cmp(*j, *(j-1))) SwapI(j, j-1);}
-	}
-}
-template <class TCmp>
-static void ISortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
-	if (BI + 1 < EI) {
-		for (TIter i = BI, j; i != EI; ++i) {
-			TVal Tmp = *i; j = i;
-			while (j > BI && Cmp(Tmp, *(j-1))) {*j = *(j-1); --j;}
-			*j = Tmp;
+	static TIter GetPivotValNCmp(const TIter& BI, const TIter& EI,	const TCmp& Cmp) {
+		TIter MiddleI = BI + (EI - BI) / 2;
+		const TVal& Val1 = *BI;
+		const TVal& Val2 = *MiddleI;
+		const TVal& Val3 = *(EI - 1);
+		if (Cmp(Val1, Val2)) {
+			if (Cmp(Val2, Val3)) return MiddleI;
+			else if (Cmp(Val3, Val1))	return BI;
+			else return EI - 1;
+		} else {
+			if (Cmp(Val1, Val3)) return BI;
+			else if (Cmp(Val3, Val2))	return MiddleI;
+			else return EI - 1;
 		}
 	}
-}
-template <class TCmp>
-static void QSortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
-	if (BI+1 < EI) {
-		if (EI-BI < 20) ISortCmp(BI, EI, Cmp);
-		else {
-			TIter Split = PartitionCmp(BI, EI, *GetPivotValNCmp(BI, EI, Cmp), Cmp);
-			QSortCmp(BI, Split, Cmp);
-			QSortCmp(Split, EI, Cmp);
+	template<class TCmp>
+	static TIter PartitionCmp(TIter BI, TIter EI, const TVal Pivot,	const TCmp& Cmp) {
+		forever	{
+			while (Cmp(*BI, Pivot)) ++BI;
+			--EI;
+			while (Cmp(Pivot, *EI)) --EI;
+			if (!(BI < EI)) return BI;
+			SwapI(BI, EI);
+			++BI;
 		}
 	}
-}
+	template <class TCmp>
+	static void BSortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
+		for (TIter i = BI; i != EI; ++i) {
+			for (TIter j = EI-1; j != i; --j) {
+				if (Cmp(*j, *(j-1))) SwapI(j, j-1);}
+		}
+	}
+	template <class TCmp>
+	static void ISortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
+		if (BI + 1 < EI) {
+			for (TIter i = BI, j; i != EI; ++i) {
+				TVal Tmp = *i; j = i;
+				while (j > BI && Cmp(Tmp, *(j-1))) {*j = *(j-1); --j;}
+				*j = Tmp;
+			}
+		}
+	}
+	template <class TCmp>
+	static void QSortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
+		if (BI+1 < EI) {
+			if (EI-BI < 20) ISortCmp(BI, EI, Cmp);
+			else {
+				TIter Split = PartitionCmp(BI, EI, *GetPivotValNCmp(BI, EI, Cmp), Cmp);
+				QSortCmp(BI, Split, Cmp);
+				QSortCmp(Split, EI, Cmp);
+			}
+		}
+	}
 
 	//  void Sort(const bool& Asc = true) {
 	//    if (Asc){QSortCmp(Beg(), End(), TLss<TVal>());}
@@ -656,28 +656,23 @@ static void QSortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
 	TVal& GetAddDat(const TVal& Val) {
 		Assert(MxVals!=-1);
 		int ValN=SearchForw(Val);
-		if (ValN==-1) {Add(Val); return Last();}
-		else {return operator[](ValN);}}
+		if (ValN==-1) {
+			Add(Val);
+			return Last();
+		}
+		else return operator[](ValN);
+	}
 
 // short vectors
-static TVec<TVal> GetV(const TVal& Val1) {
-	TVec<TVal> V(1, 0); V.Add(Val1); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2) {
-	TVec<TVal> V(2, 0); V.Add(Val1); V.Add(Val2); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3) {
-	TVec<TVal> V(3, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4) {
-	TVec<TVal> V(4, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5) {
-	TVec<TVal> V(5, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6) {
-	TVec<TVal> V(6, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7) {
-	TVec<TVal> V(7, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8) {
-	TVec<TVal> V(8, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8, const TVal& Val9) {
-	TVec<TVal> V(9, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); V.Add(Val9); return V;}
+static TVec<TVal> GetV(const TVal& Val1) { TVec<TVal> V(1, 0); V.Add(Val1); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2) { TVec<TVal> V(2, 0); V.Add(Val1); V.Add(Val2); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3) { TVec<TVal> V(3, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4) { TVec<TVal> V(4, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5) { TVec<TVal> V(5, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6) { TVec<TVal> V(6, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7) { TVec<TVal> V(7, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8) { TVec<TVal> V(8, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); return V;}
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8, const TVal& Val9) { 	TVec<TVal> V(9, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); V.Add(Val9); return V;}
 //static TVec<TVal> GetV(const TVal* ValPt, const TVal& EndVal){
 //  TVec<TVal> V; while(*ValPt!=EndVal){V.Add(*ValPt); ValPt++;} return V;}
 };

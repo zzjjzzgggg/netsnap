@@ -7,40 +7,40 @@
 
 namespace BIO{
 
-void SaveIntVec(TIntV list, TStr fname, TStr anno){
+void SaveIntVec(const TIntV& list, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
 	for(int i=0; i<list.Len(); i++) fprintf(fw, "%d\n", list[i].Val);
 	fclose(fw);
 }
-void SaveFltVec(TFltV list, TStr fname, TStr anno){
+void SaveFltVec(const TFltV& list, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
 	for(int i=0; i<list.Len(); i++) fprintf(fw, "%.6f\n", list[i].Val);
 	fclose(fw);
 }
-void SaveIntSet(TIntSet set, TStr fname, TStr anno){
+void SaveIntSet(const TIntSet& set, TStr fname, TStr anno){
 	TIntV keys;
 	set.GetKeyV(keys);
 	SaveIntVec(keys, fname, anno);
 }
-void SaveIntH(TIntH hash, TStr fname, TStr anno){
+void SaveIntH(const TIntH& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), hash.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
 	for(int i=0; i<hash.Len(); i++) fprintf(fw, "%d\t%d\n", hash.GetKey(i).Val, hash[i].Val);
 	fclose(fw);
 }
-void SaveIntFltH(TIntFltH hash, TStr fname, TStr anno){
+void SaveIntFltH(const TIntFltH& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), hash.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
 	for(int i=0; i<hash.Len(); i++) fprintf(fw, "%d\t%.6f\n", hash.GetKey(i).Val, hash[i].Val);
 	fclose(fw);
 }
-void SaveIntPrIntH(TIntPrIntH hash, TStr fname, TStr anno){
+void SaveIntPrIntH(const TIntPrIntH& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), hash.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
@@ -50,7 +50,7 @@ void SaveIntPrIntH(TIntPrIntH hash, TStr fname, TStr anno){
 	}
 	fclose(fw);
 }
-void SaveIntIntPrH(TIntPrH hash, TStr fname, TStr anno){
+void SaveIntIntPrH(const TIntPrH& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), hash.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
@@ -59,7 +59,7 @@ void SaveIntIntPrH(TIntPrH hash, TStr fname, TStr anno){
 	}
 	fclose(fw);
 }
-void SaveIntPrSet(TIntPrSet hash, TStr fname, TStr anno){
+void SaveIntPrSet(const TIntPrSet& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), hash.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
@@ -108,4 +108,29 @@ void LoadIntPrVec(TStr fnm, TIntPrV& dat, const int c1, const int c2){
 	TSsParser Ss(fnm);
 	while(Ss.Next()) dat.Add(TIntPr(Ss.GetInt(c1), Ss.GetInt(c2)));
 }
+
+
+
+void SaveIntArray(const int* list, const int len, TStr fname, TStr anno){
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), len);
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<len; i++) fprintf(fw, "%d\n", list[i]);
+	fclose(fw);
+}
+void SaveFltArray(const float* list, const int len, TStr fname, TStr anno){
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), len);
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<len; i++) fprintf(fw, "%.6f\n", list[i]);
+	fclose(fw);
+}
+void SaveDubArray(const double* list, const int len, TStr fname, TStr anno){
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), len);
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<len; i++) fprintf(fw, "%.6f\n", list[i]);
+	fclose(fw);
+}
+
 }
