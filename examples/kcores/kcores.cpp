@@ -3,12 +3,9 @@
 
 int main(int argc, char* argv[]) {
 	Env = TEnv(argc, argv, TNotify::StdNotify);
-	Env.PrepArgs(
-			TStr::Fmt("k-cores. build: %s, %s. Time: %s", __TIME__, __DATE__,
-					TExeTm::GetCurTm()));
+	Env.PrepArgs(TStr::Fmt("k-cores. build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
 	TExeTm ExeTm;
 	Try
-
 		const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "../as20graph.txt",	"Input undirected graph file (single directed edge per line)");
 		const bool Save = Env.GetIfArgPrefixBool("-s:", true,"Save the k-core network (for every k)");
 		TStr OutFNm = Env.GetIfArgPrefixStr("-o:", "", "Output file prefix");
