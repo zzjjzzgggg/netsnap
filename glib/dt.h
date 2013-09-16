@@ -381,7 +381,6 @@ public:
 class TStr;
 template <class TVal> class TVec;
 typedef TVec<TStr> TStrV;
-
 class TStr{
 private:
 	TRStr* RStr;
