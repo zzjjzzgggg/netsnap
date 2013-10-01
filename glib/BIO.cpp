@@ -7,24 +7,24 @@
 
 namespace BIO{
 
-void SaveIntVec(const TIntV& list, TStr fname, TStr anno){
+void SaveInts(const TIntV& list, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
 	for(int i=0; i<list.Len(); i++) fprintf(fw, "%d\n", list[i].Val);
 	fclose(fw);
 }
-void SaveFltVec(const TFltV& list, TStr fname, TStr anno){
+void SaveFlts(const TFltV& list, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
 	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
 	for(int i=0; i<list.Len(); i++) fprintf(fw, "%.6f\n", list[i].Val);
 	fclose(fw);
 }
-void SaveIntSet(const TIntSet& set, TStr fname, TStr anno){
+void SaveInts(const TIntSet& set, TStr fname, TStr anno){
 	TIntV keys;
 	set.GetKeyV(keys);
-	SaveIntVec(keys, fname, anno);
+	SaveInts(keys, fname, anno);
 }
 void SaveIntH(const TIntH& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");
@@ -73,17 +73,17 @@ void SaveIntPrSet(const TIntPrSet& hash, TStr fname, TStr anno){
 
 
 // Load methods
-void LoadIntVec(const TStr fnm, TIntV& dat, const int col){
+void LoadInts(const TStr fnm, TIntV& dat, const int col){
 	dat.Clr();
 	TSsParser Ss(fnm);
 	while(Ss.Next()) dat.Add(Ss.GetInt(col));
 }
-void LoadIntSet(const TStr fnm, TIntSet& dat, const int col){
+void LoadInts(const TStr fnm, TIntSet& dat, const int col){
 	dat.Clr();
 	TSsParser Ss(fnm);
 	while(Ss.Next()) dat.AddKey(Ss.GetInt(col));
 }
-void LoadFltVec(const TStr fnm, TFltV& dat, const int col){
+void LoadFlts(const TStr fnm, TFltV& dat, const int col){
 	dat.Clr();
 	TSsParser Ss(fnm);
 	while(Ss.Next()) dat.Add(Ss.GetFlt(col));

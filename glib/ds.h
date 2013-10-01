@@ -480,7 +480,7 @@ public:
 	int AddMerged(const TVal& Val);
 	int AddVMerged(const TVec<TVal>& ValV);
 	int AddUnique(const TVal& Val);
-	const TVal& GetVal(const int& ValN) const {	return operator[](ValN);}
+	const TVal& GetVal(const int& ValN) const {return operator[](ValN);}
 	TVal& GetVal(const int& ValN) {return operator[](ValN);	}
 	void GetSubValV(const int& BValN, const int& EValN, TVec<TVal>& ValV) const;
 	void Ins(const int& ValN, const TVal& Val);
@@ -2437,14 +2437,17 @@ public:
 	PLstNd Ins(const PLstNd& Nd, const TVal& Val);
 	void Del(const TVal& Val);
 	void Del(const PLstNd& Nd);
+	void Pop(){PLstNd p=FirstNd; Del(p);}
+	TVal Pop(TVal& Val);
 	PLstNd SearchForw(const TVal& Val);
 	PLstNd SearchBack(const TVal& Val);
+	bool IsSorted(const bool& Asc=true);
 
 	friend class TLstNd<TVal> ;
 };
 
 template<class TVal>
-TLst<TVal>::TLst(TSIn& SIn) : Nds(0), FirstNd(NULL), LastNd(NULL) {
+TLst<TVal>::TLst(TSIn& SIn): Nds(0), FirstNd(NULL), LastNd(NULL) {
 	int CheckNds = 0;
 	SIn.Load(CheckNds);
 	for (int NdN = 0; NdN < CheckNds; NdN++) AddBack(TVal(SIn));
@@ -2480,7 +2483,7 @@ TLstNd<TVal>* TLst<TVal>::AddFront(const TVal& Val) {
 
 template<class TVal>
 TLstNd<TVal>* TLst<TVal>::AddBack(const TVal& Val) {
-	PLstNd Nd = new TLstNd<TVal> (LastNd, NULL, Val);
+	PLstNd Nd = new TLstNd<TVal>(LastNd, NULL, Val);
 	if (LastNd != NULL) {
 		LastNd->NextNd = Nd;
 		LastNd = Nd;
@@ -2572,12 +2575,19 @@ void TLst<TVal>::Del(const TVal& Val) {
 template<class TVal>
 void TLst<TVal>::Del(const PLstNd& Nd) {
 	Assert(Nd != NULL);
-	if (Nd->PrevNd == NULL) FirstNd = Nd->NextNd;
+	if (Nd->PrevNd == NULL) FirstNd = Nd->NextNd; // delete head
 	else Nd->PrevNd->NextNd = Nd->NextNd;
-	if (Nd->NextNd == NULL) LastNd = Nd->PrevNd;
+	if (Nd->NextNd == NULL) LastNd = Nd->PrevNd;  // delete tail
 	else Nd->NextNd->PrevNd = Nd->PrevNd;
 	Nds--;
 	delete Nd;
+}
+
+template<class TVal>
+TVal TLst<TVal>::Pop(TVal& Val){
+	Val=FirstNd->Val;
+	Pop();
+	return Val;
 }
 
 template<class TVal>
@@ -2598,6 +2608,17 @@ TLstNd<TVal>* TLst<TVal>::SearchBack(const TVal& Val) {
 		Nd = Nd->Prev();
 	}
 	return NULL;
+}
+
+template<class TVal>
+bool TLst<TVal>::IsSorted(const bool& Asc){
+	Assert(Nds>0);
+	PLstNd p=FirstNd->NextNd;
+	while(p!=NULL){
+		if((Asc && p->PrevNd->Val > p->Val) || (!Asc && p->PrevNd->Val < p->Val)) return false;
+		p=p->NextNd;
+	}
+	return true;
 }
 
 /////////////////////////////////////////////////

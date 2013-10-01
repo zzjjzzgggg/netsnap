@@ -150,13 +150,12 @@ public:
 
   bool Empty() const {return First==Last;}
   int Len() const {return Last-First;}
-  int GetFirst() const { return First; }
-  int GetLast() const { return Last; }
-  int Reserved() const { return ValV.Reserved(); }
+  int GetFirst() const {return First;}
+  int GetLast() const {return Last;}
+  int Reserved() const {return ValV.Reserved();}
 
-  const TVal& Top() const { return ValV[First]; }
-  void Pop() { First++;
-    if (First==Last) { ValV.Clr(false); First=Last=0; } }
+  const TVal& Top() const {return ValV[First];}
+  void Pop() {First++; if (First==Last) {ValV.Clr(false); First=Last=0;}}
   void Push(const TVal& Val) {
     if (First>0 && (First > MxFirst || ValV.Len() == ValV.Reserved()) && ! ValV.Empty()) {
       //printf("[move cc queue.Len:%d-->%d]", ValV.Len(),Len()); TExeTm Tm;

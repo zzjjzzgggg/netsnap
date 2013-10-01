@@ -3,8 +3,6 @@ namespace TSnap {
 /////////////////////////////////////////////////
 // BFS and DFS
 template <class PGraph>
-PNGraph GetBfsTree(const PGraph& Graph, const int& StartNId, const bool& FollowOut, const bool& FollowIn, const int maxHops);
-template <class PGraph>
 PNGraph GetBfsTree(const PGraph& Graph, const int& StartNId, const bool& FollowOut, const bool& FollowIn, const int maxHops=TInt::Mx);
 template <class PGraph>
 double GetDissAbility(const PGraph& Graph, bool fout, bool fin, const int maxHops, const double sample, const int nRepeat);
@@ -15,6 +13,7 @@ int GetNodesAtHop(const PGraph& Graph, const int& StartNId, const int& Hop, TInt
 template <class PGraph>
 int GetNodesAtHops(const PGraph& Graph, const int& StartNId, TIntPrV& HopCntV, const bool& Dir=false);
 
+
 /////////////////////////////////////////////////
 // Paths
 // Rev: search reverse or not
@@ -22,6 +21,7 @@ template <class PGraph>
 int GetShortPath(const PGraph& Graph, const int& SrcNId, TIntH& NIdToDistH, const bool& Rev=false, const int& MaxDist=TInt::Mx);
 template <class PGraph>
 int GetShortPath(const PGraph& Graph, const int& SrcNId, const int& DstNId, const bool& Rev=false, const int& MaxDist=TInt::Mx);
+
 
 /////////////////////////////////////////////////
 // Diameter
@@ -70,9 +70,11 @@ public:
 	TBreathFS(const PGraph& GraphPt, const bool& InitBigQ=true): Graph(GraphPt), Queue(InitBigQ?Graph->GetNodes():1024), NIdDistH(InitBigQ?Graph->GetNodes():1024) { }
 	void SetGraph(const PGraph& GraphPt);
 	int DoBfs(const int& StartNode, const bool& FollowOut=true, const bool& FollowIn=false, const int& TargetNId=-1, const int& MxDist=TInt::Mx);
+	int DoBfs(const TIntSet& StartNodes, const bool& FollowOut=true, const bool& FollowIn=false, const int& TargetNId=-1, const int& MxDist=TInt::Mx);
 	int GetNVisited() const { return NIdDistH.Len(); }
 	void GetVisitedNIdV(TIntV& NIdV) const { NIdDistH.GetKeyV(NIdV); }
 	int GetHops(const int& SrcNId, const int& DstNId) const;
+	void GetHopDist(TIntH& HopDist) const;
 	int GetRndPath(const int& SrcNId, const int& DstNId, TIntV& PathNIdV) const;
 };
 
@@ -126,11 +128,57 @@ int TBreathFS<PGraph>::DoBfs(const int& StartNode, const bool& FollowOut, const 
 }
 
 template<class PGraph>
+int TBreathFS<PGraph>::DoBfs(const TIntSet& StartNodes, const bool& FollowOut, const bool& FollowIn, const int& TargetNId, const int& MxDist) {
+	NIdDistH.Clr(false); Queue.Clr(false);
+	for(int v=StartNodes.FFirstKeyId(); StartNodes.FNextKeyId(v);) 	{
+		NIdDistH.AddDat(StartNodes[v], 0);
+		Queue.Push(StartNodes[v]);
+	}
+	int v, MaxDist = 0;
+	while(!Queue.Empty()) {
+		const int NId = Queue.Top();
+		Queue.Pop();
+		const int Dist = NIdDistH.GetDat(NId);
+		if(Dist == MxDist) break;  // max distance limit reached
+		const typename PGraph::TObj::TNodeI NodeI = Graph->GetNI(NId);
+		if(FollowOut) { // out-links
+			for(v=0; v<NodeI.GetOutDeg(); v++) {  // out-links
+				const int DstNId = NodeI.GetOutNId(v);
+				if(!NIdDistH.IsKey(DstNId)) {
+					NIdDistH.AddDat(DstNId, Dist+1);
+					MaxDist = TMath::Mx(MaxDist, Dist+1);
+					if(DstNId == TargetNId) return MaxDist;
+					Queue.Push(DstNId);
+				}
+			}
+		}
+		if (FollowIn) { // in-links
+			for (v=0; v<NodeI.GetInDeg(); v++) {
+				const int DstNId = NodeI.GetInNId(v);
+				if(!NIdDistH.IsKey(DstNId)) {
+					NIdDistH.AddDat(DstNId, Dist+1);
+					MaxDist = TMath::Mx(MaxDist, Dist+1);
+					if(DstNId == TargetNId) return MaxDist;
+					Queue.Push(DstNId);
+				}
+			}
+		}
+	}
+	return MaxDist;
+}
+
+template<class PGraph>
 int TBreathFS<PGraph>::GetHops(const int& SrcNId, const int& DstNId) const {
   TInt Dist;
   if (SrcNId!=StartNId) return -1;
   if (!NIdDistH.IsKeyGetDat(DstNId, Dist)) return -1;
   return Dist.Val;
+}
+
+template<class PGraph>
+void TBreathFS<PGraph>::GetHopDist(TIntH& HopDist) const {
+	HopDist.Clr();
+	for(int id=NIdDistH.FFirstKeyId(); NIdDistH.FNextKeyId(id);) HopDist(NIdDistH[id])++;
 }
 
 // get random shortest path from SrcNId to DstNId
@@ -165,28 +213,28 @@ namespace TSnap {
 
 template <class PGraph>
 PNGraph GetBfsTree(const PGraph& Graph, const int& StartNId, const bool& FollowOut, const bool& FollowIn, const int maxHops) {
-  TBreathFS<PGraph> BFS(Graph, false);
-  BFS.DoBfs(StartNId, FollowOut, FollowIn, -1, maxHops);
-  PNGraph Tree = TNGraph::New();
-  BFS.NIdDistH.SortByDat();
-  Tree->AddNode(StartNId);
-  for (int i = 0; i < BFS.NIdDistH.Len(); i++) {
-    const int NId = BFS.NIdDistH.GetKey(i);
-    const int Dist = BFS.NIdDistH[i];
-    typename PGraph::TObj::TNodeI NI = Graph->GetNI(NId);
-    Tree->AddNode(NId);
-    if (FollowOut)
-      for (int e = 0; e < NI.GetInDeg(); e++) {
-        const int Prev = NI.GetInNId(e);
-        if (Tree->IsNode(Prev) && BFS.NIdDistH.GetDat(Prev)==Dist-1) Tree->AddEdge(Prev, NId);
-      }
-    if (FollowIn)
-      for (int e = 0; e < NI.GetOutDeg(); e++) {
-        const int Prev = NI.GetOutNId(e);
-        if (Tree->IsNode(Prev) && BFS.NIdDistH.GetDat(Prev)==Dist-1) Tree->AddEdge(Prev, NId);
-      }
-  }
-  return Tree;
+	TBreathFS<PGraph> BFS(Graph, false);
+	BFS.DoBfs(StartNId, FollowOut, FollowIn, -1, maxHops);
+	PNGraph Tree = TNGraph::New();
+	BFS.NIdDistH.SortByDat();
+	Tree->AddNode(StartNId);
+	for (int i = 0; i < BFS.NIdDistH.Len(); i++) {
+		const int NId = BFS.NIdDistH.GetKey(i);
+		const int Dist = BFS.NIdDistH[i];
+		typename PGraph::TObj::TNodeI NI = Graph->GetNI(NId);
+		Tree->AddNode(NId);
+		if (FollowOut)
+			for (int e = 0; e < NI.GetInDeg(); e++) {
+				const int Prev = NI.GetInNId(e);
+				if (Tree->IsNode(Prev) && BFS.NIdDistH.GetDat(Prev)==Dist-1) Tree->AddEdge(Prev, NId);
+			}
+		if (FollowIn)
+			for (int e = 0; e < NI.GetOutDeg(); e++) {
+				const int Prev = NI.GetOutNId(e);
+				if (Tree->IsNode(Prev) && BFS.NIdDistH.GetDat(Prev)==Dist-1) Tree->AddEdge(Prev, NId);
+			}
+	}
+	return Tree;
 }
 
 template <class PGraph>
@@ -228,14 +276,12 @@ int GetSubTreeSz(const PGraph& Graph, const int& StartNId, const bool& FollowOut
 // get IDs of nodes that are at distance Hop from StartNId
 template <class PGraph>
 int GetNodesAtHop(const PGraph& Graph, const int& StartNId, const int& Hop, TIntV& NIdV, const bool& Dir) {
-  TBreathFS<PGraph> BFS(Graph);
-  BFS.DoBfs(StartNId, true, !Dir, -1, Hop);
-  NIdV.Clr(false);
-  for (int i = 0; i < BFS.NIdDistH.Len(); i++) {
-    if (BFS.NIdDistH[i] == Hop) {
-      NIdV.Add(BFS.NIdDistH.GetKey(i)); }
-  }
-  return NIdV.Len();
+	TBreathFS<PGraph> BFS(Graph);
+	BFS.DoBfs(StartNId, true, !Dir, -1, Hop);
+	NIdV.Clr(false);
+	for (int i=0; i<BFS.NIdDistH.Len(); i++)
+		if (BFS.NIdDistH[i] == Hop) NIdV.Add(BFS.NIdDistH.GetKey(i));
+	return NIdV.Len();
 }
 
 // return the number of nodes at each hop distance from StartNId

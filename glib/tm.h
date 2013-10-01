@@ -294,7 +294,7 @@ public:
 
 	void Tick(){LastTick=clock();}
 	int GetTime(){return clock()-LastTick;}
-	double GetSecs() const {return double(clock()-LastTick)/double(CLOCKS_PER_SEC);}
+	double GetSecs() const {return (clock()-LastTick)/(double)CLOCKS_PER_SEC;}
 	const char* GetStr() const {return GetTmStr();}
 	TStr GetStr2() const {return GetTmStr();}
 	const char* GetTmStr() const {
@@ -304,22 +304,18 @@ public:
 		else sprintf(TmStr, "%02dh%02dm", int(GetSecs())/3600, (int(GetSecs())%3600)/60);
 		return TmStr;
 	}
-	static char* GetCurTm(){
-		static TStr TmStr;
-		TmStr=TSecTm::GetCurTm().GetTmStr();
-		return TmStr.CStr();
-	}
+	static char* GetCurTm(){ static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr();}
 };
 
-class TExeTm2{
-private:
-	double LastTickSec;
-public:
-	TExeTm2(){Tick();}
-
-	void Tick(){LastTickSec=clock()/double(CLOCKS_PER_SEC);}
-	double GetSecs() const {return clock()/double(CLOCKS_PER_SEC)-LastTickSec;}
-};
+//class TExeTm2{
+//private:
+//	double LastTickSec;
+//public:
+//	TExeTm2(){Tick();}
+//
+//	void Tick(){LastTickSec=clock()/(double)CLOCKS_PER_SEC;}
+//	double GetSecs() const {return clock()/double(CLOCKS_PER_SEC)-LastTickSec;}
+//};
 /////////////////////////////////////////////////
 // Time-Stop-Watch
 class TTmStopWatch {

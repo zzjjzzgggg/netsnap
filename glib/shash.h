@@ -1093,9 +1093,10 @@ public:
   void MarkDelKey(const TKey& Key);
   void MarkDelKeyId(const int& KeyId) {MarkDelKey(GetKey(KeyId)); }
 
-  const TKey& GetKey(const int& KeyId) const {return GetSetKey(KeyId).Key; }
+  const TKey& GetKey(const int& KeyId) const {return GetSetKey(KeyId).Key;}
   int GetKeyId(const TKey& Key) const;
-  int GetRndKeyId(TRnd& Rnd) const {IAssert(IsKeyIdEqKeyN());IAssert(Len()>0);return Rnd.GetUniDevInt(Len()); }
+  int GetRndKeyId(TRnd& Rnd) const {IAssert(IsKeyIdEqKeyN());IAssert(Len()>0);return Rnd.GetUniDevInt(Len());}
+  const TKey& GetRndKey(TRnd& Rnd) const {return GetSetKey(GetRndKeyId(Rnd)).Key;}
   bool IsKey(const TKey& Key) const {return GetKeyId(Key)!=-1;}
   bool IsKey(const TKey& Key, int& KeyId) const {KeyId=GetKeyId(Key); return KeyId!=-1;}
   bool IsKeyId(const int& KeyId) const {return (0<=KeyId)&&(KeyId<KeyV.Len())&&(KeyV[KeyId].HashCd!=-1);}

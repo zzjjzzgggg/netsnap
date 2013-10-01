@@ -122,9 +122,15 @@ void testCmp(){
 void test_hash(){
 	TIntH hash;
 	for(int i=0;i<10;i++) hash(i)=i;
-	hash.DelKey(2);
+//	hash.DelKey(2);
 //	for(int i=0;i<9; i++) printf("%d\n", hash[i].Val);
-	for(TIntH::TIter it=hash.BegI(); it<hash.EndI(); it++) printf("%d, %d\n", it.GetKey().Val, it.GetDat().Val);
+//	for(TIntH::TIter it=hash.BegI(); it<hash.EndI(); it++) printf("%d, %d\n", it.GetKey().Val, it.GetDat().Val);
+}
+
+void testSet(){
+	TIntSet set;
+	for(int i=0;i<10;i++) set.AddKey(i);
+	for(int i=0; i<5; i++) printf("%d\n", set.GetRndKey(TInt::Rnd).Val);
 }
 
 void test_orth_lst(){
@@ -269,13 +275,6 @@ void test_sm(){
 //	for(int i=0; i<sum.Len(); i++) printf("%d: %.2f\n", i, sum[i].Val);
 }
 
-void test_bio(){
-	TIntV test;
-	test.Add(1);
-	test.Add(2);
-	BIO::SaveIntVec(test, "a.test");
-}
-
 void test_dict_pair(){
 	TIntIntPrH dat;
 	dat(1)=TIntPr(1,1);
@@ -321,7 +320,7 @@ void test_zip(){
 //	TStr gpgraph="/data/SNSDATA/G+/gplus/imc12/gp_follow.digraph";
 //	TStr gpgraph="/media/e/gp_follow.digraph.bz2";
 	TStr gpgraph="/media/e/direct_social_structure.txt.bz2";
-	TExeTm2 tm;
+	TExeTm tm;
 	tm.Tick();
 	TSsParser ss(gpgraph);
 	printf("\nstart reading...\n");
@@ -341,9 +340,34 @@ void test_katz(){
 	TIntFltH katzH;
 	TSnap::GetKatzCentr(Graph, katzH, 0.3);
 	for(int i=0; i<katzH.Len(); i++) printf("%d: %.4f\n", katzH.GetKey(i).Val, katzH[i].Val);
+}
 
 void test_gio(){
 	PUNGraph G=TSnap::LoadEdgeList<PUNGraph>(TStr("/data/graphdata/wiki_vote.graph.bz2"));
+}
+
+void test_lst(){
+	typedef TLst<int>::PLstNd PNd;
+	TLst<int> Queue;
+	for(int i=0; i<5; i++) Queue.AddBackSorted(i,false);
+	Queue.Pop();
+	Queue.AddBackSorted(3, false);
+	PNd ptr=Queue.First();
+	while(ptr!=NULL){
+		printf("%d\n", ptr->Val);
+		ptr=ptr->Next();
+	}
+	ptr=Queue.Last();
+	while(ptr!=NULL){
+		printf("%d\n", ptr->Val);
+		ptr=ptr->Prev();
+	}
+}
+
+void test_file(){
+	FILE* fw=fopen("t.txt", "a");
+	fprintf(fw, "asdf\n");
+	fclose(fw);
 }
 
 int main(void) {
@@ -362,8 +386,11 @@ int main(void) {
 //	test_avg();
 //	test_bignet();
 //	test_zip();
-	test_katz();
-	test_gio();
+//	test_katz();
+//	test_gio();
+//	testSet();
+//	test_lst();
+	test_file();
 	return 0;
 }
 

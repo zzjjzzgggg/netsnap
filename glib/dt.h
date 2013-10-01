@@ -760,8 +760,7 @@ public:
 
   TBool& operator=(const TBool& Bool){Val=Bool.Val; return *this;}
   bool operator==(const TBool& Bool) const {return Val==Bool.Val;}
-  bool operator<(const TBool& Bool) const {//return Val<Bool.Val;
-    return (Val==false)&&(Bool.Val==true);}
+  bool operator<(const TBool& Bool) const {return (Val==false)&&(Bool.Val==true);}
   bool operator()() const {return Val;}
   int GetMemUsed() const {return sizeof(TBool);}
 
@@ -770,16 +769,11 @@ public:
 
   static bool GetRnd(){return Rnd.GetUniDevInt(2)==1;}
 
-  static TStr GetStr(const bool& Val){
-    if (Val){return TrueStr;} else {return FalseStr;}}
-  static TStr GetStr(const TBool& Bool){
-    return GetStr(Bool.Val);}
-  static TStr GetYNStr(const bool& Val){
-    if (Val){return YStr;} else {return NStr;}}
-  static TStr GetYesNoStr(const bool& Val){
-    if (Val){return YesStr;} else {return NoStr;}}
-  static TStr Get01Str(const bool& Val){
-    if (Val){return "1";} else {return "0";}}
+  static TStr GetStr(const bool& Val){if (Val){return TrueStr;} else {return FalseStr;}}
+  static TStr GetStr(const TBool& Bool){return GetStr(Bool.Val);}
+  static TStr GetYNStr(const bool& Val){if (Val){return YStr;} else {return NStr;}}
+  static TStr GetYesNoStr(const bool& Val){if (Val){return YesStr;} else {return NoStr;}}
+  static TStr Get01Str(const bool& Val){if (Val){return "1";} else {return "0";}}
   static bool IsValStr(const TStr& Str);
   static bool GetValFromStr(const TStr& Str);
   static bool GetValFromStr(const TStr& Str, const bool& DfVal);
