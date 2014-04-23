@@ -13,7 +13,7 @@ template <class PGraph> PGraph GenBaraHierar(const int& Levels, const bool& IsDi
 
 /////////////////////////////////////////////////
 // Random graphs
-template <class PGraph> PGraph GenRndGnm(const int& Nodes, const int& Edges, const bool& IsDir=true, TRnd& Rnd=TInt::Rnd);
+template <class PGraph> PGraph GenRndGnm(const int& Nodes, const int& Edges, const bool& IsDir=false, TRnd& Rnd=TInt::Rnd);
 
 /////////////////////////////////////////////////
 // Common models

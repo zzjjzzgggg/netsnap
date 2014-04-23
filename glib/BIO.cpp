@@ -22,9 +22,11 @@ void SaveFlts(const TFltV& list, TStr fname, TStr anno){
 	fclose(fw);
 }
 void SaveInts(const TIntSet& set, TStr fname, TStr anno){
-	TIntV keys;
-	set.GetKeyV(keys);
-	SaveInts(keys, fname, anno);
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), set.Len());
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<set.Len(); i++) fprintf(fw, "%d\n", set[i].Val);
+	fclose(fw);
 }
 void SaveIntH(const TIntH& hash, TStr fname, TStr anno){
 	FILE* fw=fopen(fname.CStr(), "w");

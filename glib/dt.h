@@ -675,8 +675,7 @@ private:
 public:
   TStrPool(uint MxBfLen = 0, uint _GrowBy = 16*1024*1024);
   TStrPool(TSIn& SIn, bool LoadCompact = true);
-  TStrPool(const TStrPool& Pool) : MxBfL(Pool.MxBfL), BfL(Pool.BfL), GrowBy(Pool.GrowBy) {
-    Bf = (char *) malloc(Pool.MxBfL); IAssert(Bf); memcpy(Bf, Pool.Bf, Pool.BfL); }
+  TStrPool(const TStrPool& Pool) : MxBfL(Pool.MxBfL), BfL(Pool.BfL), GrowBy(Pool.GrowBy) { Bf = (char *) malloc(Pool.MxBfL); IAssert(Bf); memcpy(Bf, Pool.Bf, Pool.BfL); }
   ~TStrPool() { if (Bf) free(Bf); else IAssert(MxBfL == 0);  MxBfL = 0; BfL = 0; }
 
   static PStrPool New(uint _MxBfLen = 0, uint _GrowBy = 16*1024*1024) { return PStrPool(new TStrPool(_MxBfLen, _GrowBy)); }
@@ -712,7 +711,7 @@ public:
   int GetSecHashCd(uint Offset) { Assert(Offset < BfL);
     if (Offset != 0) return GetSecHashCd(Bf + Offset); else return GetSecHashCd(""); }
 
-	friend class TPt<TStrPool>;
+  friend class TPt<TStrPool>;
 };
 
 /////////////////////////////////////////////////

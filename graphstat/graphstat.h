@@ -29,5 +29,5 @@ template<class PGraph>
 void SaveNodes(const PGraph& Graph, const TStr& OutFNm){
 	TIntV nodes;
 	Graph->GetNIdV(nodes);
-	BIO::SaveIntVec(nodes, OutFNm);
+	BIO::SaveInts(nodes, OutFNm);
 }

@@ -547,27 +547,59 @@ int TStdIOPipe::Read(char *Bf, const int& BfMxLen) {
 /////////////////////////////////////////////////
 // Compatibility functions
 int GetModuleFileName(void *hModule, char *Bf, int MxBfL) {
-  int retlen = readlink("/proc/self/exe", Bf, MxBfL);
-  if (retlen == -1) {
-    if (MxBfL > 0) Bf[0] = '\0';
-    return 0;
-  }
-  if (retlen == MxBfL) --retlen;
-  Bf[retlen] = '\0';
-  return retlen;
+	int retlen = readlink("/proc/self/exe", Bf, MxBfL);
+	if (retlen == -1) {
+		if (MxBfL > 0) Bf[0] = '\0';
+		return 0;
+	}
+	if (retlen == MxBfL) --retlen;
+	Bf[retlen] = '\0';
+	return retlen;
 }
 
 int GetCurrentDirectory(const int MxBfL, char *Bf) {
-  getcwd(Bf, MxBfL);
-  return strlen(Bf);
+	getcwd(Bf, MxBfL);
+	return strlen(Bf);
 }
 
-int CreateDirectory(const char *FNm, void *useless) {
-  return mkdir(FNm, 0777)==0;
+int CreateDirectory(const TStr& FNm, void *useless) {
+	return mkdir(FNm.CStr(), 0777)==0;
 }
 
-int RemoveDirectory(const char *FNm) {
-  return unlink(FNm)==0;
+int RemoveDirectory(const TStr& FNm) {
+	return unlink(FNm.CStr())==0;
+}
+
+int RemoveFile(const TStr& FNm){
+	return unlink(FNm.CStr())==0;
+}
+
+int ListDir(const TStr& Dir, TStrV& FNms, const bool IgnoreHidden){
+	FNms.Clr();
+	class dirent* ent;
+	class stat st;
+	DIR* dir=opendir(Dir.CStr());
+	while((ent=readdir(dir))!=NULL){
+		TStr fnm = ent->d_name;
+		TStr fulNm = Dir+"/"+fnm;
+		if(IgnoreHidden && fnm[0]=='.') continue;
+		if(stat(fulNm.CStr(), &st)==-1) continue;
+		if((st.st_mode & S_IFDIR) !=0) continue;
+		FNms.Add(fnm);
+	}
+	closedir(dir);
+	return FNms.Len();
+}
+
+int CopyFile(const TStr& Src, const TStr& Dst){
+	char buf[10240];
+	size_t bytes;
+	FILE* fr=fopen(Src.CStr(), "rb"); IAssertR(fr!=NULL, Src);
+	FILE* fw=fopen(Dst.CStr(), "wb"); IAssertR(fw!=NULL, Dst);
+	while((bytes=fread(buf, 1, 10240, fr))>0) fwrite(buf, 1, bytes, fw);
+	fclose(fr);
+	fclose(fw);
+	return 1;
 }
 
 /////////////////////////////////////////////////

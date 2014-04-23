@@ -307,15 +307,15 @@ public:
 	static char* GetCurTm(){ static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr();}
 };
 
-//class TExeTm2{
-//private:
-//	double LastTickSec;
-//public:
-//	TExeTm2(){Tick();}
-//
-//	void Tick(){LastTickSec=clock()/(double)CLOCKS_PER_SEC;}
-//	double GetSecs() const {return clock()/double(CLOCKS_PER_SEC)-LastTickSec;}
-//};
+class TExeTm2{
+private:
+	time_t LastTick, CurTime;
+public:
+	TExeTm2() {Tick();}
+	void Tick() {time(&LastTick);}
+	double GetSecs() {time(&CurTime); return difftime(CurTime, LastTick);}
+};
+
 /////////////////////////////////////////////////
 // Time-Stop-Watch
 class TTmStopWatch {

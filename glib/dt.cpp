@@ -1605,12 +1605,12 @@ TStrPool& TStrPool::operator = (const TStrPool& Pool) {
 // Adds Len characters to pool. To append a null
 // terminated string Len must be equal to strlen(s) + 1
 uint TStrPool::AddStr(const char *Str, uint Len) {
-  IAssertR(Len > 0, "String too short (lenght includes the null character)");  //J: if (! Len) return -1;
-  if (Len == 1 && BfL > 0) { return 0; } // empty string
-  Assert(Str);  Assert(Len > 0);
-  if (BfL + Len > MxBfL) Resize(BfL + Len);
-  memcpy(Bf + BfL, Str, Len);
-  uint Pos = BfL;  BfL += Len;  return Pos;
+	IAssertR(Len > 0, "String too short (lenght includes the null character)");  //J: if (! Len) return -1;
+	if (Len == 1 && BfL > 0) return 0; // empty string
+	Assert(Str);  Assert(Len > 0);
+	if (BfL + Len > MxBfL) Resize(BfL + Len);
+	memcpy(Bf + BfL, Str, Len);
+	uint Pos = BfL;  BfL += Len;  return Pos;
 }
 
 int TStrPool::GetPrimHashCd(const char *CStr) {

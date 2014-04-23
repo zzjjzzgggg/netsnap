@@ -195,8 +195,11 @@ public:
 
 int GetModuleFileName(void *hModule, char *Bf, int MxBfL);
 int GetCurrentDirectory(const int MxBfL, char *Bf);
-int CreateDirectory(const char *FNm, void *useless);
-int RemoveDirectory(const char *FNm);
+int CreateDirectory(const TStr& FNm, void *useless);
+int RemoveDirectory(const TStr& FNm);
+int RemoveFile(const TStr& FNm);
+int ListDir(const TStr& Dir, TStrV& FNms, const bool IgnoreHidden=true);
+int CopyFile(const TStr& Src, const TStr& Dst);
 
 /////////////////////////////////////////////////
 // System-Processes
@@ -227,13 +230,10 @@ public:
   static uint64 GetMSecsFromTm(const TTm& Tm);
   static TTm GetTmFromMSecs(const uint64& MSecs);
   static uint GetMSecsFromOsStart();
-
   static TTm GetLocTmFromUniTm(const TTm& Tm);
   static TTm GetUniTmFromLocTm(const TTm& Tm);
-
   static uint64 GetProcessMSecs();
   static uint64 GetThreadMSecs();
-
   static uint64 GetPerfTimerFq();
   static uint64 GetPerfTimerTicks();
 };

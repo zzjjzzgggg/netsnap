@@ -26,7 +26,7 @@ int GetShortPath(const PGraph& Graph, const int& SrcNId, const int& DstNId, cons
 /////////////////////////////////////////////////
 // Diameter
 template <class PGraph>
-int GetBfsFullDiam(const PGraph& Graph, const int& TestNodes, const bool& Dir=false);
+int GetBfsFullDiam(const PGraph& Graph, const int& TestNodes=1, const bool& Dir=false);
 template <class PGraph>
 double GetBfsEffDiam(const PGraph& Graph, const int& TestNodes, const bool& Dir=false);
 template <class PGraph>

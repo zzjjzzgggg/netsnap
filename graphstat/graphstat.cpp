@@ -21,6 +21,7 @@ int main(int argc, char* argv[]) {
 			"\n\tb: basic statistics"
 			"\n\tt: count closed triads"
 			"\n\td: dissemination ability(-hops:2 -sample:0.01 -fo:T -fi:F -n:1)"
+			"\n\tD: BFS diameter"
 			"\n\tC: average clustering coefficient(-sample:T, default 5%)"
 			"\n\th: hops (10% effective diameter)"
 			"\n\tw: largest weakly connected components"
@@ -43,6 +44,7 @@ int main(int argc, char* argv[]) {
 		bool cb = calcs.SearchCh('b') != -1;
 		bool ct = calcs.SearchCh('t') != -1;
 		bool da = calcs.SearchCh('d') != -1;
+		bool bd = calcs.SearchCh('D') != -1;
 		bool cC = calcs.SearchCh('C') != -1;
 		bool ch = calcs.SearchCh('h') != -1;
 		bool cw = calcs.SearchCh('w') != -1;
@@ -94,6 +96,10 @@ int main(int argc, char* argv[]) {
 				int n=Env.GetIfArgPrefixInt("-n:", 1);
 				double rst=TSnap::GetDissAbility(Graph, fo, fi, maxHops, sample, n);
 				printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
+			}
+			if(bd){
+				int dia=TSnap::GetBfsFullDiam<PNGraph>(Graph, 1, true);
+				printf("BFS diameter: %d\n", dia);
 			}
 			if(cC){
 				bool sample=Env.GetIfArgPrefixBool("-sample:", true);
@@ -155,6 +161,10 @@ int main(int argc, char* argv[]) {
 				int n=Env.GetIfArgPrefixInt("-n:", 1);
 				double rst=TSnap::GetDissAbility(Graph, fo, fi, maxHops, sample, n);
 				printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
+			}
+			if(bd){
+				int dia=TSnap::GetBfsFullDiam<PUNGraph>(Graph);
+				printf("BFS diameter: %d\n", dia);
 			}
 			if(cC){
 				bool sample=Env.GetIfArgPrefixBool("-sample:", true);

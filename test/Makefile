@@ -3,7 +3,7 @@
 #
 
 ## Linux  (uncomment the 2 lines below for compilation on Linux)
-CXXFLAGS += -std=c++98 -Wall
+CXXFLAGS += -Wall
 LDFLAGS += -lrt
 
 ## Main application file

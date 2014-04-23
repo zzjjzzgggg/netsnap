@@ -2558,7 +2558,7 @@ TLstNd<TVal>* TLst<TVal>::Ins(const PLstNd& Nd, const TVal& Val) {
 	if (Nd == NULL) return AddFront(Val);
 	else if (Nd->NextNd == NULL) return AddBack(Val);
 	else {
-		PLstNd NewNd = new TLstNd<TVal> (Nd, Nd->NextNd, Val);
+		PLstNd NewNd = new TLstNd<TVal>(Nd, Nd->NextNd, Val);
 		Nd->NextNd = NewNd;
 		NewNd->NextNd->PrevNd = NewNd;
 		Nds++;

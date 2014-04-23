@@ -72,8 +72,18 @@ void test_tm(){
 //	TSecTm tm(2010, 1, 1);
 //	printf("%d\n", tm.GetAbsSecs());
 
-	TTm tm=TTm::GetTmFromWebLogDateTimeStr("2012-2-1 23:34:12");
-	printf("%s\n", tm.GetYMDDashStr().CStr());
+//	TTm tm=TTm::GetTmFromWebLogDateTimeStr("2012-2-1 23:34:12");
+	TSecTm tm=TSecTm::GetCurTm();
+	printf("%s\n%s\n%s\n", tm.GetDtYmdStr().CStr(), tm.GetDtTmSortStr().CStr(), tm.GetDtTmSortFNmStr().CStr());
+	sleep(5);
+	tm=TSecTm::GetCurTm();
+	printf("%s\n%s\n%s\n", tm.GetDtYmdStr().CStr(), tm.GetDtTmSortStr().CStr(), tm.GetDtTmSortFNmStr().CStr());
+
+//	TExeTm2 tm;
+//	for(int i=0; i<10; i++){
+//		sleep(5);
+//		printf("%d\t%.4f, %lu\n", i, tm.GetSecs(), clock());
+//	}
 }
 
 void test_ref(){
@@ -233,8 +243,8 @@ void test_graph(){
 	TUNGraph::TNodeI ni=G->GetNI(1);
 	printf("Nodes: %d, edges: %d, in-deg: %d, out-deg: %d, deg: %d\n",
 			G->GetNodes(), G->GetEdges(), ni.GetInDeg(), ni.GetOutDeg(), ni.GetDeg());
-	int hops = TSnap::GetShortPath(G, 3, 4, false, 10);
-	printf("hops: %d\n", hops);
+//	int hops = TSnap::GetShortPath(G, 3, 4, false, 10);
+//	printf("hops: %d\n", hops);
 }
 
 void test_sm(){
@@ -370,7 +380,37 @@ void test_file(){
 	fclose(fw);
 }
 
+void test_os(){
+	RemoveFile("t.txt");
+//	TStrV fnms;
+//	ListDir(".", fnms);
+//	for(int i=0; i<fnms.Len(); i++) printf("%s\n", fnms[i].CStr());
+
+//	FILE* fr=open("tt.txt", "r");
+}
+
+void test_ptr(){
+	TVec<uint64> BitV;
+	int NNodes=5189809;
+	int NBits = int(ceil(TMath::Log2(NNodes)))+8;
+	int BytesPerNd = 32*NBits;
+	BitV.Gen(NNodes*BytesPerNd/sizeof(uint64)+1); IAssert(BitV.BegI() != NULL);
+	uchar* BitVPt = (uchar*) BitV.BegI();
+	for(int i=0; i<BitV.Len()*sizeof(uint64);i++) *(BitVPt+i)=i;
+	printf("%lu, %d, %lu\n", BitV.Len()*sizeof(uint64), BitV.Len(), sizeof(uint64));
+//	*(BitVPt+853324352) = 0;
+}
+
+void gen_graphs(){
+//	PUNGraph G = TSnap::GenRndGnm<PUNGraph>(100000, 1000000);
+//	TSnap::SaveEdgeList<PUNGraph>(G, "ER_100K_1M.graph");
+
+	PUNGraph G = TSnap::GenPrefAttach(100000, 10);
+	TSnap::SaveEdgeList<PUNGraph>(G, "BA_100K_10.graph");
+}
+
 int main(void) {
+	gen_graphs();
 //	test();
 //	test_tm();
 //	testCmp();
@@ -390,7 +430,9 @@ int main(void) {
 //	test_gio();
 //	testSet();
 //	test_lst();
-	test_file();
+//	test_file();
+//	test_os();
+//	test_ptr();
 	return 0;
 }
 

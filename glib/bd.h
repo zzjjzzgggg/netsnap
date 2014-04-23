@@ -427,9 +427,7 @@ public:
 	typedef TRec TObj;
 private:
 	TRec* Addr;
-	void MkRef() const {
-		if (Addr!=NULL) Addr->CRef.MkRef();
-	}
+	void MkRef() const {if (Addr!=NULL) Addr->CRef.MkRef();}
 	void UnRef() const {
 		if (Addr!=NULL){
 			Addr->CRef.UnRef();

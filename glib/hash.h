@@ -467,6 +467,7 @@ typedef THash<TInt, TIntH> TIntIntHH;
 typedef THash<TInt, TFlt> TIntFltH;
 typedef THash<TInt, TFltPr> TIntFltPrH;
 typedef THash<TInt, TFltTr> TIntFltTrH;
+typedef THash<TInt, TFltQu> TIntFltQuH;
 typedef THash<TInt, TFltV> TIntFltVH;
 typedef THash<TInt, TStr> TIntStrH;
 typedef THash<TInt, TStrV> TIntStrVH;
@@ -772,7 +773,9 @@ int TStrHash<TDat, TStringPool, THashFunc>::AddKey(const char *Key) {
 	int PrevKeyId = -1;
 	int KeyId = PortV[PortN];
 	while (KeyId != -1 && ! (KeyDatV[KeyId].HashCd == HashCd && Pool->Cmp(KeyDatV[KeyId].Key, Key) == 0)) {
-		PrevKeyId = KeyId;	KeyId = KeyDatV[KeyId].Next; }
+		PrevKeyId = KeyId;
+		KeyId = KeyDatV[KeyId].Next;
+	}
 	if (KeyId == -1) {
 		const int StrId = Pool->AddStr(Key);
 		if (FFreeKeyId == -1) {
