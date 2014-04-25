@@ -11,9 +11,9 @@ MAIN = test
 
 all: $(MAIN)
 
-opt: CXXFLAGS += -O4
-opt: LDFLAGS += -O4
-opt: $(MAIN)
+#opt: CXXFLAGS += -O4
+#opt: LDFLAGS += -O4
+#opt: $(MAIN)
 
 # COMPILE
 $(MAIN): $(MAIN).cpp Snap.o

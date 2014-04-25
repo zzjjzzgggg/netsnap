@@ -6,8 +6,10 @@ bool TUNGraph::HasFlag(const TGraphFlag& Flag) const {
 
 int TUNGraph::AddNode(int NId) {
 	if (NId == -1) NId = MxNId++;
-	else if(IsNode(NId)) return NId; // already a node
-	MxNId = TMath::Mx(NId+1, MxNId());
+	else {
+		if(IsNode(NId)) return NId; // already a node
+		MxNId = TMath::Mx(NId+1, MxNId());
+	}
 	NodeH.AddDat(NId, TNode(NId));
 	return NId;
 }

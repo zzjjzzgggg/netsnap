@@ -916,8 +916,12 @@ public:
   int operator()() const {return Val;}
   TInt& operator+=(const int& Int){Val+=Int; return *this;}
   TInt& operator-=(const int& Int){Val-=Int; return *this;}
-  TInt operator++(int){Val++; return *this;}
-  TInt operator--(int){Val--; return *this;}
+
+  const TInt operator++(int){TInt tmp(Val); Val++; return tmp;} // x++
+  TInt& operator++(){Val++; return *this;} // ++x
+  const TInt operator--(int){TInt tmp(Val); Val--; return tmp;} // x--
+  TInt& operator--(){Val--; return *this;} // --x
+
   int GetMemUsed() const {return sizeof(TInt);}
 
   int GetPrimHashCd() const {return Val;}
@@ -1067,8 +1071,10 @@ public:
   TUInt64& operator=(const TUInt64& Int){Val=Int.Val; return *this;}
   TUInt64& operator+=(const TUInt64& Int){Val+=Int.Val; return *this;}
   TUInt64& operator-=(const TUInt64& Int){Val-=Int.Val; return *this;}
-  TUInt64 operator++(int){Val++; return *this;}
-  TUInt64 operator--(int){Val--; return *this;}
+  const TUInt64 operator++(int){TUInt64 tmp(Val); Val++; return tmp;} // x++
+  TUInt64& operator++(){Val++; return *this;} // ++x
+  const TUInt64 operator--(int){TUInt64 tmp(Val); Val--; return tmp;} // x--
+  TUInt64& operator--(){Val--; return *this;} // --x
   int GetMemUsed() const {return sizeof(TUInt64);}
 
   int GetPrimHashCd() const { return (int)GetMsVal(); }
@@ -1145,8 +1151,10 @@ public:
   TFlt& operator-=(const double& Flt){Val-=Flt; return *this;}
   TFlt& operator*=(const double& Flt){Val*=Flt; return *this;}
   TFlt& operator/=(const double& Flt){Val/=Flt; return *this;}
-  TFlt operator++(int){Val++; return *this;}
-  TFlt operator--(int){Val--; return *this;}
+  const TFlt operator++(int){TFlt tmp(Val); Val++; return tmp;} // x++
+  TFlt& operator++(){Val++; return *this;}
+  const TFlt operator--(int){TFlt tmp(Val); Val--; return tmp;} // x--
+  TFlt& operator--(){Val--; return *this;}
   int GetMemUsed() const {return sizeof(TFlt);}
 
   int GetPrimHashCd() const {
@@ -1233,8 +1241,10 @@ public:
   TSFlt& operator-=(const double& SFlt){Val-=sdouble(SFlt); return *this;}
   TSFlt& operator*=(const double& SFlt){Val*=sdouble(SFlt); return *this;}
   TSFlt& operator/=(const double& SFlt){Val/=sdouble(SFlt); return *this;}
-  TSFlt operator++(int){Val++; return *this;}
-  TSFlt operator--(int){Val--; return *this;}
+  const TSFlt operator++(int){TSFlt tmp(Val); Val++; return tmp;} // x++
+  TSFlt& operator++(){Val++; return *this;}
+  const TSFlt operator--(int){TSFlt tmp(Val); Val--; return tmp;} // x--
+  TSFlt& operator--(){Val--; return *this;}
   int GetMemUsed() const {return sizeof(TSFlt);}
 
   int GetPrimHashCd() const {

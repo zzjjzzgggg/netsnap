@@ -231,28 +231,27 @@ PNGraph GenRewire(const PNGraph& OrigGraph, const int& NSwitch, TRnd& Rnd) {
 //   See: Emergence of scaling in random networks
 //   http://arxiv.org/abs/cond-mat/9910332
 PUNGraph GenPrefAttach(const int& Nodes, const int& NodeOutDeg, TRnd& Rnd) {
-  PUNGraph GraphPt = PUNGraph::New();
-  TUNGraph& Graph = *GraphPt;
-  Graph.Reserve(Nodes, NodeOutDeg*Nodes);
-  TIntV NIdV(NodeOutDeg*Nodes, 0);
-  // first edge
-  Graph.AddNode(0);  Graph.AddNode(1);
-  NIdV.Add(0);  NIdV.Add(1);
-  Graph.AddEdge(0, 1);
-  TIntSet NodeSet;
-  for (int node = 2; node < Nodes; node++) {
-    NodeSet.Clr(false);
-    while (NodeSet.Len() < NodeOutDeg && NodeSet.Len() < node) {
-      NodeSet.AddKey(NIdV[TInt::Rnd.GetUniDevInt(NIdV.Len())]);
-    }
-    const int N = Graph.AddNode();
-    for (int i = 0; i < NodeSet.Len(); i++) {
-      Graph.AddEdge(N, NodeSet[i]);
-      NIdV.Add(N);
-      NIdV.Add(NodeSet[i]);
-    }
-  }
-  return GraphPt;
+	PUNGraph GraphPt = PUNGraph::New();
+	TUNGraph& Graph = *GraphPt;
+	Graph.Reserve(Nodes, NodeOutDeg*Nodes);
+	TIntV NIdV(NodeOutDeg*Nodes, 0);
+	// first edge
+	Graph.AddNode(0);	Graph.AddNode(1);
+	NIdV.Add(0);		NIdV.Add(1);
+	Graph.AddEdge(0, 1);
+	TIntSet NodeSet;
+	for (int node = 2; node < Nodes; node++) {
+		NodeSet.Clr(false);
+		while (NodeSet.Len() < NodeOutDeg && NodeSet.Len() < node)
+			NodeSet.AddKey(NIdV[TInt::Rnd.GetUniDevInt(NIdV.Len())]);
+		const int N = Graph.AddNode();
+		for (int i = 0; i < NodeSet.Len(); i++) {
+			Graph.AddEdge(N, NodeSet[i]);
+			NIdV.Add(N);
+			NIdV.Add(NodeSet[i]);
+		}
+	}
+	return GraphPt;
 }
 
 namespace TSnapDetail {

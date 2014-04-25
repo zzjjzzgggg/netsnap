@@ -406,7 +406,7 @@ void gen_graphs(){
 //	TSnap::SaveEdgeList<PUNGraph>(G, "ER_100K_1M.graph");
 
 	PUNGraph G = TSnap::GenPrefAttach(100000, 10);
-	TSnap::SaveEdgeList<PUNGraph>(G, "BA_100K_10.graph");
+	TSnap::SaveEdgeList<PUNGraph>(G, "BA_100K_10.graph.gz");
 }
 
 int main(void) {

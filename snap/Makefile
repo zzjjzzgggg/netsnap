@@ -3,17 +3,16 @@
 #
 
 ## Linux (uncomment if using linux)
-XXFLAGS += -std=c++98 -Wall
+CXXFLAGS += -Wall
 LDFLAGS += -lrt
-CC = g++
 
 all: testSnap
 
 testSnap: testSnap.cpp Snap.o 
-	$(CC) -o testSnap testSnap.cpp Snap.o -I../GLib $(LDFLAGS)
+	g++ -o testSnap testSnap.cpp Snap.o -I../GLib $(LDFLAGS)
 
 Snap.o:
-	$(CC) -c $(CXXFLAGS) Snap.cpp -I../GLib
+	g++ -c $(CXXFLAGS) Snap.cpp -I../GLib
 
 clean:
 	rm -f *.o testSnap testSnap.exe *.plt *.tab *.png
