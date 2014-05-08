@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-void MapNodes(const TStr& InFNm, const TStr& OutFNm, const bool IsDir){
+void MapingNodes(const TStr& InFNm, const TStr& OutFNm, const bool IsDir){
 	printf("Mapping nodes...\n");
 	TStr gfnm=OutFNm + (IsDir?".digraph":".graph");
 	FILE *F = fopen(gfnm.CStr(), "wt");
@@ -25,9 +25,40 @@ void MapNodes(const TStr& InFNm, const TStr& OutFNm, const bool IsDir){
 	fclose(F);
 }
 
-template<class PGraph>
-void SaveNodes(const PGraph& Graph, const TStr& OutFNm){
-	TIntV nodes;
-	Graph->GetNIdV(nodes);
-	BIO::SaveInts(nodes, OutFNm);
+void SaveNodes(const TStr& InFNm, const TStr& OutFNm){
+	TIntSet nodes; int nedge=0;
+	TSsParser Ss(InFNm);
+	while(Ss.Next()) {
+		nodes.AddKey(Ss.GetInt(0));
+		nodes.AddKey(Ss.GetInt(1));
+		nedge++;
+	}
+	printf("Nodes: %d, Edges: %d\n", nodes.Len(), nedge);
+	BIO::SaveInts(nodes, OutFNm, TStr::Fmt("Total: %d", nodes.Len()));
+}
+
+void ReverseEdgeDirection(const TStr& InFNm, const TStr& OutFNm){
+	int u, v;
+	FILE *F = fopen(OutFNm.CStr(), "wt");
+	TSsParser Ss(InFNm);
+	while(Ss.Next()) {
+		u = Ss.GetInt(0); v = Ss.GetInt(1);
+		fprintf(F, "%d\t%d\n", v, u);
+	}
+	fclose(F);
+}
+
+void RemoveSelfLoops(const TStr& InFNm, const TStr& OutFNm){
+	int u, v, n=0;
+	FILE *F = fopen(OutFNm.CStr(), "wt");
+	TSsParser Ss(InFNm);
+	while(Ss.Next()) {
+		u = Ss.GetInt(0); v = Ss.GetInt(1);
+		if (u!=v) {
+			fprintf(F, "%d\t%d\n", u, v);
+			n++;
+		}
+	}
+	fclose(F);
+	printf("Number of edges without selfloops: %d\n", n);
 }

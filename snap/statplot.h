@@ -37,7 +37,7 @@ void PlotInDegDistr(const PGraph& Graph, const TStr& FNmPref, TStr DescStr, cons
 			TStr::Fmt("%s. G(%d, %d). %d (%.4f) nodes with in-deg > avg deg (%.1f), %d (%.4f) with >2*avg.deg",
 			DescStr.CStr(), Graph->GetNodes(), Graph->GetEdges(), AboveAvg, AboveAvg/double(Graph->GetNodes()),
 			AvgDeg, Above2Avg, Above2Avg/double(Graph->GetNodes())), "In-degree",
-			PlotCCdf?"Count (CCDF)":"Count", gpsLog10XY, PowerFit, gpwLinesPoints);
+			PlotCCdf?"Count (CCDF)":"Count", gpsLog10XY, PowerFit, gpwPoints);
 }
 
 template <class PGraph>
@@ -53,10 +53,10 @@ void PlotOutDegDistr(const PGraph& Graph, const TStr& FNmPref, TStr DescStr, con
 	if (PlotCCdf) DegCntV = TGUtil::GetCCdf(DegCntV);
 	if (DescStr.Empty()) DescStr = FNmPref;
 	TGnuPlot::PlotValV(DegCntV, (PlotCCdf?"outDegC.":"outDeg.")+FNmPref,
-		TStr::Fmt("%s. G(%d, %d). %d (%.4f) nodes with out-deg > avg deg (%.1f), %d (%.4f) with >2*avg.deg",
+		TStr::Fmt("%s G(%d, %d). %d (%.4f) nodes with out-deg > avg deg (%.1f), %d (%.4f) with >2*avg.deg",
 		DescStr.CStr(), Graph->GetNodes(), Graph->GetEdges(), AboveAvg, AboveAvg/double(Graph->GetNodes()),
 		AvgDeg, Above2Avg, Above2Avg/double(Graph->GetNodes())), "Out-degree",
-		PlotCCdf?"Count (CCDF)":"Count", gpsLog10XY, PowerFit, gpwLinesPoints);
+		PlotCCdf?"Count (CCDF)":"Count", gpsLog10XY, PowerFit, gpwPoints);
 }
 
 template <class PGraph>

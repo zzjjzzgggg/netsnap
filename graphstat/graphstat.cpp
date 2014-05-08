@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 			"\n\tC: clustering coefficient"
 			"\n\tv: singular values"
 			"\n\tV: left and right singular vector\n\t");
-		const TStr calcs = Env.GetIfArgPrefixStr("-c:", "", "What statistics to calculate:"
+		const TStr Calcs = Env.GetIfArgPrefixStr("-c:", "", "What statistics to calculate:"
 			"\n\tb: basic statistics"
 			"\n\tt: count closed triads"
 			"\n\td: dissemination ability(-hops:2 -sample:0.01 -fo:T -fi:F -n:1)"
@@ -26,10 +26,10 @@ int main(int argc, char* argv[]) {
 			"\n\th: hops (10% effective diameter)"
 			"\n\tw: largest weakly connected components"
 			"\n\ts: largest strongly connected components\n\t");
-		const TStr fmts = Env.GetIfArgPrefixStr("-f:", "", "How to format the graph:"
-			"\n\tm: map graph(assign uid from 0)"
-			"\n\tl: remove selfloops"
-			"\n\tn: save all the nodes"
+		const TStr Fmts = Env.GetIfArgPrefixStr("-f:", "", "How to format the graph:"
+			"\n\tm: remaping graph (assign uid from 0)"
+			"\n\tl: remove self-loops"
+			"\n\tn: save all nodes in the graph to a file"
 			"\n\tr: reverse the edge direction\n\t");
 		const TBool save = Env.GetIfArgPrefixBool("-s:", false, "Save graph");
 
@@ -41,22 +41,41 @@ int main(int argc, char* argv[]) {
 		bool PlotClustCf = Plot.SearchCh('C') != -1;
 		bool PlotSVal = Plot.SearchCh('v') != -1;
 		bool PlotSVec = Plot.SearchCh('V') != -1;
-		bool cb = calcs.SearchCh('b') != -1;
-		bool ct = calcs.SearchCh('t') != -1;
-		bool da = calcs.SearchCh('d') != -1;
-		bool bd = calcs.SearchCh('D') != -1;
-		bool cC = calcs.SearchCh('C') != -1;
-		bool ch = calcs.SearchCh('h') != -1;
-		bool cw = calcs.SearchCh('w') != -1;
-		bool cs = calcs.SearchCh('s') != -1;
-		bool mg = fmts.SearchCh('m') != -1;
-		bool sl = fmts.SearchCh('l') != -1;
-		bool sn = fmts.SearchCh('n') != -1;
-		bool fr = fmts.SearchCh('r') != -1;
+
+		bool cb = Calcs.SearchCh('b') != -1;
+		bool ct = Calcs.SearchCh('t') != -1;
+		bool da = Calcs.SearchCh('d') != -1;
+		bool bd = Calcs.SearchCh('D') != -1;
+		bool cC = Calcs.SearchCh('C') != -1;
+		bool ch = Calcs.SearchCh('h') != -1;
+		bool cw = Calcs.SearchCh('w') != -1;
+		bool cs = Calcs.SearchCh('s') != -1;
+
+		bool mg = Fmts.SearchCh('m') != -1;
+		bool sl = Fmts.SearchCh('l') != -1;
+		bool sn = Fmts.SearchCh('n') != -1;
+		bool fr = Fmts.SearchCh('r') != -1;
 		if (Env.IsEndOfRun()) return 0;
 
-		if(mg) {
-			MapNodes(InFNm, OutFNm, IsDir);
+		// format graph, no need to load graph file
+		if(Fmts.Len()!=0) {
+			// re-mapping nodes
+			if(mg) {
+				printf("Re-mapping nodes ...\n");
+				MapingNodes(InFNm, OutFNm, IsDir);
+			}
+			// reverse edge direction
+			if(fr){
+				printf("Reversing the edge direction ...\n");
+				ReverseEdgeDirection(InFNm, OutFNm+".reversed");
+			}
+			// remove self-loops
+			if(sl){
+				printf("Removing self edges ...\n");
+				RemoveSelfLoops(InFNm, OutFNm+".removed");
+			}
+			// save nodes in the graph
+			if(sn) SaveNodes(InFNm, OutFNm+".nodes");
 			return 0;
 		}
 
@@ -123,16 +142,6 @@ int main(int argc, char* argv[]) {
 				printf("Number of edges in SCC: %d\n", scc->GetEdges());
 				if(save) TSnap::SaveEdgeList(scc,OutFNm+"_scc.digraph");
 			}
-			if(sl){
-				printf("Removing self edges...\n");
-				TSnap::DelSelfEdges(Graph);
-				TSnap::SaveEdgeList(Graph, OutFNm, "", true);
-			}
-			if(fr){
-				printf("Reversing the edge direction...\n");
-				TSnap::SaveEdgeList(Graph, OutFNm, "", true);
-			}
-			if(sn) SaveNodes(Graph, OutFNm+".nodes");
 		}else{
 			PUNGraph Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm);
 			printf("Undirected graph is loaded. Nodes:%d, Edges:%d\n", Graph->GetNodes(), Graph->GetEdges());
@@ -182,12 +191,6 @@ int main(int argc, char* argv[]) {
 				printf("Number of edges in WCC: %d\n", wcc->GetEdges());
 				if(save) TSnap::SaveEdgeList(wcc, OutFNm+"_wcc.graph");
 			}
-			if(sl){
-				printf("Removing self edges...\n");
-				TSnap::DelSelfEdges(Graph);
-				TSnap::SaveEdgeList(Graph, OutFNm, "", true);
-			}
-			if(sn) SaveNodes(Graph, OutFNm+".nodes");
 		}
 	CatchAll
 	return 0;

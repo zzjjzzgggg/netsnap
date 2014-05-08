@@ -355,12 +355,10 @@ void TGnuPlot::PlotValCntH(const THash<TKey, TVal, THashFunc>& ValCntH1,
 }
 
 template<class TVal1, class TVal2>
-void TGnuPlot::PlotValV(const TVec<TPair<TVal1, TVal2> >& ValV,
-		const TStr& OutFNmPref, const TStr& Desc, const TStr& XLabel,
-		const TStr& YLabel, const TGpScaleTy& ScaleTy, const bool& PowerFit,
-		const TGpSeriesTy& SeriesTy) {
+void TGnuPlot::PlotValV(const TVec<TPair<TVal1, TVal2> >& ValV, const TStr& OutFNmPref, const TStr& Desc,
+	const TStr& XLabel, const TStr& YLabel, const TGpScaleTy& ScaleTy, const bool& PowerFit, const TGpSeriesTy& SeriesTy) {
 	TFltKdV IdCntV(ValV.Len(), 0);
-	for (int i = 0; i < ValV.Len(); i++) IdCntV.Add(TFltKd(double(ValV[i].Val1), double(ValV[i].Val2)));
+	for (int i = 0; i<ValV.Len(); i++) IdCntV.Add(TFltKd(double(ValV[i].Val1), double(ValV[i].Val2)));
 	if (IdCntV.Empty()) {
 		printf("*** Empty plot %s\n", OutFNmPref.CStr());
 		return;
@@ -377,7 +375,7 @@ void TGnuPlot::PlotValV(const TVec<TPair<TVal1, TVal2> >& ValV,
 		//GP.SetYRange(MinY, pow(10.0, floor(log10(MaxY))+1.0));
 		GP.AddCmd(TStr::Fmt("set yrange[%f:]", MinY));
 	}
-	GP.SaveEps(24);
+	GP.SaveEps(12);
 //	GP.SavePng();
 }
 

@@ -36,8 +36,7 @@ bool TGnuPlot::TGpSeries::operator < (const TGpSeries& Gps) const {
 
 TGnuPlot::TGnuPlot(const TStr& FileNm, const TStr& PlotTitle, const bool& Grid) :
  DataFNm(FileNm+".tab"), PlotFNm(FileNm+".plt"), Title(PlotTitle), LblX(), LblY(), ScaleTy(gpsAuto),
- YRange(0, 0), XRange(0, 0), SetGrid(Grid), SetPause(true),
- SeriesV(), MoreCmds() {
+ YRange(0, 0), XRange(0, 0), SetGrid(Grid), SetPause(true), SeriesV(), MoreCmds() {
   IAssert(! FileNm.Empty());
 }
 
@@ -549,13 +548,13 @@ void TGnuPlot::SavePng(const TStr& FNm, const int& SizeX, const int& SizeY, cons
 }
 
 void TGnuPlot::SaveEps(const TStr& FNm, const int& FontSz, const TStr& Comment) {
-  AddCmd(TStr::Fmt("set terminal postscript enhanced eps %d color", FontSz));
-  AddCmd(TStr::Fmt("set output '%s'", FNm.CStr()));
-  Pause(false);
-  CreatePlotFile(Comment.Empty()? Title : Comment);
-  RunGnuPlot();
-  MoreCmds.DelLast();
-  MoreCmds.DelLast();
+	AddCmd(TStr::Fmt("set terminal postscript enhanced eps %d color", FontSz));
+	AddCmd(TStr::Fmt("set output '%s'", FNm.CStr()));
+	Pause(false);
+	CreatePlotFile(Comment.Empty()? Title : Comment);
+	RunGnuPlot();
+	MoreCmds.DelLast();
+	MoreCmds.DelLast();
 }
 
 void TGnuPlot::MakeExpBins(const TFltPrV& XYValV, TFltPrV& ExpXYValV, const double& BinFactor, const double& MinYVal) {
