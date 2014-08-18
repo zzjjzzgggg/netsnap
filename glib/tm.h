@@ -304,16 +304,25 @@ public:
 		else sprintf(TmStr, "%02dh%02dm", int(GetSecs())/3600, (int(GetSecs())%3600)/60);
 		return TmStr;
 	}
-	static char* GetCurTm(){ static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr();}
+	static char* GetCurTm(){static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr();}
 };
 
 class TExeTm2{
 private:
-	time_t LastTick, CurTime;
+	time_t LastTick;
 public:
 	TExeTm2() {Tick();}
 	void Tick() {time(&LastTick);}
-	double GetSecs() {time(&CurTime); return difftime(CurTime, LastTick);}
+	double GetSecs() const {time_t CurTime; time(&CurTime); return difftime(CurTime, LastTick);}
+	const char* GetStr() const {return GetTmStr();}
+	const char* GetTmStr() const {
+		static char TmStr[32];
+		if(GetSecs()<60) sprintf(TmStr, "%.2fs", GetSecs());
+		else if(GetSecs()<3600) sprintf(TmStr, "%02dm%02ds", int(GetSecs())/60, int(GetSecs())%60);
+		else sprintf(TmStr, "%02dh%02dm", int(GetSecs())/3600, (int(GetSecs())%3600)/60);
+		return TmStr;
+	}
+	static char* GetCurTm(){static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr();}
 };
 
 /////////////////////////////////////////////////

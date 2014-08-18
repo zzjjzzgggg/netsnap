@@ -31,9 +31,10 @@ TFltPrV TGUtil::GetCdf(const TFltPrV& PdfV) {
 }
 
 void TGUtil::GetCCdf(const TIntPrV& PdfV, TIntPrV& CCdfV) {
-  CCdfV = PdfV;
-  for (int i = CCdfV.Len()-2; i >= 0; i--) {
-    CCdfV[i].Val2 = CCdfV[i+1].Val2 + CCdfV[i].Val2; }
+	CCdfV = PdfV;
+	for (int i = CCdfV.Len()-2; i >= 0; i--) {
+		CCdfV[i].Val2 = CCdfV[i+1].Val2 + CCdfV[i].Val2;
+	}
 }
 
 void TGUtil::GetCCdf(const TFltPrV& PdfV, TFltPrV& CCdfV) {
@@ -43,9 +44,25 @@ void TGUtil::GetCCdf(const TFltPrV& PdfV, TFltPrV& CCdfV) {
 }
 
 void TGUtil::GetCCdf(const TIntFltKdV& PdfV, TIntFltKdV& CCdfV) {
-  CCdfV = PdfV;
-  for (int i = CCdfV.Len()-2; i >= 0; i--) {
-    CCdfV[i].Dat = CCdfV[i+1].Dat + CCdfV[i].Dat; }
+	CCdfV = PdfV;
+	for (int i = CCdfV.Len()-2; i >= 0; i--) {
+		CCdfV[i].Dat = CCdfV[i+1].Dat + CCdfV[i].Dat;
+	}
+}
+
+/**
+ * zhao: Output a ccdf vector, indexed from (-1) to (maximum_deg - 1).
+ */
+void TGUtil::GetCCdf(const TIntFltKdV& PdfV, TFltV& CCdfV) {
+	if (PdfV.Len() == 0) return;
+	int max_deg = PdfV[PdfV.GetMxValN()].Key;
+	if (CCdfV.Len() < max_deg+1) CCdfV.Gen(max_deg+1);
+	for(int i=0; i<max_deg+1; i++) CCdfV[i] = 0;
+	for (int i=0; i<PdfV.Len(); i++) CCdfV[PdfV[i].Key] = PdfV[i].Dat;
+	for (int i=CCdfV.Len()-2; i>=0; i--) CCdfV[i] += CCdfV[i+1];
+	if (CCdfV[0]!=1.0) {
+		for (int i=CCdfV.Len()-1; i>=0; i--) CCdfV[i] /= CCdfV[0];
+	}
 }
 
 TIntPrV TGUtil::GetCCdf(const TIntPrV& PdfV) {

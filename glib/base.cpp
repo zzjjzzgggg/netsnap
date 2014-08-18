@@ -91,5 +91,5 @@ int _daylight = 0;
 
 #include "zipfl.cpp"
 
-#include "BIO.cpp"
+#include "bio.cpp"
 #include "random.cpp"

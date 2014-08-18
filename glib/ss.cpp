@@ -369,7 +369,7 @@ TSsParser::TSsParser(const TStr& FNm, const TSsFmt _SsFmt,const bool& _SkipLeadB
 TSsParser::TSsParser(const TStr& FNm, const char& Separator, const bool& _SkipLeadBlanks,	const bool& _SkipCmt, const bool& _SkipEmptyFld) :
 	SsFmt(ssfSpaceSep), SkipLeadBlanks(_SkipLeadBlanks), SkipCmt(_SkipCmt),	SkipEmptyFld(_SkipEmptyFld),
 	LineCnt(0), /*Bf(NULL),*/	SplitCh('\t'), FldV(), FInPt(NULL) {
-	if (TZipIn::IsZipExt(FNm.GetFExt()))	FInPt = TZipIn::New(FNm);
+	if (TZipIn::IsZipExt(FNm.GetFExt()))  FInPt = TZipIn::New(FNm);
 	else FInPt = TFIn::New(FNm);
 	SplitCh = Separator;
 }

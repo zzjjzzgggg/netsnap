@@ -30,6 +30,6 @@ Snap.o:
 	g++ -c $(CXXFLAGS) $(LIB) $(SNAPDIR)/snap/Snap.cpp
 
 clean:
-	rm -f *.o  $(MAIN)  $(MAIN).exe
+	rm -f *.o $(MAIN) $(MAIN).exe $(MAIN).Err
 	rm -rf Debug Release
 

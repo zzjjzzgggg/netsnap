@@ -234,9 +234,7 @@ int TNGraph::GetEdges() const {
 }
 
 int TNGraph::AddEdge(const int& SrcNId, const int& DstNId) {
-//	IAssertR(IsNode(SrcNId) && IsNode(DstNId), TStr::Fmt("%d or %d not a node.", SrcNId, DstNId).CStr());
-	if(!IsNode(SrcNId)) AddNode(SrcNId);
-	if(!IsNode(DstNId)) AddNode(DstNId);
+	IAssertR(IsNode(SrcNId) && IsNode(DstNId), TStr::Fmt("%d or %d not a node.", SrcNId, DstNId).CStr());
 	if (IsEdge(SrcNId, DstNId)) return -2;
 	GetNode(SrcNId).OutNIdV.AddSorted(DstNId);
 	GetNode(DstNId).InNIdV.AddSorted(SrcNId);

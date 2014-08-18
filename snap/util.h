@@ -11,6 +11,7 @@ public:
   static void GetCCdf(const TIntPrV& PdfV, TIntPrV& CCdfV);
   static void GetCCdf(const TFltPrV& PdfV, TFltPrV& CCdfV);
   static void GetCCdf(const TIntFltKdV& PdfV, TIntFltKdV& CCdfV);
+  static void GetCCdf(const TIntFltKdV& PdfV, TFltV& CCdfV);
   static TIntPrV GetCCdf(const TIntPrV& PdfV);
   static TFltPrV GetCCdf(const TFltPrV& PdfV);
 

@@ -15,10 +15,12 @@ namespace BIO {
 	void SaveIntPrIntH(const TIntPrIntH& hash, TStr fname, TStr anno="");
 	void SaveIntIntPrH(const TIntPrH& hash, TStr fname, TStr anno="");
 	void SaveIntPrSet(const TIntPrSet& hash, TStr fname, TStr anno="");
+	void SaveIntFltKdV(const TIntFltKdV& data, TStr fname, TStr anno="");
 
 	void LoadInts(const TStr fnm, TIntV& dat, const int col=0);
 	void LoadInts(const TStr fnm, TIntSet& dat, const int col=0);
 	void LoadFlts(const TStr fnm, TFltV& dat, const int col=0);
+
 	void LoadIntH(const TStr fnm, TIntH& dat, const int c1=0, const int c2=1);
 	void LoadIntFltH(const TStr fnm, TIntFltH& dat, const int c1=0, const int c2=1);
 	void LoadIntPrSet(TStr fnm, TIntPrSet& dat, const int c1=0, const int c2=1);
@@ -28,5 +30,6 @@ namespace BIO {
 	void SaveIntArray(const int* list, const int len, TStr fname, TStr anno="");
 	void SaveFltArray(const float* list, const int len, TStr fname, TStr anno="");
 	void SaveDubArray(const double* list, const int len, TStr fname, TStr anno="");
+
 }
 

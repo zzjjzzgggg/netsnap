@@ -116,6 +116,7 @@ public:
 	bool operator < (const THash& Hash) const { Fail; return true; }
 	const TDat& operator[](const int& KeyId) const {return GetHashKeyDat(KeyId).Dat;}
 	TDat& operator[](const int& KeyId){return GetHashKeyDat(KeyId).Dat;}
+	const TDat& operator()(const TKey& Key) const {return KeyDatV[GetKeyId(Key)].Dat;}
 	TDat& operator()(const TKey& Key){return AddDat(Key);}
 	::TSize GetMemUsed() const {
 		int64 MemUsed = sizeof(bool)+2*sizeof(int);
@@ -148,9 +149,9 @@ public:
 	int GetReservedKeyIds() const {return KeyDatV.Reserved();}
 	bool IsKeyIdEqKeyN() const {return FreeKeys==0;}
 	int AddKey(const TKey& Key);
-	TDat& AddDatId(const TKey& Key){int KeyId=AddKey(Key); return KeyDatV[KeyId].Dat=KeyId;}
-	TDat& AddDat(const TKey& Key){return KeyDatV[AddKey(Key)].Dat;}
-	TDat& AddDat(const TKey& Key, const TDat& Dat){return KeyDatV[AddKey(Key)].Dat=Dat;}
+	TDat& AddDatId(const TKey& Key) { int KeyId=AddKey(Key); return KeyDatV[KeyId].Dat = KeyId; }
+	TDat& AddDat(const TKey& Key) { return KeyDatV[AddKey(Key)].Dat; }
+	TDat& AddDat(const TKey& Key, const TDat& Dat) { return KeyDatV[AddKey(Key)].Dat = Dat; }
 	void DelKey(const TKey& Key);
 	void DelIfKey(const TKey& Key){int KeyId; if(IsKey(Key, KeyId)){DelKeyId(KeyId);}}
 	void DelKeyId(const int& KeyId){DelKey(GetKey(KeyId));}

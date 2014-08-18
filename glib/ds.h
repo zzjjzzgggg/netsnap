@@ -491,6 +491,8 @@ public:
 	void DelAll(const TVal& Val);
 	void PutAll(const TVal& Val);
 
+	const TVal& GetRnd(TRnd& Rnd=TInt::Rnd) const { return ValT[Rnd.GetUniDevInt(Vals)]; }
+
 	void Swap(const int& ValN1, const int& ValN2) {TVal Val = ValT[ValN1];ValT[ValN1] = ValT[ValN2];ValT[ValN2] = Val;}
 	static void SwapI(TIter LVal, TIter RVal) {TVal Val = *LVal;	*LVal = *RVal;	*RVal = Val;}
 
@@ -848,17 +850,13 @@ template<class TVal>
 void TVec<TVal>::Pack() {
 	IAssert(MxVals != -1);
 	if (Vals == 0) {
-		if (ValT != NULL) {
-			delete[] ValT;
-		}
+		if (ValT != NULL) delete[] ValT;
 		ValT = NULL;
 	} else if (Vals < MxVals) {
 		MxVals = Vals;
 		TVal* NewValT = new TVal[MxVals];
 		IAssert(NewValT != NULL);
-		for (int ValN = 0; ValN < Vals; ValN++) {
-			NewValT[ValN] = ValT[ValN];
-		}
+		for (int ValN = 0; ValN < Vals; ValN++) NewValT[ValN] = ValT[ValN];
 		delete[] ValT;
 		ValT = NewValT;
 	}
@@ -1421,12 +1419,15 @@ int TVec<TVal>::SearchVForw(const TVec<TVal>& ValV, const int& BValN) const {
 	return -1;
 }
 
+/**
+ * Bug fixed by jzzhao.
+ */
 template<class TVal>
 int TVec<TVal>::GetMxValN() const {
 	if (Vals == 0) return -1;
 	int MxValN = 0;
 	for (int ValN = 1; ValN < Vals; ValN++) {
-		if (ValT[ValN] > ValT[MxValN]) MxValN = ValN;
+		if ( ValT[MxValN] < ValT[ValN]) MxValN = ValN;
 	}
 	return MxValN;
 }

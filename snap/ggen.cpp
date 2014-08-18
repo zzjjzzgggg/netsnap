@@ -40,53 +40,51 @@ PUNGraph GenRndPowerLaw(const int& Nodes, const double& PowerExp, const bool& Co
 // The idea is to simulate Configuration Model but if a duplicate edge occurs,
 // find a random edge, break it and reconnect
 PUNGraph GenDegSeq(const TIntV& DegSeqV, TRnd& Rnd) {
-  const int Nodes = DegSeqV.Len();
-  PUNGraph GraphPt = TUNGraph::New();
-  TUNGraph& Graph = *GraphPt;
-  Graph.Reserve(Nodes, -1);
-  TIntH DegH(DegSeqV.Len(), true);
-  int DegSum=0, edge=0;
-  for (int node = 0; node < Nodes; node++) {
-    IAssert(Graph.AddNode(node) == node);
-    DegH.AddDat(node, DegSeqV[node]);
-    DegSum += DegSeqV[node];
-  }
-  IAssert(DegSum % 2 == 0);
-  while (! DegH.Empty()) {
-    // pick random nodes and connect
-    const int NId1 = DegH.GetKey(DegH.GetRndKeyId(TInt::Rnd, 0.5));
-    const int NId2 = DegH.GetKey(DegH.GetRndKeyId(TInt::Rnd, 0.5));
-    IAssert(DegH.IsKey(NId1) && DegH.IsKey(NId2));
-    if (NId1 == NId2) {
-      if (DegH.GetDat(NId1) == 1) { continue; }
-      // find rnd edge, break it, and connect the endpoints to the nodes
-      const TIntPr Edge = GetRndEdgeNonAdjNode(GraphPt, NId1, -1);
-      if (Edge.Val1==-1) { continue; }
-      Graph.DelEdge(Edge.Val1, Edge.Val2);
-      Graph.AddEdge(Edge.Val1, NId1);
-      Graph.AddEdge(NId1, Edge.Val2);
-      if (DegH.GetDat(NId1) == 2) { DegH.DelKey(NId1); }
-      else { DegH.GetDat(NId1) -= 2; }
-    } else {
-      if (! Graph.IsEdge(NId1, NId2)) {
-        Graph.AddEdge(NId1, NId2); }  // good edge
-      else {
-        // find rnd edge, break and cross-connect
-        const TIntPr Edge = GetRndEdgeNonAdjNode(GraphPt, NId1, NId2);
-        if (Edge.Val1==-1) {continue; }
-        Graph.DelEdge(Edge.Val1, Edge.Val2);
-        Graph.AddEdge(NId1, Edge.Val1);
-        Graph.AddEdge(NId2, Edge.Val2);
-      }
-      if (DegH.GetDat(NId1)==1) { DegH.DelKey(NId1); }
-      else { DegH.GetDat(NId1) -= 1; }
-      if (DegH.GetDat(NId2)==1) { DegH.DelKey(NId2); }
-      else { DegH.GetDat(NId2) -= 1; }
-    }
-    if (++edge % 1000 == 0) {
-      printf("\r %dk / %dk", edge/1000, DegSum/2000); }
-  }
-  return GraphPt;
+	const int Nodes = DegSeqV.Len();
+	PUNGraph GraphPt = TUNGraph::New();
+	TUNGraph& Graph = *GraphPt;
+	Graph.Reserve(Nodes, -1);
+	TIntH DegH(DegSeqV.Len(), true);
+	int DegSum=0, edge=0;
+	for (int node = 0; node < Nodes; node++) {
+		IAssert(Graph.AddNode(node) == node);
+		DegH.AddDat(node, DegSeqV[node]);
+		DegSum += DegSeqV[node];
+	}
+	IAssert(DegSum % 2 == 0);
+	while (! DegH.Empty()) {
+	// pick random nodes and connect
+		const int NId1 = DegH.GetKey(DegH.GetRndKeyId(TInt::Rnd, 0.5));
+		const int NId2 = DegH.GetKey(DegH.GetRndKeyId(TInt::Rnd, 0.5));
+		IAssert(DegH.IsKey(NId1) && DegH.IsKey(NId2));
+		if (NId1 == NId2) {
+			if(DegH.GetDat(NId1) == 1)  continue;
+			// find rnd edge, break it, and connect the endpoints to the nodes
+			const TIntPr Edge = GetRndEdgeNonAdjNode(GraphPt, NId1, -1);
+			if(Edge.Val1==-1)  continue;
+			Graph.DelEdge(Edge.Val1, Edge.Val2);
+			Graph.AddEdge(Edge.Val1, NId1);
+			Graph.AddEdge(NId1, Edge.Val2);
+			if(DegH.GetDat(NId1) == 2)  DegH.DelKey(NId1);
+			else DegH.GetDat(NId1) -= 2;
+		} else {
+			if (! Graph.IsEdge(NId1, NId2)) Graph.AddEdge(NId1, NId2);   // good edge
+			else {
+				// find rnd edge, break and cross-connect
+				const TIntPr Edge = GetRndEdgeNonAdjNode(GraphPt, NId1, NId2);
+				if (Edge.Val1==-1) continue;
+				Graph.DelEdge(Edge.Val1, Edge.Val2);
+				Graph.AddEdge(NId1, Edge.Val1);
+				Graph.AddEdge(NId2, Edge.Val2);
+			}
+			if (DegH.GetDat(NId1)==1) DegH.DelKey(NId1);
+			else DegH.GetDat(NId1) -= 1;
+			if (DegH.GetDat(NId2)==1) DegH.DelKey(NId2);
+			else DegH.GetDat(NId2) -= 1;
+		}
+		if (++edge % 1000 == 0) printf("\r %dk / %dk", edge/1000, DegSum/2000);
+	}
+	return GraphPt;
 }
 
 

@@ -59,6 +59,7 @@ public:
   (Flag)==gfEdgeDat ? TSnap::IsEdgeDat<TGraph::TNet>::Val : \
   (Flag)==gfSources ? TSnap::IsSources<TGraph::TNet>::Val : 0)
 
+
 /////////////////////////////////////////////////
 // Graph Base
 namespace TSnap {
@@ -72,53 +73,53 @@ template <class PGraph> void PrintInfo(const PGraph& Graph, const TStr& Desc="",
 // print basic graph info
 template <class PGraph>
 void PrintInfo(const PGraph& Graph, const TStr& Desc, const TStr& OutFNm, const bool& Fast) {
-  int BiDirEdges=0, ZeroNodes=0, ZeroInNodes=0, ZeroOutNodes=0, SelfEdges=0, NonZIODegNodes=0;
-  THash<TIntPr, TInt> UniqDirE, UniqUnDirE;
-  FILE *F = stdout;
-  if (! OutFNm.Empty()) F = fopen(OutFNm.CStr(), "wt");
-  if (! Desc.Empty()) { fprintf(F, "%s:", Desc.CStr()); }
-  else { fprintf(F, "Graph:"); }
-  for (int f = gfUndef; f < gfMx; f++) {
-    if (HasGraphFlag(typename PGraph::TObj, TGraphFlag(f))) {
-      fprintf(F, " %s", TSnap::GetFlagStr(TGraphFlag(f)).CStr()); }
-  }
-  // calc stat
-  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++) {
-    if (NI.GetDeg()==0) ZeroNodes++;
-    if (NI.GetInDeg()==0) ZeroInNodes++;
-    if (NI.GetOutDeg()==0) ZeroOutNodes++;
-    if (NI.GetInDeg()!=0 && NI.GetOutDeg()!=0) NonZIODegNodes++;
-    if (! Fast) {
-      const int NId = NI.GetId();
-      for (int edge = 0; edge < NI.GetOutDeg(); edge++) {
-        const int DstNId = NI.GetOutNId(edge);
-        if (Graph->IsEdge(DstNId, NId)) BiDirEdges++;
-        if (NId == DstNId) SelfEdges++;
-        UniqDirE.AddKey(TIntPr(NId, DstNId));
-        UniqUnDirE.AddKey(TIntPr(TInt::GetMn(NId, DstNId), TInt::GetMx(NId, DstNId)));
-      }
-    }
-  }
-  int Closed=0, Open=0;
-  if (! Fast) { TSnap::GetTriads(Graph, Closed, Open); }
-  // print info
-  fprintf(F, "\n");
-  fprintf(F, "  Nodes:                    %d\n", Graph->GetNodes());
-  fprintf(F, "  Edges:                    %d\n", Graph->GetEdges());
-  fprintf(F, "  Zero Deg Nodes:           %d\n", ZeroNodes);
-  fprintf(F, "  Zero InDeg Nodes:         %d\n", ZeroInNodes);
-  fprintf(F, "  Zero OutDeg Nodes:        %d\n", ZeroOutNodes);
-  fprintf(F, "  NonZero In-Out Deg Nodes: %d\n", NonZIODegNodes);
-  if (! Fast) {
-    fprintf(F, "  Unique directed edges:    %d\n", UniqDirE.Len());
-    fprintf(F, "  Unique undirected edges:  %d\n", UniqUnDirE.Len());
-    fprintf(F, "  Self Edges:               %d\n", SelfEdges);
-    fprintf(F, "  BiDir Edges:              %d\n", BiDirEdges);
-    fprintf(F, "  Closed triangles          %d\n", Closed);
-    fprintf(F, "  Open triangles            %d\n", Open);
-    fprintf(F, "  Frac. of closed triads    %f\n", Closed/double(Closed+Open));
-  }
-  if (! OutFNm.Empty()) { fclose(F); }
+	int BiDirEdges=0, ZeroNodes=0, ZeroInNodes=0, ZeroOutNodes=0, SelfEdges=0, NonZIODegNodes=0;
+	THash<TIntPr, TInt> UniqDirE, UniqUnDirE;
+	FILE *F = stdout;
+	if (! OutFNm.Empty()) F = fopen(OutFNm.CStr(), "wt");
+	if (! Desc.Empty()) fprintf(F, "%s:", Desc.CStr());
+	else  fprintf(F, "Graph:");
+	for (int f = gfUndef; f < gfMx; f++) {
+		if (HasGraphFlag(typename PGraph::TObj, TGraphFlag(f)))
+			fprintf(F, " %s", TSnap::GetFlagStr(TGraphFlag(f)).CStr());
+	}
+	// calc stat
+	for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++) {
+		if (NI.GetDeg()==0) ZeroNodes++;
+		if (NI.GetInDeg()==0) ZeroInNodes++;
+		if (NI.GetOutDeg()==0) ZeroOutNodes++;
+		if (NI.GetInDeg()!=0 && NI.GetOutDeg()!=0) NonZIODegNodes++;
+		if (! Fast) {
+			const int NId = NI.GetId();
+			for (int edge = 0; edge < NI.GetOutDeg(); edge++) {
+				const int DstNId = NI.GetOutNId(edge);
+				if (Graph->IsEdge(DstNId, NId)) BiDirEdges++;
+				if (NId == DstNId) SelfEdges++;
+				UniqDirE.AddKey(TIntPr(NId, DstNId));
+				UniqUnDirE.AddKey(TIntPr(TInt::GetMn(NId, DstNId), TInt::GetMx(NId, DstNId)));
+			}
+		}
+	}
+	int Closed=0, Open=0;
+	if (! Fast)  TSnap::GetTriads(Graph, Closed, Open);
+	// print info
+	fprintf(F, "\n");
+	fprintf(F, "  Nodes:                    %d\n", Graph->GetNodes());
+	fprintf(F, "  Edges:                    %d\n", Graph->GetEdges());
+	fprintf(F, "  Zero Deg Nodes:           %d\n", ZeroNodes);
+	fprintf(F, "  Zero InDeg Nodes:         %d\n", ZeroInNodes);
+	fprintf(F, "  Zero OutDeg Nodes:        %d\n", ZeroOutNodes);
+	fprintf(F, "  NonZero In-Out Deg Nodes: %d\n", NonZIODegNodes);
+	if (! Fast) {
+		fprintf(F, "  Unique directed edges:    %d\n", UniqDirE.Len());
+		fprintf(F, "  Unique undirected edges:  %d\n", UniqUnDirE.Len());
+		fprintf(F, "  Self Edges:               %d\n", SelfEdges);
+		fprintf(F, "  BiDir Edges:              %d\n", BiDirEdges);
+		fprintf(F, "  Closed triangles          %d\n", Closed);
+		fprintf(F, "  Open triangles            %d\n", Open);
+		fprintf(F, "  Frac. of closed triads    %f\n", Closed/double(Closed+Open));
+	}
+	if (! OutFNm.Empty()) { fclose(F); }
 }
 
 }  // namespace TSnap

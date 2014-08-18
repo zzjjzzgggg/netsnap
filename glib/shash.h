@@ -23,13 +23,13 @@ public:
   const TDat& GetDat() const { return Dat; }
   TDat& GetDat() { return Dat; }
 
-  static void Save(const TStr& OutFNm, const THash<TKey, TDat, THashFunc>& Hash) {TFOut FOut(OutFNm); Load(FOut, Hash); }
+  static void Save(const TStr& OutFNm, const THash<TKey, TDat, THashFunc>& Hash) {TFOut FOut(OutFNm); Save(FOut, Hash); }
   static void Save(TSOut& SOut, const THash<TKey, TDat, THashFunc>& Hash) {
     SOut.Save(Hash.Len());
     for (int k = Hash.FFirstKeyId(); Hash.FNextKeyId(k); ) {
       Hash.GetKey(k).Save(SOut);  Hash[k].Save(SOut); }
   }
-  static void LoadHash(const TStr& InFNm, THash<TKey, TDat, THashFunc>& Hash, const int& LoadN=-1) {TFIn FIn(InFNm);  Load(FIn, Hash, LoadN); }
+  static void LoadHash(const TStr& InFNm, THash<TKey, TDat, THashFunc>& Hash, const int& LoadN=-1) {TFIn FIn(InFNm);  LoadHash(FIn, Hash, LoadN); }
   static void LoadHash(TSIn& SIn, THash<TKey, TDat, THashFunc>& Hash, int LoadN=-1) {
     TInt ElemCnt(SIn);  const int Start=clock();
     if (ElemCnt < LoadN || LoadN == -1) { LoadN = ElemCnt; }

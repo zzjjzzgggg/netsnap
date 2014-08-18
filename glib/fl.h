@@ -151,7 +151,7 @@ public:
   int PutStr(const TChA& ChA);
   int PutStr(const TStr& Str, char* FmtStr);
   int PutStr(const TStr& Str, const bool& ForceInLn=false);
-  int PutStrLn(const TStr& Str, const bool& ForceInLn=false){int Cs=PutStr(Str,ForceInLn); Cs+=PutLn(); return Cs;}
+  int PutStrLn(const TStr& Str, const bool& ForceInLn=false){ int Cs=PutStr(Str,ForceInLn); Cs+=PutLn(); return Cs; }
   int PutIndent(const int& IndentLev=1);
   int PutLn(const int& Lns=1);
   int PutDosLn(const int& Lns=1);

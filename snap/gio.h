@@ -6,6 +6,8 @@ template<class PGraph> PGraph LoadEdgeList(const TStr& InFNm, const int& SrcColI
 template<class PGraph> PGraph LoadEdgeListStr(const TStr& InFNm, const int& SrcColId = 0, const int& DstColId = 1);
 template<class PGraph> PGraph LoadPajek(const TStr& InFNm);
 template<class PGraph> PGraph LoadConnList(const TStr& InFNm);
+template<class PGraph> PGraph LoadBinary(const TStr& ZipInFNm);
+
 //template <class PGraph> PGraph LoadAdjMtx(const TStr& FNm, const int Thresh);
 //PNGraph TNGraph::LoadNextEdgeList(TSIn& SIn, const bool& IsDir);
 //PNGraph TNGraph::LoadAdjMtx(const TStr& FNm, const int Thresh) {
@@ -27,6 +29,7 @@ template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm,
 template<class PGraph> void SaveMatlabSparseMtx(const PGraph& Graph, const TStr& OutFNm);
 
 template<class PGraph> void SaveDot(const PGraph& Graph, const TStr& OutFNm);
+template<class PGraph> void SaveBinary(const PGraph& Graph, const TStr& ZipOutFNm);
 /////////////////////////////////////////////////
 // Implementation
 
@@ -99,6 +102,14 @@ PGraph LoadPajek(const TStr& InFNm) {
 	}
 	// edges
 	while (Ss.Next()) Graph->AddEdge(Ss.GetInt(0), Ss.GetInt(1));
+	return Graph;
+}
+
+template<class PGraph>
+PGraph LoadBinary(const TStr& ZipInFNm){
+	TZipIn in(ZipInFNm);
+	PGraph Graph = PGraph::TObj::New();
+	Graph = PGraph::TObj::Load(in);
 	return Graph;
 }
 
@@ -290,5 +301,11 @@ void SaveDot(const PGraph& Graph, const TStr& OutFNm) {
 	}
 	fprintf(F, "\n}\n");
 	fclose(F);
+}
+
+template<class PGraph>
+void SaveBinary(const PGraph& Graph, const TStr& ZipOutFNm){
+	TZipOut out(ZipOutFNm);
+	Graph->Save(out);
 }
 } // namespace TSnap

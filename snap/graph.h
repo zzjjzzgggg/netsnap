@@ -32,6 +32,7 @@ public:
 		int GetInNId(const int& NodeN) const {return GetNbhNId(NodeN);}
 		int GetOutNId(const int& NodeN) const {return GetNbhNId(NodeN);}
 		int GetNbhNId(const int& NodeN) const {return NIdV[NodeN];}
+		int GetRndNbhNId(TRnd& Rnd=TInt::Rnd) const {return NIdV.GetRnd(Rnd);}
 		bool IsNbhNId(const int& NId) const {return NIdV.SearchBin(NId)!=-1;}
 		bool IsInNId(const int& NId) const {return IsNbhNId(NId);}
 		bool IsOutNId(const int& NId) const {return IsNbhNId(NId);}
@@ -59,6 +60,7 @@ public:
 		int GetInNId(const int& NodeN) const {return NodeHI.GetDat().GetInNId(NodeN);}
 		int GetOutNId(const int& NodeN) const {return NodeHI.GetDat().GetOutNId(NodeN);}
 		int GetNbhNId(const int& NodeN) const {return NodeHI.GetDat().GetNbhNId(NodeN);}
+		int GetRndNbhNId(TRnd& Rnd=TInt::Rnd) const {return NodeHI.GetDat().GetRndNbhNId(Rnd);}
 		bool IsInNId(const int& NId) const {return NodeHI.GetDat().IsInNId(NId);}
 		bool IsOutNId(const int& NId) const {return NodeHI.GetDat().IsOutNId(NId);}
 		bool IsNbhNId(const int& NId) const {return NodeHI.GetDat().IsNbhNId(NId);}

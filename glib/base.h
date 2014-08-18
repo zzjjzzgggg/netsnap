@@ -179,7 +179,7 @@
 
 #include "zipfl.h"
 
-#include "BIO.h"
+#include "bio.h"
 #include "random.h"
 
 void BaseTralala();

@@ -267,7 +267,7 @@ template <bool BoolVal> struct TStaticAssert;
 template <> struct TStaticAssert<true> { enum { value = 1 }; };
 template<int IntVal> struct TStaticAssertTest{};
 
-#define CAssert(Cond) { typedef TStaticAssertTest<sizeof(TStaticAssert<(Cond)==0?false:true>)> TestStaticAssert; }
+#define CAssert(Cond) { typedef TStaticAssertTest<sizeof(TStaticAssert<(Cond)==0 ? false : true>)> TestStaticAssert __attribute__((unused)); }
 
 /////////////////////////////////////////////////
 // Xml-Object-Serialization

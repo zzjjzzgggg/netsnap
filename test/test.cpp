@@ -11,13 +11,20 @@
 #include "../snap/Snap.h"
 
 void test(){
-//	double x=-0.1234;
-	TIntV nodes(10);
-	printf("%d\n", nodes.Len());
-	nodes.Clr(false);
-
-	printf("%d\n", nodes.Len());
+//	TIntFltKdV vec; TFltV ccdf;
+//	for(int i=0; i<10; i++) vec.Add(TIntFltKd(i,i));
+//	TGUtil::GetCCdf(vec, ccdf);
+//	for(int i=0; i<ccdf.Len(); i++) printf("%.2f ", ccdf[i].Val);
+//	printf("\n");
+//	TIntH tmp;
+//	tmp.Gen(3);
+//	tmp(1) = 3; tmp(3) = 5; tmp(6) = 4;
+//	for (int i=0; i<tmp.Len(); i++) printf("%d -> %d\n", tmp.GetKey(i).Val, tmp[i].Val);
+//	for (int i=0; i<tmp.Len(); i++) tmp[i]=0;
+//	for (int i=0; i<tmp.Len(); i++) printf("%d -> %d\n", tmp.GetKey(i).Val, tmp[i].Val);
+	TStr::Fmt("%d", 1);
 }
+
 
 class Node{
 public:
@@ -131,7 +138,8 @@ void testCmp(){
 
 void test_hash(){
 	TIntH hash;
-	for(int i=0;i<10;i++) hash(i)=i;
+	for(int i=0;i<10;i++) hash.AddDat(i,i);// hash(i)=i;
+	for(int i=0; i<hash.Len(); i++) printf("%d -> %d\n", hash.GetKey(i).Val, hash[i].Val);
 //	hash.DelKey(2);
 //	for(int i=0;i<9; i++) printf("%d\n", hash[i].Val);
 //	for(TIntH::TIter it=hash.BegI(); it<hash.EndI(); it++) printf("%d, %d\n", it.GetKey().Val, it.GetDat().Val);
@@ -234,17 +242,10 @@ void test_bignet2(){
 void test_graph(){
 	PUNGraph G=PUNGraph::New();
 	G->AddNode(1);
-	G->AddNode(2);
-	G->AddNode(3);
-	G->AddNode(4);
-	G->AddEdge(2, 1);
-	G->AddEdge(3, 1);
-	G->AddEdge(1, 3);
+	G->AddEdge(1, 1);
 	TUNGraph::TNodeI ni=G->GetNI(1);
 	printf("Nodes: %d, edges: %d, in-deg: %d, out-deg: %d, deg: %d\n",
 			G->GetNodes(), G->GetEdges(), ni.GetInDeg(), ni.GetOutDeg(), ni.GetDeg());
-//	int hops = TSnap::GetShortPath(G, 3, 4, false, 10);
-//	printf("hops: %d\n", hops);
 }
 
 void test_sm(){
@@ -326,34 +327,25 @@ void test_zip(){
 //		printf("%s\n", line.CStr());
 //	}
 
-
 //	TStr gpgraph="/data/SNSDATA/G+/gplus/imc12/gp_follow.digraph";
 //	TStr gpgraph="/media/e/gp_follow.digraph.bz2";
-	TStr gpgraph="/media/e/direct_social_structure.txt.bz2";
-	TExeTm tm;
-	tm.Tick();
-	TSsParser ss(gpgraph);
-	printf("\nstart reading...\n");
-	int n=0, fid, tid, s;
-	while(ss.Next()){
-//		if(ss.GetInt(0, fid) && ss.GetInt(1, tid)) n+=1;
-//		else printf("Error: %ld\n", ss.GetLineNo());
-		if((n++)%1000000==0) printf("%d\n", n);
-	}
-	printf("n=%d, time=%.2fmins\n", n, tm.GetSecs()/60);
-}
+//	TStr gpgraph="/media/e/direct_social_structure.txt.bz2";
+//	TExeTm tm;
+//	tm.Tick();
+//	TSsParser ss(gpgraph);
+//	printf("\nstart reading...\n");
+//	int n=0, fid, tid, s;
+//	while(ss.Next()){
+////		if(ss.GetInt(0, fid) && ss.GetInt(1, tid)) n+=1;
+////		else printf("Error: %ld\n", ss.GetLineNo());
+//		if((n++)%1000000==0) printf("%d\n", n);
+//	}
+//	printf("n=%d, time=%.2fmins\n", n, tm.GetSecs()/60);
 
-void test_katz(){
-	PUNGraph Graph=TUNGraph::New();
-	Graph->AddNode(1);Graph->AddNode(2);Graph->AddNode(3);Graph->AddNode(4);
-	Graph->AddEdge(1,2);Graph->AddEdge(1,3);Graph->AddEdge(1,4); Graph->AddEdge(3,4);
-	TIntFltH katzH;
-	TSnap::GetKatzCentr(Graph, katzH, 0.3);
-	for(int i=0; i<katzH.Len(); i++) printf("%d: %.4f\n", katzH.GetKey(i).Val, katzH[i].Val);
-}
-
-void test_gio(){
-	PUNGraph G=TSnap::LoadEdgeList<PUNGraph>(TStr("/data/graphdata/wiki_vote.graph.bz2"));
+	TStr Fnm("t.txt");
+	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
+	FOutPt->PutStrLn("hello");
+	FOutPt->PutStrLn("hello again");
 }
 
 void test_lst(){
@@ -405,34 +397,29 @@ void gen_graphs(){
 //	PUNGraph G = TSnap::GenRndGnm<PUNGraph>(100000, 1000000);
 //	TSnap::SaveEdgeList<PUNGraph>(G, "ER_100K_1M.graph");
 
-	PUNGraph G = TSnap::GenPrefAttach(100000, 10);
-	TSnap::SaveEdgeList<PUNGraph>(G, "BA_100K_10.graph.gz");
+//	PUNGraph G = TSnap::GenPrefAttach(100000, 10);
+//	TSnap::SaveEdgeList<PUNGraph>(G, "BA_100K_10.graph.gz");
+
+	PUNGraph G = TSnap::GenRndDegK(100000, 10);
+	TSnap::SaveEdgeList<PUNGraph>(G, "RndDeg_100K_10.graph.gz");
+}
+
+void test_load_save(){
+//	PUNGraph G = TSnap::GenPrefAttach(10000, 10);
+//	TZipOut outf("ba_10k_10.graph.gz");
+//	G->Save(outf);
+
+	TZipIn inf("ba_10k_10.graph.gz");
+	PUNGraph G = TUNGraph::Load(inf);
+
+	printf("(%d %d)\n", G->GetNodes(), G->GetEdges());
 }
 
 int main(void) {
-	gen_graphs();
+//	gen_graphs();
 //	test();
-//	test_tm();
-//	testCmp();
-//	test_rnd();
-//	test_hash();
-//	test_orth_lst();
-//	test_graph();
-//	test_sm();
-//	test_bio();
-//	test_dict_pair();
-//	count_tri();
-//	test_fun();
-//	test_avg();
-//	test_bignet();
 //	test_zip();
-//	test_katz();
-//	test_gio();
-//	testSet();
-//	test_lst();
-//	test_file();
-//	test_os();
-//	test_ptr();
+	test_hash();
 	return 0;
 }
 
