@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
 			"\n\tD: BFS diameter"
 			"\n\tC: average clustering coefficient(-sample:T, default 5%)"
 			"\n\th: hops (10% effective diameter)"
-			"\n\tn: save all nodes in the graph to a file"
+//			"\n\tn: save all nodes in the graph to a file"
 			"\n\tw: largest weakly connected components"
 			"\n\ts: largest strongly connected components\n\t");
 		const TStr Fmts = Env.GetIfArgPrefixStr("-f:", "", "How to format the graph:"
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 		bool Cal_D = Calcs.SearchCh('D') != -1;
 		bool Cal_C = Calcs.SearchCh('C') != -1;
 		bool Cal_h = Calcs.SearchCh('h') != -1;
-		bool Cal_n = Calcs.SearchCh('n') != -1;
+//		bool Cal_n = Calcs.SearchCh('n') != -1;
 		bool Cal_w = Calcs.SearchCh('w') != -1;
 		bool Cal_s = Calcs.SearchCh('s') != -1;
 
@@ -146,11 +146,11 @@ int main(int argc, char* argv[]) {
 				double eff_diam=TSnap::GetAnfEffDiam(Graph);
 				printf("90%% effective diameter: %.4f\n", eff_diam);
 			}
-			if(Cal_n){
-				TIntV nodes;
-				Graph->GetNIdV(nodes);
-				BIO::SaveInts(nodes, OutFNm+".nodes");
-			}
+//			if(Cal_n){
+//				TIntV nodes;
+//				Graph->GetNIdV(nodes);
+//				BIO::SaveInts(nodes, OutFNm+".nodes");
+//			}
 			if(Cal_w){
 				PNGraph wcc=TSnap::GetMxWcc<PNGraph>(Graph);
 				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
@@ -216,11 +216,11 @@ int main(int argc, char* argv[]) {
 				double eff_diam=TSnap::GetAnfEffDiam(Graph);
 				printf("90%% effective diameter: %.4f\n", eff_diam);
 			}
-			if(Cal_n){
-				TIntV nodes;
-				Graph->GetNIdV(nodes);
-				BIO::SaveInts(nodes, OutFNm+".nodes");
-			}
+//			if(Cal_n){
+//				TIntV nodes;
+//				Graph->GetNIdV(nodes);
+//				BIO::SaveInts(nodes, OutFNm+".nodes");
+//			}
 			if(Cal_w){
 				PUNGraph wcc=TSnap::GetMxWcc<PUNGraph>(Graph);
 				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
