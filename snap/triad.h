@@ -14,9 +14,15 @@ template<class PGraph> int GetTriads(const PGraph& Graph, int SampleNodes = -1);
 template<class PGraph> int GetTriads(const PGraph& Graph, int& ClosedTriads, int& OpenTriads, int SampleNodes);
 template<class PGraph> void GetTriads(const PGraph& Graph, TIntTrV& NIdCOTriadV, int SampleNodes = -1);
 
+/// Return number of undirected triads a node participates in
 template<class PGraph> int GetNodeTriads(const PGraph& Graph, const int& NId);
 template<class PGraph> int GetNodeTriads(const PGraph& Graph, const int& NId, int& ClosedTriads, int& OpenTriads);
 template<class PGraph> void GetTriadParticip(const PGraph& Graph, TIntPrV& TriadCntV);
+
+/// Return number of directed triads a node participates in
+template<class PGraph> int GetNodeTriadsAll(const PGraph& Graph, const int& NId);
+template<class PGraph> int GetNodeTriadsAll(const PGraph& Graph, const int& NId, int& ClosedTriads);
+template<class PGraph> void GetTriadParticipAll(const PGraph& Graph, TIntPrV& TriadCntV);
 
 template<class PGraph> int GetCmnNbhs(const PGraph& Graph, const int& NId1, const int& NId2);
 template<class PGraph> int GetCmnNbhs(const PGraph& Graph, const int& NId1, const int& NId2, TIntV& NbhV);
@@ -188,10 +194,11 @@ void GetTriads(const PGraph& Graph, TIntTrV& NIdCOTriadV, int SampleNodes) {
 	}
 }
 
+
 /// Return number of undirected triads a node participates in
 template<class PGraph>
 int GetNodeTriads(const PGraph& Graph, const int& NId) {
-	int ClosedTriads = 0, OpenTriads = 0;
+	int ClosedTriads, OpenTriads;
 	return GetNodeTriads(Graph, NId, ClosedTriads, OpenTriads);
 }
 
@@ -199,8 +206,7 @@ int GetNodeTriads(const PGraph& Graph, const int& NId) {
 template<class PGraph>
 int GetNodeTriads(const PGraph& Graph, const int& NId, int& ClosedTriads, int& OpenTriads) {
 	const typename PGraph::TObj::TNodeI NI = Graph->GetNI(NId);
-	ClosedTriads = 0;
-	OpenTriads = 0;
+	ClosedTriads = OpenTriads = 0;
 	if (NI.GetDeg() < 2) return 0;
 	// find neighborhood
 	TIntSet NbhSet(NI.GetDeg());
@@ -232,6 +238,62 @@ void GetTriadParticip(const PGraph& Graph, TIntPrV& TriadCntV) {
 	TIntH TriadCntH;
 	for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++) {
 		const int Triads = GetNodeTriads(Graph, NI.GetId());
+		TriadCntH.AddDat(Triads) += 1;
+	}
+	TriadCntH.GetKeyDatPrV(TriadCntV);
+	TriadCntV.Sort();
+}
+
+/// Return number of directed triads a node participates in
+template<class PGraph> int GetNodeTriadsAll(const PGraph& Graph, const int& NId){
+	int ClosedTriads;
+	return GetNodeTriadsAll(Graph, NId, ClosedTriads);
+}
+
+/// Return number of directed triads a node participates in
+template<class PGraph>
+int GetNodeTriadsAll(const PGraph& Graph, const int& NId, int& ClosedTriads) {
+	const typename PGraph::TObj::TNodeI NI = Graph->GetNI(NId);
+	ClosedTriads = 0;
+	if (NI.GetDeg() < 2) return 0;
+	// find neighborhood
+	TIntH NbhWt(NI.GetDeg());
+	for (int e = 0; e < NI.GetOutDeg(); e++) {
+		int nid = NI.GetOutNId(e);
+		// exclude self edges
+		if (nid != NI.GetId()) NbhWt(nid)+=1;
+	}
+	if (Graph->HasFlag(gfDirected)) {
+		for (int e = 0; e < NI.GetInDeg(); e++) {
+			int nid = NI.GetInNId(e);
+			// exclude self edges
+			if (nid != NI.GetId()) NbhWt(nid)+=1;
+		}
+	}
+	TInt srcNId, srcWt, dstNId, dstWt, wt;
+	// count connected neighbors
+	for (int srcNbh = 0; srcNbh<NbhWt.Len(); srcNbh++) {
+		NbhWt.GetKeyDat(srcNbh, srcNId, srcWt);
+		const typename PGraph::TObj::TNodeI SrcNI = Graph->GetNI(srcNId);
+		for (int dstNbh = srcNbh + 1; dstNbh < NbhWt.Len(); dstNbh++) {
+			NbhWt.GetKeyDat(dstNbh, dstNId, dstWt);
+			wt = 0;
+			for (int e=0; e<SrcNI.GetInDeg(); e++)
+				if (SrcNI.GetInNId(e) == dstNId) wt++;
+			for (int e=0; e<SrcNI.GetOutDeg(); e++)
+				if (SrcNI.GetOutNId(e) == dstNId) wt++;
+			ClosedTriads += wt*srcWt*dstWt;
+		}
+	}
+	return ClosedTriads;
+}
+
+// For each node count how many triangles it participates in
+template<class PGraph>
+void GetTriadParticipAll(const PGraph& Graph, TIntPrV& TriadCntV) {
+	TIntH TriadCntH;
+	for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++) {
+		const int Triads = GetNodeTriadsAll(Graph, NI.GetId());
 		TriadCntH.AddDat(Triads) += 1;
 	}
 	TriadCntH.GetKeyDatPrV(TriadCntV);

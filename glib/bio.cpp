@@ -78,6 +78,16 @@ void SaveIntFltKdV(const TIntFltKdV& data, TStr Fnm, TStr anno){
 	for(int i=0; i<data.Len(); i++) FOutPt->PutStrLn(TStr::Fmt("%d\t%.6e", data[i].Key.Val, data[i].Dat.Val));
 }
 
+
+void SaveFltsWithIdx(const TFltV& list, TStr fname, TStr anno){
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<list.Len(); i++) fprintf(fw, "%d\t%.6e\n", i, list[i].Val);
+	fclose(fw);
+}
+
+
 // Load methods
 void LoadInts(const TStr fnm, TIntV& dat, const int col){
 	TSsParser Ss(fnm);

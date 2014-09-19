@@ -14,7 +14,16 @@ public:
 	static double Round(const double & Val, int Decs) {const double pwr=pow(10.0, Decs); return Round(Val*pwr)/pwr;}
 	static int Fac(const int& Val) {if (Val<=1) return 1; else return Val * Fac(Val - 1);}
 	// binomial coefficient
-	static int Choose(const int& N, const int& K) {return Fac(N)/(Fac(K)*Fac(N-K));}
+	// original implementation: return Fac(N)/(Fac(K)*Fac(N-K));
+	// Zhao: the original implementation is too naive and inefficient!
+	static int Choose(const int& N, const int& K) {
+		if (K<0 || K>N) return 0;
+		if (K==0 || K==N) return 1;
+		int k = min(K, N-K)+1;
+		double c=1;
+		while (--k>0) c = c*(N-k+1)/k;
+		return (int)c;
+	}
 	static uint Pow2(const int& pow) {return uint(1u << pow);}
 	static double Power(const double& Base, const double& Exponent) {return pow(Base, Exponent);}
 	template<typename T>
@@ -68,6 +77,7 @@ public:
 class TSpecFunc {
 public:
 	static double Normal(double x, const double mu=0, const double sigma=1);
+	static double Binormal(const int k, const int n, const double p);
 	static void GammaPSeries/*gser*/(double& gamser, const double& a, const double& x, double& gln);
 	static void GammaQContFrac/*gcf*/(double& gammcf, const double& a, const double& x, double& gln);
 	static double GammaQ/*gammq*/(const double& a, const double& x);

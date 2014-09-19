@@ -13,6 +13,10 @@ double TSpecFunc::Normal(double x, const double mu, const double sigma){
 	return 1/(sqrt(2*TMath::Pi)*sigma)*exp(-pow((x-mu)/sigma, 2)/2);
 }
 
+double TSpecFunc::Binormal(const int K, const int N, const double p){
+	return exp(lgamma(N+1.0) - lgamma(N-K+1.0) - lgamma(K+1.0) + K*log(p) + (N-K)*log(1-p));
+}
+
 void TSpecFunc::GammaPSeries/*gser*/(
  double& gamser, const double& a, const double& x, double& gln){
   static const int ITMAX=100;

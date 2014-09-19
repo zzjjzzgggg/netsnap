@@ -412,7 +412,7 @@ public:
 	TNodeI GetNI(const int& NId) const {return TNodeI(NodeH.GetI(NId), this);}
 	// edges
 	int GetEdges() const {return EdgeH.Len();}
-	int AddEdge(const int& SrcNId, const int& DstNId, int EId	= -1);
+	int AddEdge(const int& SrcNId, const int& DstNId, int EId=-1);
 	int AddEdge(const TEdgeI& EdgeI) {return AddEdge(EdgeI.GetSrcNId(), EdgeI.GetDstNId(), EdgeI.GetId());}
 	void DelEdge(const int& EId);
 	void DelEdge(const int& SrcNId, const int& DstNId, const bool& Dir = true); // deletes all edges between the two nodes

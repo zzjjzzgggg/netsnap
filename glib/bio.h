@@ -17,6 +17,8 @@ namespace BIO {
 	void SaveIntPrSet(const TIntPrSet& hash, TStr fname, TStr anno="");
 	void SaveIntFltKdV(const TIntFltKdV& data, TStr fname, TStr anno="");
 
+	void SaveFltsWithIdx(const TFltV& list, TStr fname, TStr anno="");
+
 	void LoadInts(const TStr fnm, TIntV& dat, const int col=0);
 	void LoadInts(const TStr fnm, TIntSet& dat, const int col=0);
 	void LoadFlts(const TStr fnm, TFltV& dat, const int col=0);
