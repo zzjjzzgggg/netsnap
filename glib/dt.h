@@ -322,7 +322,7 @@ public:
   }
   TRStr(const char& Ch){Refs=0; Bf=new char[1+1]; Bf[0]=Ch; Bf[1]=0;}
   TRStr(const char& Ch1, const char& Ch2){Refs=0; Bf=new char[2+1]; Bf[0]=Ch1; Bf[1]=Ch2; Bf[2]=0;}
-  ~TRStr(){Assert(((this!=GetNullRStr())&&(Refs==0))||((this==GetNullRStr())&&(Refs==1))); delete[] Bf;}
+  ~TRStr(){printf("\n\n%s\n\n", Bf);Assert(((this!=GetNullRStr())&&(Refs==0))||((this==GetNullRStr())&&(Refs==1))); delete[] Bf;}
   explicit TRStr(TSIn& SIn, const bool& IsSmall){
     if (IsSmall){Refs=0; SIn.Load(Bf);}
     else {Refs=0; int BfL; SIn.Load(BfL); SIn.Load(Bf, BfL, BfL);}
