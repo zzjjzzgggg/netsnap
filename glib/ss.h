@@ -1,5 +1,7 @@
 /////////////////////////////////////////////////
 // Spread-Sheet
+// not thread safe. NOT sure about this.
+
 typedef enum {
 	ssfUndef,
 	ssfTabSep,
