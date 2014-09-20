@@ -15,7 +15,6 @@ public:
 	static int Fac(const int& Val) {if (Val<=1) return 1; else return Val * Fac(Val - 1);}
 	// binomial coefficient
 	// original implementation: return Fac(N)/(Fac(K)*Fac(N-K));
-	// Zhao: the original implementation is too naive and inefficient!
 	static int Choose(const int& N, const int& K) {
 		if (K<0 || K>N) return 0;
 		if (K==0 || K==N) return 1;
@@ -77,7 +76,7 @@ public:
 class TSpecFunc {
 public:
 	static double Normal(double x, const double mu=0, const double sigma=1);
-	static double Binormal(const int k, const int n, const double p);
+	static double Binomial(const int k, const int n, const double p);
 	static void GammaPSeries/*gser*/(double& gamser, const double& a, const double& x, double& gln);
 	static void GammaQContFrac/*gcf*/(double& gammcf, const double& a, const double& x, double& gln);
 	static double GammaQ/*gammq*/(const double& a, const double& x);
