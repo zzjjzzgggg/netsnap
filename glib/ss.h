@@ -78,7 +78,7 @@ public:
 	const char* operator [](const int& FldN) const { return FldV[FldN]; }
 	char* operator [](const int& FldN) { return FldV[FldN]; }
 	bool GetInt(const int& FldN, int& Val) const;
-	int GetInt(const int& FldN) const { int Val = 0; IAssertR(GetInt(FldN, Val),TStr::Fmt("Field %d not INT.\n%s", FldN, DumpStr()).CStr()); return Val; }
+	int GetInt(const int& FldN) const { int Val = 0; IAssertR(GetInt(FldN, Val), TStr::Fmt("Field %d not INT.\n%s", FldN, DumpStr()).CStr()); return Val; }
 	bool IsInt(const int& FldN) const { int v; return GetInt(FldN, v); }
 	bool GetFlt(const int& FldN, double& Val) const;
 	bool IsFlt(const int& FldN) const { double v; return GetFlt(FldN, v); }
