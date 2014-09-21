@@ -4,7 +4,7 @@
 
 ## Linux  (uncomment the 2 lines below for compilation on Linux)
 CXXFLAGS += -Wall -std=c++11
-LDFLAGS += -lrt
+LDFLAGS += -lrt -pthread -std=c++11
 
 ## Main application file
 MAIN = test

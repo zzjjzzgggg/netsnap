@@ -10,22 +10,6 @@
 #include <stdlib.h>
 #include "../snap/Snap.h"
 
-void test(){
-//	TIntFltKdV vec; TFltV ccdf;
-//	for(int i=0; i<10; i++) vec.Add(TIntFltKd(i,i));
-//	TGUtil::GetCCdf(vec, ccdf);
-//	for(int i=0; i<ccdf.Len(); i++) printf("%.2f ", ccdf[i].Val);
-//	printf("\n");
-//	TIntH tmp;
-//	tmp.Gen(3);
-//	tmp(1) = 3; tmp(3) = 5; tmp(6) = 4;
-//	for (int i=0; i<tmp.Len(); i++) printf("%d -> %d\n", tmp.GetKey(i).Val, tmp[i].Val);
-//	for (int i=0; i<tmp.Len(); i++) tmp[i]=0;
-//	for (int i=0; i<tmp.Len(); i++) printf("%d -> %d\n", tmp.GetKey(i).Val, tmp[i].Val);
-	TStr::Fmt("%d", 1);
-}
-
-
 class Node{
 public:
 	int uid;
@@ -145,12 +129,6 @@ void test_hash(){
 //	for(TIntH::TIter it=hash.BegI(); it<hash.EndI(); it++) printf("%d, %d\n", it.GetKey().Val, it.GetDat().Val);
 }
 
-void testSet(){
-	TIntSet set;
-	for(int i=0;i<10;i++) set.AddKey(i);
-	for(int i=0; i<5; i++) printf("%d\n", set.GetRndKey(TInt::Rnd).Val);
-}
-
 void test_orth_lst(){
 	typedef TOLstNd<Node>* POLstNd;
 	typedef TOLstHdr<Node>* POLstHdr;
@@ -239,15 +217,6 @@ void test_bignet2(){
 	printf("nodes: %d, edges: %ld.\n", net.GetNodes(), net.GetEdges());
 }
 
-void test_graph(){
-	PUNGraph G=PUNGraph::New();
-	G->AddNode(1);
-	G->AddEdge(1, 1);
-	TUNGraph::TNodeI ni=G->GetNI(1);
-	printf("Nodes: %d, edges: %d, in-deg: %d, out-deg: %d, deg: %d\n",
-			G->GetNodes(), G->GetEdges(), ni.GetInDeg(), ni.GetOutDeg(), ni.GetDeg());
-}
-
 void test_sm(){
 	SparseMatrix sm;
 	sm.Add(0,2,1);
@@ -294,28 +263,6 @@ void test_dict_pair(){
 	dat(4)=TIntPr(4,1);
 	dat.SortByDat(false);
 	for(int i=0; i<dat.Len(); i++) printf("%d[%d] -> (%d, %d)\n", dat.GetKey(i).Val, dat.GetKeyId(dat.GetKey(i)), dat[i].Val1.Val, dat[i].Val2.Val);
-}
-
-void count_tri(){
-	PNGraph Graph=TSnap::LoadEdgeList<PNGraph>("/home/jzzhao/workspace/wiki-Vote.txt");
-	int open, closed;
-	TSnap::GetTriads(Graph, closed, open, -1);
-	printf("%d\t%d\n", closed, open);
-}
-
-void test_fun(){
-	printf("v=%.6f\n", TSpecFunc::Normal(0));
-}
-
-void test_avg(){
-	TAvg avg;
-	TFltV item1, item2, item3;
-	item1.Add(1); item1.Add(2); item1.Add(3);
-	item2.Add(1); item2.Add(2); item2.Add(3);
-	item3.Add(1); item3.Add(2); item3.Add(3);
-	avg.Add(1, item1);
-	avg.Add(1, item2);
-	avg.Add(1, item3);
 }
 
 void test_zip(){
@@ -366,60 +313,20 @@ void test_lst(){
 	}
 }
 
-void test_file(){
-	FILE* fw=fopen("t.txt", "a");
-	fprintf(fw, "asdf\n");
-	fclose(fw);
+void fun(TIntV& vec){
+	vec[0]=12;
 }
 
-void test_os(){
-	RemoveFile("t.txt");
-//	TStrV fnms;
-//	ListDir(".", fnms);
-//	for(int i=0; i<fnms.Len(); i++) printf("%s\n", fnms[i].CStr());
-
-//	FILE* fr=open("tt.txt", "r");
-}
-
-void test_ptr(){
-	TVec<uint64> BitV;
-	int NNodes=5189809;
-	int NBits = int(ceil(TMath::Log2(NNodes)))+8;
-	int BytesPerNd = 32*NBits;
-	BitV.Gen(NNodes*BytesPerNd/sizeof(uint64)+1); IAssert(BitV.BegI() != NULL);
-	uchar* BitVPt = (uchar*) BitV.BegI();
-	for(int i=0; i<BitV.Len()*sizeof(uint64);i++) *(BitVPt+i)=i;
-	printf("%lu, %d, %lu\n", BitV.Len()*sizeof(uint64), BitV.Len(), sizeof(uint64));
-//	*(BitVPt+853324352) = 0;
-}
-
-void gen_graphs(){
-//	PUNGraph G = TSnap::GenRndGnm<PUNGraph>(100000, 1000000);
-//	TSnap::SaveEdgeList<PUNGraph>(G, "ER_100K_1M.graph");
-
-//	PUNGraph G = TSnap::GenPrefAttach(100000, 10);
-//	TSnap::SaveEdgeList<PUNGraph>(G, "BA_100K_10.graph.gz");
-
-	PUNGraph G = TSnap::GenRndDegK(100000, 10);
-	TSnap::SaveEdgeList<PUNGraph>(G, "RndDeg_100K_10.graph.gz");
-}
-
-void test_load_save(){
-//	PUNGraph G = TSnap::GenPrefAttach(10000, 10);
-//	TZipOut outf("ba_10k_10.graph.gz");
-//	G->Save(outf);
-
-	TZipIn inf("ba_10k_10.graph.gz");
-	PUNGraph G = TUNGraph::Load(inf);
-
-	printf("(%d %d)\n", G->GetNodes(), G->GetEdges());
+void test_c11(){
+	TIntV vecs[2];
+	vecs[0].Gen(2);
+	fun(vecs[0]);
+	auto f = [&vecs] {return 10;};
+	printf("%d\n%d\n", vecs[0][0].Val, f());
 }
 
 int main(void) {
-//	gen_graphs();
-//	test();
-//	test_zip();
-	test_hash();
+	test_c11();
 	return 0;
 }
 
