@@ -61,6 +61,18 @@ void SaveIntIntPrH(const TIntPrH& hash, const TStr& fname, const TStr& anno){
 	}
 	fclose(fw);
 }
+
+
+void SaveIntPrV(const TIntPrV& list, const TStr& fname, const TStr& anno){
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<list.Len(); i++) {
+		fprintf(fw, "%d\t%d\n", list[i].Val1.Val, list[i].Val2.Val);
+	}
+	fclose(fw);
+}
+
 void SaveIntPrSet(const TIntPrSet& hash, const TStr& fname, const TStr& anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), hash.Len());
@@ -78,6 +90,14 @@ void SaveIntFltKdV(const TIntFltKdV& data, TStr& Fnm, const TStr& anno){
 	for(int i=0; i<data.Len(); i++) FOutPt->PutStrLn(TStr::Fmt("%d\t%.6e", data[i].Key.Val, data[i].Dat.Val));
 }
 
+
+void SaveIntsWithIdx(const TIntV& list, const TStr& fname, const TStr& anno){
+	FILE* fw=fopen(fname.CStr(), "w");
+	fprintf(fw, "#File: %s\n#Len: %d\n", fname.CStr(), list.Len());
+	if(!anno.Empty()) fprintf(fw, "#%s\n", anno.CStr());
+	for(int i=0; i<list.Len(); i++) fprintf(fw, "%d\t%d\n", i, list[i].Val);
+	fclose(fw);
+}
 
 void SaveFltsWithIdx(const TFltV& list, const TStr& fname, const TStr& anno){
 	FILE* fw=fopen(fname.CStr(), "w");

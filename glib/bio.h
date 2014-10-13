@@ -14,9 +14,11 @@ namespace BIO {
 	void SaveIntFltH(const TIntFltH& hash, const TStr& fname, const TStr& anno="");
 	void SaveIntPrIntH(const TIntPrIntH& hash, const TStr& fname, const TStr& anno="");
 	void SaveIntIntPrH(const TIntPrH& hash, const TStr& fname, const TStr& anno="");
+	void SaveIntPrV(const TIntPrV& list, const TStr& fname, const TStr& anno="");
 	void SaveIntPrSet(const TIntPrSet& hash, const TStr& fname, const TStr& anno="");
 	void SaveIntFltKdV(const TIntFltKdV& data, const TStr& fname, const TStr& anno="");
 
+	void SaveIntsWithIdx(const TIntV& list, const TStr& fname, const TStr& anno="");
 	void SaveFltsWithIdx(const TFltV& list, const TStr& fname, const TStr& anno="");
 
 	void LoadInts(const TStr& fnm, TIntV& dat, const int col=0);
