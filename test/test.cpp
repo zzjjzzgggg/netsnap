@@ -325,8 +325,24 @@ void test_c11(){
 	printf("%d\n%d\n", vecs[0][0].Val, f());
 }
 
+void test_fnm(){
+	TStr fnm = "/home/jzzhao/git_project/netsnap/snap/Snap.h";
+	printf("Base: %s\nPath: %s\nMid: %s\n", fnm.GetFBase().CStr(), fnm.GetFPath().CStr(), fnm.GetFMid().CStr());
+}
+
+void test_binom(){
+	int i=100;
+	double p=0.5;
+	for (int j=0;j<=i;j++){
+		double bij = TSpecFunc::Binomial(j, i, p);;
+		printf("%d: %.2e\n", j, bij);
+	}
+}
+
 int main(void) {
-	test_c11();
+//	test_c11();
+//	test_fnm();
+	test_binom();
 	return 0;
 }
 
