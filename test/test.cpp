@@ -339,10 +339,18 @@ void test_binom(){
 	}
 }
 
-int main(void) {
+const TStr GetFNm(const TStr& GFNm) {
+	return GFNm.GetFPath();
+}
+
+int main(int argc, char* argv[]) {
 //	test_c11();
 //	test_fnm();
-	test_binom();
+//	test_binom();
+	printf("C: %s\n", TExeTm::GetCurTm());
+
+	Env = TEnv(argc, argv, TNotify::StdNotify);
+	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
 	return 0;
 }
 
