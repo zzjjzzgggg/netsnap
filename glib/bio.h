@@ -29,7 +29,7 @@ namespace BIO {
 	void LoadIntFltH(const TStr& fnm, TIntFltH& dat, const int c1=0, const int c2=1);
 	void LoadIntPrSet(const TStr& fnm, TIntPrSet& dat, const int c1=0, const int c2=1);
 	void LoadIntPrVec(const TStr& fnm, TIntPrV& dat, const int c1=0, const int c2=1);
-
+	void LoadIntFltPrVec(const TStr& fnm, TIntFltPrV& dat, const int c1=0, const int c2=1);
 
 	void SaveIntArray(const int* list, const int len, const TStr& fname, const TStr& anno="");
 	void SaveFltArray(const float* list, const int len, const TStr& fname, const TStr& anno="");

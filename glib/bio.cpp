@@ -137,7 +137,10 @@ void LoadIntPrVec(const TStr& fnm, TIntPrV& dat, const int c1, const int c2){
 	TSsParser Ss(fnm);
 	while(Ss.Next()) dat.Add(TIntPr(Ss.GetInt(c1), Ss.GetInt(c2)));
 }
-
+void LoadIntFltPrVec(const TStr& fnm, TIntFltPrV& dat, const int c1, const int c2){
+	TSsParser Ss(fnm);
+	while(Ss.Next()) dat.Add(TIntFltPr(Ss.GetInt(c1), Ss.GetFlt(c2)));
+}
 void SaveIntArray(const int* list, const int len, const TStr& fname, const TStr& anno){
 	FILE* fw=fopen(fname.CStr(), "w");
 	fprintf(fw, "# File: %s\n# Len: %d\n", fname.CStr(), len);
