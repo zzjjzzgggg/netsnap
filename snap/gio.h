@@ -115,21 +115,20 @@ PGraph LoadBinary(const TStr& ZipInFNm){
 
 template<class PGraph>
 void SaveEdgeList(const PGraph& Graph, const TStr& OutFNm, const TStr& Desc, const bool rev) {
-	FILE *F = fopen(OutFNm.CStr(), "wt");
-	if (HasGraphFlag(typename PGraph::TObj, gfDirected)) fprintf(F, "# Directed graph: %s \n", OutFNm.CStr());
-	else fprintf(F, "# Undirected graph (each unordered pair of nodes is saved once): %s\n",	OutFNm.CStr());
-	if (!Desc.Empty()) fprintf(F, "# %s\n", Desc.CStr());
-	fprintf(F, "# Nodes: %d Edges: %d\n", Graph->GetNodes(), Graph->GetEdges());
-	if (HasGraphFlag(typename PGraph::TObj, gfDirected)) fprintf(F, "# FromNodeId\tToNodeId\n");
-	else fprintf(F, "# NodeId\tNodeId\n");
+	PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
+	if (HasGraphFlag(typename PGraph::TObj, gfDirected)) FOutPt->PutStrLn("# Directed graph: "+ OutFNm);
+	else FOutPt->PutStrLn("# Undirected graph (each unordered pair of nodes is saved once): " + OutFNm);
+	if (!Desc.Empty()) FOutPt->PutStrLn("#" + Desc);
+	FOutPt->PutStrLn(TStr::Fmt("# Nodes: %d Edges: %d", Graph->GetNodes(), Graph->GetEdges()));
+	if (HasGraphFlag(typename PGraph::TObj, gfDirected)) FOutPt->PutStrLn("# FromNodeId\tToNodeId");
+	else FOutPt->PutStrLn("# NodeId\tNodeId");
 	if(!rev){
 		for (typename PGraph::TObj::TEdgeI ei = Graph->BegEI(); ei < Graph->EndEI(); ei++)
-			fprintf(F, "%d\t%d\n", ei.GetSrcNId(), ei.GetDstNId());
+			FOutPt->PutStrLn(TStr::Fmt("%d\t%d", ei.GetSrcNId(), ei.GetDstNId()));
 	}else{
 		for (typename PGraph::TObj::TEdgeI ei = Graph->BegEI(); ei < Graph->EndEI(); ei++)
-			fprintf(F, "%d\t%d\n", ei.GetDstNId(), ei.GetSrcNId());
+			FOutPt->PutStrLn(TStr::Fmt("%d\t%d", ei.GetDstNId(), ei.GetSrcNId()));
 	}
-	fclose(F);
 }
 
 template<class PGraph>

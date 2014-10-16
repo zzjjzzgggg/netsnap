@@ -289,7 +289,7 @@ void test_zip(){
 //	}
 //	printf("n=%d, time=%.2fmins\n", n, tm.GetSecs()/60);
 
-	TStr Fnm("t.txt");
+	TStr Fnm("t.txt.gz");
 	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
 	FOutPt->PutStrLn("hello");
 	FOutPt->PutStrLn("hello again");
@@ -347,10 +347,7 @@ int main(int argc, char* argv[]) {
 //	test_c11();
 //	test_fnm();
 //	test_binom();
-	printf("C: %s\n", TExeTm::GetCurTm());
-
-	Env = TEnv(argc, argv, TNotify::StdNotify);
-	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
+	test_zip();
 	return 0;
 }
 
