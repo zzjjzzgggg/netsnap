@@ -46,7 +46,7 @@ void ReverseEdgeDirection(const TStr& InFNm){
 
 void RemoveSelfLoops(const TStr& InFNm){
 	int u, v, n=0;
-	TStr OutFNm = TStr::Fmt("%s_looprmed%s", InFNm.GetFPath().CStr(), InFNm.GetFExt().CStr());
+	TStr OutFNm = InFNm.GetFPath() + TStr::Fmt("%s_looprmed%s", InFNm.GetFMid().CStr(), InFNm.GetFExt().CStr());
 	PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
 	TSsParser Ss(InFNm);
 	while(Ss.Next()) {

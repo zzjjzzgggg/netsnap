@@ -8,7 +8,6 @@ int main(int argc, char* argv[]) {
 		const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "graph.txt", "Input graph");
 		const bool IsEdgeList = Env.GetIfArgPrefixBool("-e:", true, "Edgelist");
 		const bool IsDir = Env.GetIfArgPrefixBool("-d:", true, "Directed graph");
-		const TStr OutFNm = Env.GetIfArgPrefixStr("-o:", "graph", "Output file prefix");
 		const TStr Desc = Env.GetIfArgPrefixStr("-t:", "", "Title");
 		const TStr Plot = Env.GetIfArgPrefixStr("-p:", "", "What statistics to plot:"
 			"\n\tc: cummulative degree distribution"
@@ -26,7 +25,6 @@ int main(int argc, char* argv[]) {
 			"\n\tD: BFS diameter"
 			"\n\tC: average clustering coefficient(-sample:T, default 5%)"
 			"\n\th: hops (10% effective diameter)"
-//			"\n\tn: save all nodes in the graph to a file"
 			"\n\tw: largest weakly connected components"
 			"\n\ts: largest strongly connected components\n\t");
 		const TStr Fmts = Env.GetIfArgPrefixStr("-f:", "", "How to format the graph:"
@@ -54,7 +52,6 @@ int main(int argc, char* argv[]) {
 		bool Cal_D = Calcs.SearchCh('D') != -1;
 		bool Cal_C = Calcs.SearchCh('C') != -1;
 		bool Cal_h = Calcs.SearchCh('h') != -1;
-//		bool Cal_n = Calcs.SearchCh('n') != -1;
 		bool Cal_w = Calcs.SearchCh('w') != -1;
 		bool Cal_s = Calcs.SearchCh('s') != -1;
 
@@ -98,26 +95,26 @@ int main(int argc, char* argv[]) {
 			printf("=======================================================\n\n"
 					"Directed graph is loaded. Nodes:%d, Edges:%d\n\n", Graph->GetNodes(), Graph->GetEdges());
 			if(PlotDD){
-				TSnap::PlotOutDegDistr(Graph, OutFNm, Desc, false, false);
-				TSnap::PlotInDegDistr(Graph, OutFNm, Desc, false, false);
+				TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_out_pdf"), Desc, false, false);
+				TSnap::PlotInDegDistr(Graph, TStr::AddToFMid(InFNm, "_in_pdf"), Desc, false, false);
 			}
 			if(PlotCDD){
-				TSnap::PlotOutDegDistr(Graph, OutFNm, Desc, true, false);
-				TSnap::PlotInDegDistr(Graph, OutFNm, Desc, true, false);
+				TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_out_ccdf"), Desc, true, false);
+				TSnap::PlotInDegDistr(Graph, TStr::AddToFMid(InFNm, "_in_ccdf"), Desc, true, false);
 			}
-			if(PlotHop) TSnap::PlotHops(Graph, OutFNm, Desc, false, 32);
-			if(PlotWcc) TSnap::PlotWccDistr(Graph, OutFNm, Desc);
-			if(PlotScc) TSnap::PlotSccDistr(Graph, OutFNm, Desc);
-			if(PlotClustCf) TSnap::PlotClustCf(Graph, OutFNm, Desc);
+			if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), Desc, false, 32);
+			if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), Desc);
+			if(PlotScc) TSnap::PlotSccDistr(Graph, TStr::AddToFMid(InFNm, "_scc_dist"), Desc);
+			if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf"), Desc);
 			if(PlotSVal){
 				const int Vals = Graph->GetNodes()/2>200?200:Graph->GetNodes()/2;
-				TSnap::PlotSngValRank(Graph, Vals, OutFNm, Desc);
+				TSnap::PlotSngValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_sng"), Desc);
 			}
-			if(PlotSVec) TSnap::PlotSngVec(Graph, OutFNm, Desc);
+			if(PlotSVec) TSnap::PlotSngVec(Graph, TStr::AddToFMid(InFNm, "_sng"), Desc);
 			if(Cal_b){
 				printf("nodes:%d edges:%d\n", Graph->GetNodes(), Graph->GetEdges());
-				if(Sav_e) TSnap::SaveEdgeList(Graph, OutFNm+".digraph");
-				else if(Sav_b) TSnap::SaveBinary(Graph,OutFNm+"_bin.digraph.gz");
+				if(Sav_e) TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_digraph"));
+				else if(Sav_b) TSnap::SaveBinary(Graph, TStr::AddToFMid(InFNm, "_bin_digraph"));
 			}
 			if(Cal_t){
 				int ctriads=TSnap::GetTriads(Graph);
@@ -155,19 +152,19 @@ int main(int argc, char* argv[]) {
 				PNGraph wcc=TSnap::GetMxWcc<PNGraph>(Graph);
 				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
 				printf("Number of edges in WCC: %d\n", wcc->GetEdges());
-				if(Sav_e) TSnap::SaveEdgeList(wcc, OutFNm+"_wcc.digraph");
-				else if(Sav_b) TSnap::SaveBinary(wcc,OutFNm+"_wcc_bin.digraph.gz");
+				if(Sav_e) TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
+				else if(Sav_b) TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
 			}
 			if(Cal_s){
 				PNGraph scc=TSnap::GetMxScc<PNGraph>(Graph);
 				printf("Number of nodes in SCC: %d\n", scc->GetNodes());
 				printf("Number of edges in SCC: %d\n", scc->GetEdges());
-				if(Sav_e) TSnap::SaveEdgeList(scc,OutFNm+"_scc.digraph");
-				else if(Sav_b) TSnap::SaveBinary(scc,OutFNm+"_scc_bin.digraph.gz");
+				if(Sav_e) TSnap::SaveEdgeList(scc, TStr::AddToFMid(InFNm, "_scc"));
+				else if(Sav_b) TSnap::SaveBinary(scc, TStr::AddToFMid(InFNm, "_scc_bin"));
 			}
 			if(Fmt_b){
 				printf("Converting to binary format ...\n");
-				TSnap::SaveBinary<PNGraph>(Graph, OutFNm+"_bin.digraph.gz");
+				TSnap::SaveBinary<PNGraph>(Graph, TStr::AddToFMid(InFNm, "_bin"));
 			}
 		}else{
 			PUNGraph Graph;
@@ -175,19 +172,19 @@ int main(int argc, char* argv[]) {
 			else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
 			printf("=======================================================\n\n"
 					"Undirected graph is loaded. Nodes:%d, Edges:%d\n\n", Graph->GetNodes(), Graph->GetEdges());
-			if(PlotDD)	TSnap::PlotOutDegDistr(Graph, OutFNm, Desc, false, false);
-			if(PlotCDD) TSnap::PlotOutDegDistr(Graph, OutFNm, Desc, true, false);
-			if(PlotHop) TSnap::PlotHops(Graph, OutFNm, Desc, false, 32);
-			if(PlotWcc) TSnap::PlotWccDistr(Graph, OutFNm, Desc);
-			if(PlotClustCf) TSnap::PlotClustCf(Graph, OutFNm, Desc);
+			if(PlotDD)	TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_pdf"), Desc, false, false);
+			if(PlotCDD) TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_ccdf"), Desc, true, false);
+			if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), Desc, false, 32);
+			if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), Desc);
+			if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), Desc);
 			if(PlotSVal){
 				const int Vals = Graph->GetNodes()/2 > 200 ? 200 : Graph->GetNodes()/2;
-				TSnap::PlotEigValRank(Graph, Vals, OutFNm, Desc);
+				TSnap::PlotEigValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_eig"), Desc);
 			}
 			if(Cal_b){
 				printf("nodes:%d  edges:%d\n", Graph->GetNodes(), Graph->GetEdges());
-				if(Sav_e) TSnap::SaveEdgeList(Graph, OutFNm+".graph");
-				else if(Sav_b) TSnap::SaveBinary(Graph,OutFNm+"_bin.graph.gz");
+				if(Sav_e) TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_graph"));
+				else if(Sav_b) TSnap::SaveBinary(Graph, TStr::AddToFMid(InFNm, "_bin_graph"));
 			}
 			if(Cal_t){
 				int ctriads=TSnap::GetTriads(Graph);
@@ -225,12 +222,12 @@ int main(int argc, char* argv[]) {
 				PUNGraph wcc=TSnap::GetMxWcc<PUNGraph>(Graph);
 				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
 				printf("Number of edges in WCC: %d\n", wcc->GetEdges());
-				if(Sav_e) TSnap::SaveEdgeList(wcc, OutFNm+"_wcc.graph");
-				else if(Sav_b) TSnap::SaveBinary(wcc,OutFNm+"_wcc_bin.graph.gz");
+				if(Sav_e) TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
+				else if(Sav_b) TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
 			}
 			if(Fmt_b){
 				printf("Converting to binary format ...\n");
-				TSnap::SaveBinary<PUNGraph>(Graph, OutFNm+"_bin.graph.gz");
+				TSnap::SaveBinary<PUNGraph>(Graph, TStr::AddToFMid(InFNm, "_bin"));
 			}
 		}
 	CatchAll

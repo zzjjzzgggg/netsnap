@@ -330,8 +330,13 @@ void test_c11(){
 }
 
 void test_fnm(){
-	TStr fnm = "/home/jzzhao/git_project/netsnap/snap/Snap.h";
-	printf("Base: %s\nPath: %s\nMid: %s\n", fnm.GetFBase().CStr(), fnm.GetFPath().CStr(), fnm.GetFMid().CStr());
+	TStr fnm = "/home/jzzhao/git_project/netsnap/snap/Snap.h.gz";
+	printf("Base: %s\nPath: %s\nMid: %s\nExt: %s\n",
+			fnm.GetFBase().CStr(),
+			fnm.GetFPath().CStr(),
+			fnm.GetFMid().CStr(),
+			fnm.GetFExt().CStr());
+	printf("%s\n", TStr::AddToFMid(fnm, "_hello").CStr());
 }
 
 void test_binom(){
@@ -352,9 +357,9 @@ const TStr GetFNm(const TStr& GFNm) {
 
 int main(int argc, char* argv[]) {
 //	test_c11();
-//	test_fnm();
+	test_fnm();
 //	test_binom();
-	test_zip();
+//	test_zip();
 	return 0;
 }
 
