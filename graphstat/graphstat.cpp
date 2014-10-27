@@ -73,20 +73,20 @@ int main(int argc, char* argv[]) {
 			// re-mapping nodes
 			if(Fmt_m) {
 				printf("Re-mapping nodes ...\n");
-				MapingNodes(InFNm, OutFNm, IsDir);
+				MapingNodes(InFNm, IsDir);
 			}
 			// reverse edge direction
 			if(Fmt_r){
 				printf("Reversing the edge direction ...\n");
-				ReverseEdgeDirection(InFNm, OutFNm+".reversed");
+				ReverseEdgeDirection(InFNm);
 			}
 			// remove self-loops
 			if(Fmt_l){
 				printf("Removing self-loops ...\n");
-				RemoveSelfLoops(InFNm, OutFNm+".removed");
+				RemoveSelfLoops(InFNm);
 			}
 			// save nodes in the graph
-			if(Fmt_n) SaveNodes(InFNm, OutFNm+".nodes");
+			if(Fmt_n) SaveNodes(InFNm);
 
 			if(!Fmt_b) return 0;
 		}

@@ -293,6 +293,10 @@ void test_zip(){
 	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
 	FOutPt->PutStrLn("hello");
 	FOutPt->PutStrLn("hello again");
+	FOutPt->PutInt(12);
+	FOutPt->PutLn();
+	FOutPt->PutFlt(12.123, (char*)"%g");
+	FOutPt->PutLn();
 }
 
 void test_lst(){
@@ -349,8 +353,8 @@ const TStr GetFNm(const TStr& GFNm) {
 int main(int argc, char* argv[]) {
 //	test_c11();
 //	test_fnm();
-	test_binom();
-//	test_zip();
+//	test_binom();
+	test_zip();
 	return 0;
 }
 

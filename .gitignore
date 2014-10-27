@@ -10,3 +10,4 @@ test/test
 *.gz
 *.bz2
 */.settings/
+graphstat

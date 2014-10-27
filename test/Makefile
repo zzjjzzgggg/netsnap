@@ -23,5 +23,5 @@ Snap.o:
 	g++ -c $(CXXFLAGS) ../snap/Snap.cpp -I../glib -I../snap
 
 clean:
-	rm -f *.o $(MAIN) $(MAIN).exe $(MAIN).Err
+	rm -f *.o $(MAIN) $(MAIN).exe $(MAIN).Err *.gz
 	rm -rf Debug Release
