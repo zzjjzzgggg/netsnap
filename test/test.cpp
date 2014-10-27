@@ -331,11 +331,14 @@ void test_fnm(){
 }
 
 void test_binom(){
-	int i=100;
-	double p=0.5;
-	for (int j=0;j<=i;j++){
+	int i=10000;
+	double p=0.1;
+	int m = (int)(i*p);
+	for (int j=m-100;j<=m+100;j++){
 		double bij = TSpecFunc::Binomial(j, i, p);;
-		printf("%d: %.2e\n", j, bij);
+		printf("%d: %.6e  ", j, bij);
+		if ((j+1)%5==0) printf("\n");
+		Assert(bij>=0);
 	}
 }
 
@@ -346,8 +349,8 @@ const TStr GetFNm(const TStr& GFNm) {
 int main(int argc, char* argv[]) {
 //	test_c11();
 //	test_fnm();
-//	test_binom();
-	test_zip();
+	test_binom();
+//	test_zip();
 	return 0;
 }
 
