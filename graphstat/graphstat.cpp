@@ -8,7 +8,6 @@ int main(int argc, char* argv[]) {
 		const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "graph.txt", "Input graph");
 		const bool IsEdgeList = Env.GetIfArgPrefixBool("-e:", true, "Edgelist");
 		const bool IsDir = Env.GetIfArgPrefixBool("-d:", true, "Directed graph");
-		const TStr Desc = Env.GetIfArgPrefixStr("-t:", "", "Title");
 		const TStr Plot = Env.GetIfArgPrefixStr("-p:", "", "What statistics to plot:"
 			"\n\tc: cummulative degree distribution"
 			"\n\td: degree distribution"
@@ -95,22 +94,22 @@ int main(int argc, char* argv[]) {
 			printf("=======================================================\n\n"
 					"Directed graph is loaded. Nodes:%d, Edges:%d\n\n", Graph->GetNodes(), Graph->GetEdges());
 			if(PlotDD){
-				TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_out_pdf"), Desc, false, false);
-				TSnap::PlotInDegDistr(Graph, TStr::AddToFMid(InFNm, "_in_pdf"), Desc, false, false);
+				TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_out_pdf"), "", false, false);
+				TSnap::PlotInDegDistr(Graph, TStr::AddToFMid(InFNm, "_in_pdf"), "", false, false);
 			}
 			if(PlotCDD){
-				TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_out_ccdf"), Desc, true, false);
-				TSnap::PlotInDegDistr(Graph, TStr::AddToFMid(InFNm, "_in_ccdf"), Desc, true, false);
+				TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_out_ccdf"), "", true, false);
+				TSnap::PlotInDegDistr(Graph, TStr::AddToFMid(InFNm, "_in_ccdf"), "", true, false);
 			}
-			if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), Desc, false, 32);
-			if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), Desc);
-			if(PlotScc) TSnap::PlotSccDistr(Graph, TStr::AddToFMid(InFNm, "_scc_dist"), Desc);
-			if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf"), Desc);
+			if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), "", false, 32);
+			if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
+			if(PlotScc) TSnap::PlotSccDistr(Graph, TStr::AddToFMid(InFNm, "_scc_dist"), "");
+			if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf"), "");
 			if(PlotSVal){
 				const int Vals = Graph->GetNodes()/2>200?200:Graph->GetNodes()/2;
-				TSnap::PlotSngValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_sng"), Desc);
+				TSnap::PlotSngValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_sng"), "");
 			}
-			if(PlotSVec) TSnap::PlotSngVec(Graph, TStr::AddToFMid(InFNm, "_sng"), Desc);
+			if(PlotSVec) TSnap::PlotSngVec(Graph, TStr::AddToFMid(InFNm, "_sng"), "");
 			if(Cal_b){
 				printf("nodes:%d edges:%d\n", Graph->GetNodes(), Graph->GetEdges());
 				if(Sav_e) TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_digraph"));
@@ -143,11 +142,6 @@ int main(int argc, char* argv[]) {
 				double eff_diam=TSnap::GetAnfEffDiam(Graph);
 				printf("90%% effective diameter: %.4f\n", eff_diam);
 			}
-//			if(Cal_n){
-//				TIntV nodes;
-//				Graph->GetNIdV(nodes);
-//				BIO::SaveInts(nodes, OutFNm+".nodes");
-//			}
 			if(Cal_w){
 				PNGraph wcc=TSnap::GetMxWcc<PNGraph>(Graph);
 				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
@@ -172,14 +166,14 @@ int main(int argc, char* argv[]) {
 			else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
 			printf("=======================================================\n\n"
 					"Undirected graph is loaded. Nodes:%d, Edges:%d\n\n", Graph->GetNodes(), Graph->GetEdges());
-			if(PlotDD)	TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_pdf"), Desc, false, false);
-			if(PlotCDD) TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_ccdf"), Desc, true, false);
-			if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), Desc, false, 32);
-			if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), Desc);
-			if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), Desc);
+			if(PlotDD)	TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_pdf"), "", false, false);
+			if(PlotCDD) TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_ccdf"), "", true, false);
+			if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), "", false, 32);
+			if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
+			if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), "");
 			if(PlotSVal){
 				const int Vals = Graph->GetNodes()/2 > 200 ? 200 : Graph->GetNodes()/2;
-				TSnap::PlotEigValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_eig"), Desc);
+				TSnap::PlotEigValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_eig"), "");
 			}
 			if(Cal_b){
 				printf("nodes:%d  edges:%d\n", Graph->GetNodes(), Graph->GetEdges());
@@ -213,11 +207,6 @@ int main(int argc, char* argv[]) {
 				double eff_diam=TSnap::GetAnfEffDiam(Graph);
 				printf("90%% effective diameter: %.4f\n", eff_diam);
 			}
-//			if(Cal_n){
-//				TIntV nodes;
-//				Graph->GetNIdV(nodes);
-//				BIO::SaveInts(nodes, OutFNm+".nodes");
-//			}
 			if(Cal_w){
 				PUNGraph wcc=TSnap::GetMxWcc<PUNGraph>(Graph);
 				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
