@@ -28,13 +28,13 @@ int main(int argc, char* argv[]) {
 			"\n\ts: largest strongly connected components\n\t");
 		const TStr Fmts = Env.GetIfArgPrefixStr("-f:", "", "How to format the graph:"
 			"\n\tb: convert to binary format (for the purpose of fast loading)"
-			"\n\tm: remaping graph (assign uid from 0)"
+			"\n\tm: maping graph (assign uid from 0)"
 			"\n\tl: remove self-loops"
 			"\n\tn: save all nodes in the graph to a file"
 			"\n\tr: reverse the edge direction\n\t");
 		const TStr Save = Env.GetIfArgPrefixStr("-s:", "", "Save graph:"
-				"\n\te: edgelist"
-				"\n\tb: binary");
+			"\n\te: edgelist"
+			"\n\tb: binary");
 
 		bool PlotDD = Plot.SearchCh('d') != -1;
 		bool PlotCDD = Plot.SearchCh('c') != -1;
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 		if(Fmts.Len()!=0) {
 			// re-mapping nodes
 			if(Fmt_m) {
-				printf("Re-mapping nodes ...\n");
+				printf("Mapping nodes ...\n");
 				MapingNodes(InFNm, IsDir);
 			}
 			// reverse edge direction

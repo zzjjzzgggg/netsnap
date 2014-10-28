@@ -1,8 +1,7 @@
 #include "stdafx.h"
 
 void MapingNodes(const TStr& InFNm, const bool IsDir){
-	printf("Mapping nodes...\n");
-	TStr OutFNm = TStr::Fmt("%s_mapped%s", InFNm.GetFPath().CStr(), InFNm.GetFExt().CStr());
+	TStr OutFNm = TStr::AddToFMid(InFNm, "_mapped");
 	PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
 	if (IsDir) FOutPt->PutStrLn("# Directed graph: "+OutFNm);
 	else FOutPt->PutStrLn("# Undirected graph (each unordered pair of nodes is saved once): " + OutFNm);
@@ -18,7 +17,7 @@ void MapingNodes(const TStr& InFNm, const bool IsDir){
 		if(!nidmap.IsKey(dststr)) nidmap(dststr)=(uid++);
 		FOutPt->PutStrLn(TStr::Fmt("%d\t%d", nidmap(srcstr).Val, nidmap(dststr).Val));
 	}
-	BIO::SaveStrIntH(nidmap, InFNm.GetFPath()+".nmap", "# Node\tNID");
+	BIO::SaveStrIntH(nidmap, TStr::AddToFMid(InFNm, "_nmap"), "# Node\tNID");
 }
 
 void SaveNodes(const TStr& InFNm){
