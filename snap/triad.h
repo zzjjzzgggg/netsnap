@@ -257,31 +257,42 @@ int GetNodeTriadsAll(const PGraph& Graph, const int& NId, int& ClosedTriads) {
 	ClosedTriads = 0;
 	if (NI.GetDeg() < 2) return 0;
 	// find neighborhood
-	TIntH NbhWt(NI.GetDeg());
+	TIntH NbhWt(NI.GetDeg()); int nid;
 	for (int e = 0; e < NI.GetOutDeg(); e++) {
-		int nid = NI.GetOutNId(e);
+		nid = NI.GetOutNId(e);
 		// exclude self edges
-		if (nid != NI.GetId()) NbhWt(nid)+=1;
+		if (nid != NId) NbhWt(nid) += 1;
 	}
 	if (Graph->HasFlag(gfDirected)) {
 		for (int e = 0; e < NI.GetInDeg(); e++) {
-			int nid = NI.GetInNId(e);
+			nid = NI.GetInNId(e);
 			// exclude self edges
-			if (nid != NI.GetId()) NbhWt(nid)+=1;
+			if (nid != NId) NbhWt(nid) += 1;
 		}
 	}
-	TInt srcNId, srcWt, dstNId, dstWt, wt;
 	// count connected neighbors
-	for (int srcNbh = 0; srcNbh<NbhWt.Len(); srcNbh++) {
-		NbhWt.GetKeyDat(srcNbh, srcNId, srcWt);
-		const typename PGraph::TObj::TNodeI SrcNI = Graph->GetNI(srcNId);
-		for (int dstNbh = srcNbh + 1; dstNbh < NbhWt.Len(); dstNbh++) {
-			NbhWt.GetKeyDat(dstNbh, dstNId, dstWt);
+	TInt srcNId, srcWt, dstNId, dstWt, wt, tarNId;
+	typename PGraph::TObj::TNodeI SrcNI, DstNI, tmpNI;
+	for (int i = 0; i<NbhWt.Len(); i++) {
+		NbhWt.GetKeyDat(i, srcNId, srcWt);
+		SrcNI = Graph->GetNI(srcNId);
+		for (int j = i + 1; j < NbhWt.Len(); j++) {
+			NbhWt.GetKeyDat(j, dstNId, dstWt);
+			DstNI = Graph->GetNI(dstNId);
+			if(DstNI.GetDeg()<SrcNI.GetDeg()) { // only check the small degree node
+				tmpNI = DstNI;
+				tarNId = srcNId;
+			} else {
+				tmpNI = SrcNI;
+				tarNId = dstNId;
+			}
 			wt = 0;
-			for (int e=0; e<SrcNI.GetInDeg(); e++)
-				if (SrcNI.GetInNId(e) == dstNId) wt++;
-			for (int e=0; e<SrcNI.GetOutDeg(); e++)
-				if (SrcNI.GetOutNId(e) == dstNId) wt++;
+			for (int e=0; e<tmpNI.GetOutDeg(); e++)
+				if (tmpNI.GetOutNId(e) == tarNId) wt++;
+			if (Graph->HasFlag(gfDirected)){
+				for (int e=0; e<tmpNI.GetInDeg(); e++)
+					if (tmpNI.GetInNId(e) == tarNId) wt++;
+			}
 			ClosedTriads += wt*srcWt*dstWt;
 		}
 	}

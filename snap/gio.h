@@ -23,8 +23,7 @@ template<class PGraph> void SaveEdgeList(const PGraph& Graph, const TStr& OutFNm
 template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm);
 template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm, const TIntStrH& NIdClrH);
 template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm, const TIntStrH& NIdClrH, const TIntStrH& NIdLabelH);
-template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm,
-		const TIntStrH& NIdClrH, const TIntStrH& NIdLabelH,	const TIntStrH& EIdClrH);
+template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm, const TIntStrH& NIdClrH, const TIntStrH& NIdLabelH, const TIntStrH& EIdClrH);
 //template <class PGraph> SaveGml(const PGraph& Graph, const TStr& OutFNm, const TStr& Desc);
 template<class PGraph> void SaveMatlabSparseMtx(const PGraph& Graph, const TStr& OutFNm);
 
@@ -271,6 +270,7 @@ void SaveMatlabSparseMtx(const PGraph& Graph, const TStr& OutFNm) {
 	}
 	fclose(F);
 }
+
 template<class PGraph>
 void SaveDot(const PGraph& Graph, const TStr& OutFNm) {
 	FILE *F = fopen(OutFNm.CStr(), "wt");
