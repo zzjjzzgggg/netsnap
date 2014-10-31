@@ -245,7 +245,8 @@ void GetTriadParticip(const PGraph& Graph, TIntPrV& TriadCntV) {
 }
 
 /// Return number of directed triads a node participates in
-template<class PGraph> int GetNodeTriadsAll(const PGraph& Graph, const int& NId){
+template<class PGraph>
+int GetNodeTriadsAll(const PGraph& Graph, const int& NId){
 	int ClosedTriads;
 	return GetNodeTriadsAll(Graph, NId, ClosedTriads);
 }
