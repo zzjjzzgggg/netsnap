@@ -20,6 +20,7 @@ template<class TKey> TKey& Sample(const TVec<TKey>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey, TFlt>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey, TInt>& samples, TKey& rst);
+// sample
 template<class TKey> void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n);
 template<class TKey> void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n);
 
@@ -79,15 +80,24 @@ TKey& Sample(const THash<TKey, TInt>& samples, TKey& rst){
 }
 
 template<class TKey>
+void ChooseWithReplacement(const TVec<TKey>& samples, TVec<TKey>& rst, const int n){
+	int L=samples.Len();
+	rst.Gen(n);
+	for(int i=0; i<n; i++){
+		rst[i] = samples[TInt::Rnd.GetUniDevInt(0, L-1)];
+	}
+}
+
+template<class TKey>
 void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n){
 	int L=samples.Len();
 	AssertR(n<=L, TStr::Fmt("%d > sample length %d!", n, L));
 	rst.Clr();
 	TIntH map(n);
 	for(int i=0; i<n; i++){
-		int r=TInt::Rnd.GetUniDevInt(i, L-1);
-		rst.Add(samples[map.IsKey(r)?map(r).Val:r]);
-		if(r!=i) map(r)=map.IsKey(i)?map(i).Val:i;
+		int r = TInt::Rnd.GetUniDevInt(i, L-1);
+		rst.Add(samples[map.IsKey(r) ? map(r).Val : r]);
+		if(r!=i) map(r) = map.IsKey(i) ? map(i).Val : i;
 	}
 }
 

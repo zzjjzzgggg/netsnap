@@ -26,7 +26,7 @@ void SaveIntPrV(const TIntPrV& list, const TStr& Fnm, const TStr& anno){
 	for(int i=0; i<list.Len(); i++)
 		FOutPt->PutStrLn(TStr::Fmt("%d\t%d", list[i].Val1.Val, list[i].Val2.Val));
 }
-void SaveIntFltKdV(const TIntFltKdV& list, TStr& Fnm, const TStr& anno){
+void SaveIntFltKdV(const TIntFltKdV& list, const TStr& Fnm, const TStr& anno){
 	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
 	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
 	if(!anno.Empty()) FOutPt->PutStrLn(anno);
