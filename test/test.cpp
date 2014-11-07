@@ -368,16 +368,15 @@ void test_bnegraph(){
 }
 
 int main(int argc, char* argv[]) {
-//	Env = TEnv(argc, argv, TNotify::StdNotify);
-//	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
-//	const bool TrimTail = Env.GetIfArgPrefixBool("-nc:", false, "Trim tail");
-//	if (Env.IsEndOfRun()) return 0;
+	Env = TEnv(argc, argv, TNotify::StdNotify);
+	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
+	const bool TrimTail = Env.GetIfArgPrefixBool("-nc:", false, "Trim tail");
+	if (Env.IsEndOfRun()) return 0;
 //	printf("%d\n", TrimTail);
 //	test_c11();
 //	test_fnm();
 //	test_binom();
 //	test_zip();
-	test_bnegraph();
 	return 0;
 }
 
