@@ -2,85 +2,83 @@
 // Environment
 TEnv::TEnv(const int& _Args, char** _ArgV, const PNotify& _Notify):
     ArgV(), HdStr(), MnArgs(1), SilentP(false), Notify(_Notify) {
-  for (int ArgN = 0; ArgN < _Args; ArgN++)
-      ArgV.Add(TStr(_ArgV[ArgN]));
+	for (int ArgN = 0; ArgN < _Args; ArgN++) ArgV.Add(TStr(_ArgV[ArgN]));
 }
 
 TEnv::TEnv(const TStr& _ArgStr, const PNotify& _Notify):
     ArgV(), HdStr(), MnArgs(1), SilentP(false), Notify(_Notify) {
-  _ArgStr.SplitOnAllCh(' ', ArgV);
+	_ArgStr.SplitOnAllCh(' ', ArgV);
 }
 
 TStr TEnv::GetExeFNm() const {
-  TStr ExeFNm=GetArg(0);
-  if (ExeFNm.IsPrefix("//?")){ // observed on Win64 CGI
-    ExeFNm=ExeFNm.GetSubStr(3, ExeFNm.Len());
-  }
-  return ExeFNm;
+	TStr ExeFNm=GetArg(0);
+	if (ExeFNm.IsPrefix("//?")){ // observed on Win64 CGI
+		ExeFNm=ExeFNm.GetSubStr(3, ExeFNm.Len());
+	}
+	return ExeFNm;
 }
 
 TStr TEnv::GetCmLn(const int& FromArgN) const {
-  TChA CmLnChA;
-  for (int ArgN=FromArgN; ArgN<GetArgs(); ArgN++){
-    if (ArgN>FromArgN){CmLnChA+=' ';}
-    CmLnChA+=GetArg(ArgN);
-  }
-  return CmLnChA;
+	TChA CmLnChA;
+	for (int ArgN=FromArgN; ArgN<GetArgs(); ArgN++){
+		if (ArgN>FromArgN) { CmLnChA+=' ';}
+		CmLnChA+=GetArg(ArgN);
+	}
+	return CmLnChA;
 }
 
 int TEnv::GetPrefixArgN(const TStr& PrefixStr) const {
-  int ArgN=0;
-  while (ArgN<GetArgs()){
-    if (GetArg(ArgN).GetSubStr(0, PrefixStr.Len()-1)==PrefixStr){return ArgN;}
-    ArgN++;
-  }
-  return -1;
+	int ArgN=0;
+	while (ArgN<GetArgs()){
+		if (GetArg(ArgN).GetSubStr(0, PrefixStr.Len()-1)==PrefixStr){ return ArgN; }
+		ArgN++;
+	}
+	return -1;
 }
 
 TStr TEnv::GetArgPostfix(const TStr& PrefixStr) const {
-  int ArgN=GetPrefixArgN(PrefixStr); IAssert(ArgN!=-1);
-  TStr ArgStr=GetArg(ArgN);
-  return ArgStr.GetSubStr(PrefixStr.Len(), ArgStr.Len());
+	int ArgN=GetPrefixArgN(PrefixStr); IAssert(ArgN!=-1);
+	TStr ArgStr=GetArg(ArgN);
+	return ArgStr.GetSubStr(PrefixStr.Len(), ArgStr.Len());
 }
 
 void TEnv::PrepArgs(const TStr& _HdStr, const int& _MnArgs){
-  // put environment state
-  HdStr=_HdStr;
-  MnArgs=_MnArgs;
-  // silence
-  SilentP=true;
-  SilentP=Env.GetIfArgPrefixBool("-silent:", false, "Silence");
-  // start header
-  if (!SilentP){
-    // print header
-    if (!HdStr.Empty()){
-      // print header-string
-      TStr DateStr=__DATE__;
-      printf("%s [%s]\n", HdStr.CStr(), DateStr.CStr());
-      // print header-line
-      for (int ChN=0; ChN<HdStr.Len()+DateStr.Len()+3; ChN++){printf("=");}
-      printf("\n");
-    }
-    // print start of 'usage' message if not enough arguments
-    if (Env.GetArgs()<=MnArgs){
-      TStr ExeFNm=Env.GetArg(0).GetFBase();
-      printf("usage: %s\n", ExeFNm.CStr());
-    }
-  }
+	// put environment state
+	HdStr=_HdStr;
+	MnArgs=_MnArgs;
+	// silence
+	SilentP=true;
+	SilentP=Env.GetIfArgPrefixBool("-silent:", false, "Silence");
+	// start header
+	if (!SilentP){
+		// print header
+		if (!HdStr.Empty()){
+			// print header-string
+			TStr DateStr=__DATE__;
+			printf("%s [%s]\n", HdStr.CStr(), DateStr.CStr());
+			// print header-line
+			for (int ChN=0; ChN<HdStr.Len()+DateStr.Len()+3; ChN++) { printf("="); }
+			printf("\n");
+		}
+		// print start of 'usage' message if not enough arguments
+		if (Env.GetArgs()<=MnArgs){
+			TStr ExeFNm=Env.GetArg(0).GetFBase();
+			printf("usage: %s\n", ExeFNm.CStr());
+		}
+	}
 }
 
 bool TEnv::IsEndOfRun() const {
-  if (!SilentP){
-    // print line in length of header-line
-    if (HdStr.Empty()){
-      printf("========================================\n");
-    } else {
-      for (int ChN=0; ChN<HdStr.Len(); ChN++){printf("=");}
-      printf("\n");
-    }
-  }
-  // return
-  return Env.GetArgs()<=MnArgs;
+	if (!SilentP){
+		// print line in length of header-line
+		if (HdStr.Empty()){
+			printf("========================================\n");
+		} else {
+			for (int ChN=0; ChN<HdStr.Len(); ChN++) { printf("="); }
+			printf("\n");
+		}
+	}
+	return Env.GetArgs()<=MnArgs;
 }
 
 TStr TEnv::GetIfArgPrefixStr(

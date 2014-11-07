@@ -66,5 +66,22 @@ TVec<PNGraph> LoadDyNetGraphV(const TStr& FNm) {
 	return GraphV;
 }
 
+
+PBNEGraph LoadBNEGraph(const TStr& FNm, const bool& HasDat){
+	printf("Loading %s...", FNm.CStr()); fflush(stdout);
+	PBNEGraph Graph = PBNEGraph::New();
+	int SrcNId, DstNId, Dat=-1;
+	TSsParser Ss(FNm);
+	while (Ss.Next()) {
+		if (!Ss.GetInt(0, SrcNId) || !Ss.GetInt(1, DstNId) || (HasDat && !Ss.GetInt(2, Dat))) continue;
+		if (!Graph->IsSrcNode(SrcNId)) Graph->AddSrcNode(SrcNId);
+		if (!Graph->IsDstNode(DstNId)) Graph->AddDstNode(DstNId);
+		Graph->AddEdge(SrcNId, DstNId, Dat);
+	}
+	Graph->Defrag();
+	printf("Done. (SrcNodes: %d, DstNodes: %d, Nodes: %d, Edges: %d)\n", Graph->GetSrcNodes(), Graph->GetDstNodes(), Graph->GetNodes(), Graph->GetEdges());
+	return Graph;
+}
+
 }
 ; // namespace TSnap

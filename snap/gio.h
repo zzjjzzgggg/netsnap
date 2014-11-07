@@ -18,6 +18,8 @@ PNGraph LoadDyNet(const TStr& FNm);
 // DyNetML format, loads all the networks in the file
 TVec<PNGraph> LoadDyNetGraphV(const TStr& FNm);
 
+PBNEGraph LoadBNEGraph(const TStr& FNm, const bool& HasDat=true);
+
 // Save
 template<class PGraph> void SaveEdgeList(const PGraph& Graph, const TStr& OutFNm, const TStr& Desc = TStr(), const bool rev=false);
 template<class PGraph> void SavePajek(const PGraph& Graph, const TStr& OutFNm);

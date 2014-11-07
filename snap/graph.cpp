@@ -553,3 +553,235 @@ void TNEGraph::Dump(FILE *OutF) const {
 	}
 	fprintf(OutF, "\n");
 }
+
+
+/////////////////////////////////////////////////
+// Bipartite Node Edge Graph
+bool TBNEGraph::HasFlag(const TGraphFlag& Flag) const {
+	return HasGraphFlag(TBNEGraph::TNet, Flag);
+}
+
+bool TBNEGraph::TNodeI::IsInNId(const int& NId) const {
+	const TNode& Node = NodeHI.GetDat();
+	for (int edge = 0; edge < Node.GetInDeg(); edge++) {
+		if (NId == Graph->GetEdge(Node.GetInEId(edge)).GetSrcNId())
+			return true;
+	}
+	return false;
+}
+
+bool TBNEGraph::TNodeI::IsOutNId(const int& NId) const {
+	const TNode& Node = NodeHI.GetDat();
+	for (int edge = 0; edge < Node.GetOutDeg(); edge++) {
+		if (NId == Graph->GetEdge(Node.GetOutEId(edge)).GetDstNId())
+			return true;
+	}
+	return false;
+}
+
+int TBNEGraph::AddSrcNode(int NId) {
+	if (NId == -1) { NId = MxSrcNId; MxSrcNId++; }
+	else if (IsSrcNode(NId)) { return NId; } // already a node
+	else { MxSrcNId = TMath::Mx(NId+1, MxSrcNId()); }
+	SrcNodeH.AddDat(NId, TNode(NId));
+	return NId;
+}
+
+int TBNEGraph::AddDstNode(int NId) {
+	if (NId == -1) { NId = MxDstNId; MxDstNId++; }
+	else if (IsDstNode(NId)) { return NId; } // already a node
+	else { MxDstNId = TMath::Mx(NId+1, MxDstNId()); }
+	DstNodeH.AddDat(NId, TNode(NId));
+	return NId;
+}
+
+void TBNEGraph::DelSrcNode(const int& NId) {
+	const TNode& Node = GetSrcNode(NId);
+	for (int d = 0; d < Node.GetDeg(); d++) {
+		const int EId = Node.GetEId(d);
+		const TEdge& Edge = GetEdge(EId);
+		IAssert(Edge.GetSrcNId() == NId);
+		GetDstNode(Edge.GetDstNId()).EIdV.DelIfIn(EId);
+		EdgeH.DelKey(EId);
+	}
+	SrcNodeH.DelKey(NId);
+}
+
+void TBNEGraph::DelDstNode(const int& NId) {
+	const TNode& Node = GetDstNode(NId);
+	for (int d = 0; d<Node.GetDeg(); d++) {
+		const int EId = Node.GetEId(d);
+		const TEdge& Edge = GetEdge(EId);
+		IAssert(Edge.GetDstNId() == NId);
+		GetSrcNode(Edge.GetSrcNId()).EIdV.DelIfIn(EId);
+		EdgeH.DelKey(EId);
+	}
+	DstNodeH.DelKey(NId);
+}
+
+int TBNEGraph::AddEdge(const int& SrcNId, const int& DstNId, const int& Dat, int EId) {
+	if (EId == -1) { EId = MxEId; MxEId++; }
+	else { MxEId = TMath::Mx(EId+1, MxEId()); }
+	IAssert(!IsEdge(EId));
+	IAssertR(IsSrcNode(SrcNId) && IsDstNode(DstNId), TStr::Fmt("%d or %d not a node.", SrcNId, DstNId).CStr());
+	EdgeH.AddDat(EId, TEdge(EId, SrcNId, DstNId, Dat));
+	GetSrcNode(SrcNId).EIdV.AddSorted(EId);
+	GetDstNode(DstNId).EIdV.AddSorted(EId);
+	return EId;
+}
+
+void TBNEGraph::DelEdge(const int& EId) {
+	IAssert(IsEdge(EId));
+	const int SrcNId = GetEdge(EId).GetSrcNId();
+	const int DstNId = GetEdge(EId).GetDstNId();
+	GetSrcNode(SrcNId).EIdV.DelIfIn(EId);
+	GetDstNode(DstNId).EIdV.DelIfIn(EId);
+	EdgeH.DelKey(EId);
+}
+
+// delete all edges between the two nodes
+void TBNEGraph::DelEdge(const int& SrcNId, const int& DstNId) {
+	int EId;
+	IAssert(IsEdge(SrcNId, DstNId, EId)); // there is at least one edge
+	while (IsEdge(SrcNId, DstNId, EId)) {
+		GetSrcNode(SrcNId).EIdV.DelIfIn(EId);
+		GetDstNode(DstNId).EIdV.DelIfIn(EId);
+	}
+	EdgeH.DelKey(EId);
+}
+
+bool TBNEGraph::IsEdge(const int& SrcNId, const int& DstNId, int& EId) const {
+	const TNode& SrcNode = GetSrcNode(SrcNId);
+	for (int edge = 0; edge < SrcNode.GetOutDeg(); edge++) {
+		const TEdge& Edge = GetEdge(SrcNode.GetOutEId(edge));
+		if (DstNId == Edge.GetDstNId()) {
+			EId = Edge.GetId();
+			return true;
+		}
+	}
+	return false;
+}
+
+void TBNEGraph::GetSrcNIdV(TIntV& NIdV) const {
+	NIdV.Gen(GetSrcNodes(), 0);
+	for (int N=SrcNodeH.FFirstKeyId(); SrcNodeH.FNextKeyId(N);) NIdV.Add(SrcNodeH.GetKey(N));
+}
+
+void TBNEGraph::GetDstNIdV(TIntV& NIdV) const {
+	NIdV.Gen(GetDstNodes(), 0);
+	for (int N=DstNodeH.FFirstKeyId(); DstNodeH.FNextKeyId(N);) NIdV.Add(DstNodeH.GetKey(N));
+}
+
+void TBNEGraph::GetEIdV(TIntV& EIdV) const {
+	EIdV.Gen(GetEdges(), 0);
+	for (int E=EdgeH.FFirstKeyId(); EdgeH.FNextKeyId(E); ) EIdV.Add(EdgeH.GetKey(E));
+}
+
+void TBNEGraph::Defrag(const bool& OnlyNodeLinks) {
+	for (int kid = SrcNodeH.FFirstKeyId(); SrcNodeH.FNextKeyId(kid); ) SrcNodeH[kid].EIdV.Pack();
+	for (int kid = DstNodeH.FFirstKeyId(); DstNodeH.FNextKeyId(kid); ) DstNodeH[kid].EIdV.Pack();
+	if (!OnlyNodeLinks && ! SrcNodeH.IsKeyIdEqKeyN()) { SrcNodeH.Defrag(); }
+	if (!OnlyNodeLinks && ! DstNodeH.IsKeyIdEqKeyN()) { DstNodeH.Defrag(); }
+	if (!OnlyNodeLinks && ! EdgeH.IsKeyIdEqKeyN()) { EdgeH.Defrag(); }
+}
+
+bool TBNEGraph::IsOk(const bool& ThrowExcept) const {
+	bool RetVal = true;
+	for (int N = SrcNodeH.FFirstKeyId(); SrcNodeH.FNextKeyId(N); ) {
+		const TNode& Node = SrcNodeH[N];
+		if (!Node.EIdV.IsSorted()) {
+			const TStr Msg = TStr::Fmt("Edge list of src node %d is not sorted.", Node.GetId());
+			if (ThrowExcept) EAssertR(false, Msg);
+			else ErrNotify(Msg.CStr());
+			RetVal=false;
+		}
+		// check edge ids
+		int prevEId = -1;
+		for (int e = 0; e < Node.GetDeg(); e++) {
+			if (! IsEdge(Node.GetEId(e))) {
+				const TStr Msg = TStr::Fmt("Edge id %d of src node %d does not exist.",	Node.GetEId(e), Node.GetId());
+				if (ThrowExcept) EAssertR(false, Msg);
+				else ErrNotify(Msg.CStr());
+				RetVal=false;
+			}
+			if (e > 0 && prevEId == Node.GetEId(e)) {
+				const TStr Msg = TStr::Fmt("Src node %d has duplidate edge id %d.", Node.GetId(), Node.GetEId(e));
+				if (ThrowExcept) EAssertR(false, Msg);
+				else ErrNotify(Msg.CStr());
+				RetVal=false;
+			}
+			prevEId = Node.GetOutEId(e);
+		}
+	}
+	for (int N = DstNodeH.FFirstKeyId(); DstNodeH.FNextKeyId(N); ) {
+		const TNode& Node = DstNodeH[N];
+		if (!Node.EIdV.IsSorted()) {
+			const TStr Msg = TStr::Fmt("Edge list of dst node %d is not sorted.", Node.GetId());
+			if (ThrowExcept) EAssertR(false, Msg);
+			else ErrNotify(Msg.CStr());
+			RetVal=false;
+		}
+		// check edge ids
+		int prevEId = -1;
+		for (int e = 0; e < Node.GetDeg(); e++) {
+			if (! IsEdge(Node.GetEId(e))) {
+				const TStr Msg = TStr::Fmt("Edge id %d of dst node %d does not exist.",	Node.GetOutEId(e), Node.GetId());
+				if (ThrowExcept) EAssertR(false, Msg);
+				else ErrNotify(Msg.CStr());
+				RetVal=false;
+			}
+			if (e > 0 && prevEId == Node.GetEId(e)) {
+				const TStr Msg = TStr::Fmt("Dst node %d has duplidate edge id %d.", Node.GetId(), Node.GetEId(e));
+				if (ThrowExcept) EAssertR(false, Msg);
+				else ErrNotify(Msg.CStr());
+				RetVal=false;
+			}
+			prevEId = Node.GetEId(e);
+		}
+	}
+	for (int E = EdgeH.FFirstKeyId(); EdgeH.FNextKeyId(E); ) {
+		const TEdge& Edge = EdgeH[E];
+		if (!IsSrcNode(Edge.GetSrcNId())) {
+			const TStr Msg = TStr::Fmt("Edge %d source node %d does not exist.", Edge.GetId(), Edge.GetSrcNId());
+			if (ThrowExcept) EAssertR(false, Msg);
+			else ErrNotify(Msg.CStr());
+			RetVal=false;
+		}
+		if (!IsDstNode(Edge.GetDstNId())) {
+			const TStr Msg = TStr::Fmt("Edge %d destination node %d does not exist.", Edge.GetId(), Edge.GetDstNId());
+			if (ThrowExcept) EAssertR(false, Msg);
+			else ErrNotify(Msg.CStr());
+			RetVal=false;
+		}
+	}
+	return RetVal;
+}
+
+void TBNEGraph::Dump(FILE *OutF) const {
+	const int NodePlaces = (int) ceil(log10((double) GetNodes()));
+	const int EdgePlaces = (int) ceil(log10((double) GetEdges()));
+	fprintf(OutF, "-------------------------------------------------\nDirected Bipartite Node-Edge Graph: src-nodes: %d, dst-nodes: %d, nodes: %d, edges: %d\n", GetSrcNodes(), GetDstNodes(), GetNodes(), GetEdges());
+	fprintf(OutF, "SrcNodes:\n");
+	for (TNodeI NodeI = BegSrcNI(); NodeI < EndSrcNI(); NodeI++) {
+		fprintf(OutF, "	%*d]\n", NodePlaces, NodeI.GetId());
+		fprintf(OutF, "		[%d]", NodeI.GetDeg());
+		for (int edge = 0; edge < NodeI.GetDeg(); edge++) {
+			fprintf(OutF, " %*d", EdgePlaces, NodeI.GetEId(edge)); }
+		fprintf(OutF, "\n");
+	}
+	fprintf(OutF, "DstNodes:\n");
+	for (TNodeI NodeI = BegDstNI(); NodeI < EndDstNI(); NodeI++) {
+		fprintf(OutF, "	%*d]\n", NodePlaces, NodeI.GetId());
+		fprintf(OutF, "		[%d]", NodeI.GetDeg());
+		for (int edge = 0; edge < NodeI.GetDeg(); edge++) {
+			fprintf(OutF, " %*d", EdgePlaces, NodeI.GetEId(edge)); }
+		fprintf(OutF, "\n");
+	}
+	fprintf(OutF, "Edges (with data):\n");
+	for (TEdgeI EdgeI = BegEI(); EdgeI < EndEI(); EdgeI++) {
+		fprintf(OutF, "	%*d]	%*d	->	%*d (%d)\n", EdgePlaces, EdgeI.GetId(), NodePlaces, EdgeI.GetSrcNId(), NodePlaces, EdgeI.GetDstNId(), EdgeI.GetDat());
+	}
+	fprintf(OutF, "\n");
+}
+
+

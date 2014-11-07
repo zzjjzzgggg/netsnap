@@ -355,11 +355,29 @@ const TStr GetFNm(const TStr& GFNm) {
 	return GFNm.GetFPath();
 }
 
+void test_bnegraph(){
+	PBNEGraph G = PBNEGraph::New();
+	G->AddSrcNode(0); G->AddSrcNode(1); G->AddSrcNode(2);
+	G->AddDstNode(0); G->AddDstNode(1);
+	G->AddEdge(0,0,1); G->AddEdge(0,1,2); G->AddEdge(1,0,3);
+	G->AddEdge(1,1,4); G->AddEdge(2,1,5); G->AddEdge(2,1,6);
+
+	printf("NSrc: %d, NDst: %d, NNd: %d, NEdge: %d\n", G->GetSrcNodes(), G->GetDstNodes(), G->GetNodes(), G->GetEdges());
+	printf("IsOK: %d\n", G->IsOk());
+	G->Dump();
+}
+
 int main(int argc, char* argv[]) {
+//	Env = TEnv(argc, argv, TNotify::StdNotify);
+//	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
+//	const bool TrimTail = Env.GetIfArgPrefixBool("-nc:", false, "Trim tail");
+//	if (Env.IsEndOfRun()) return 0;
+//	printf("%d\n", TrimTail);
 //	test_c11();
-	test_fnm();
+//	test_fnm();
 //	test_binom();
 //	test_zip();
+	test_bnegraph();
 	return 0;
 }
 

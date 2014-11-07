@@ -38,19 +38,19 @@ public:
 	TPair() :Val1(), Val2() {}
 	TPair(const TPair& Pair):Val1(Pair.Val1), Val2(Pair.Val2) {}
 	TPair(const TVal1& _Val1, const TVal2& _Val2) :	Val1(_Val1), Val2(_Val2) {}
-	explicit TPair(TSIn& SIn) :	Val1(SIn), Val2(SIn) {}
-	void Save(TSOut& SOut) const {Val1.Save(SOut);Val2.Save(SOut);}
-	void Load(TSIn& SIn) {Val1.Load(SIn);Val2.Load(SIn);}
+	explicit TPair(TSIn& SIn) : Val1(SIn), Val2(SIn) {}
+	void Save(TSOut& SOut) const { Val1.Save(SOut);Val2.Save(SOut); }
+	void Load(TSIn& SIn) { Val1.Load(SIn);Val2.Load(SIn); }
 	void LoadXml(const PXmlTok& XmlTok, const TStr& Nm = "");
 	void SaveXml(TSOut& SOut, const TStr& Nm) const;
-	TPair& operator=(const TPair& Pair) {if (this != &Pair) {Val1 = Pair.Val1;Val2 = Pair.Val2;}return *this;}
-	bool operator==(const TPair& Pair) const {return (Val1 == Pair.Val1) && (Val2 == Pair.Val2);}
-	bool operator<(const TPair& Pair) const {return (Val1 < Pair.Val1)||((Val1 == Pair.Val1)&&(Val2 < Pair.Val2));}
-	int GetMemUsed() const {return Val1.GetMemUsed() + Val2.GetMemUsed();}
-	int GetPrimHashCd() const {	return Val1.GetPrimHashCd() + Val2.GetPrimHashCd();} //J: terrible hash function!
-	int GetSecHashCd() const {return Val1.GetSecHashCd() + Val2.GetSecHashCd();} //J: terrible hash function!
-	void GetVal(TVal1& _Val1, TVal2& _Val2) const {_Val1 = Val1;_Val2 = Val2;}
-	TStr GetStr() const {return TStr("Pair(") + Val1.GetStr() + ", " + Val2.GetStr() + ")";}
+	TPair& operator=(const TPair& Pair) { if (this != &Pair) {Val1 = Pair.Val1;Val2 = Pair.Val2;}return *this; }
+	bool operator==(const TPair& Pair) const { return (Val1 == Pair.Val1) && (Val2 == Pair.Val2); }
+	bool operator<(const TPair& Pair) const { return (Val1 < Pair.Val1)||((Val1 == Pair.Val1)&&(Val2 < Pair.Val2)); }
+	int GetMemUsed() const { return Val1.GetMemUsed() + Val2.GetMemUsed(); }
+	int GetPrimHashCd() const { return Val1.GetPrimHashCd() + Val2.GetPrimHashCd(); } //J: terrible hash function!
+	int GetSecHashCd() const { return Val1.GetSecHashCd() + Val2.GetSecHashCd(); } //J: terrible hash function!
+	void GetVal(TVal1& _Val1, TVal2& _Val2) const { _Val1 = Val1;_Val2 = Val2; }
+	TStr GetStr() const { return TStr("Pair(") + Val1.GetStr() + ", " + Val2.GetStr() + ")"; }
 };
 
 template<class TVal1, class TVal2>
