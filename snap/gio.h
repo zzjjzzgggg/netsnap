@@ -132,6 +132,7 @@ void SaveEdgeList(const PGraph& Graph, const TStr& OutFNm, const TStr& Desc, con
 	}
 }
 
+
 template<class PGraph>
 void SavePajek(const PGraph& Graph, const TStr& OutFNm) {
 	TIntH NIdToIdH(Graph->GetNodes(), true);
