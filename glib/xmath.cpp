@@ -9,12 +9,23 @@ double TMath::LogOf2=log(double(2));
 /////////////////////////////////////////////////
 // Special-Functions
 
-double TSpecFunc::Normal(double x, const double mu, const double sigma){
+double TSpecFunc::Normal(double x, const double mu, const double sigma) {
 	return 1/(sqrt(2*TMath::Pi)*sigma)*exp(-pow((x-mu)/sigma, 2)/2);
 }
 
-double TSpecFunc::Binomial(const int K, const int N, const double p){
+double TSpecFunc::Binomial(const int K, const int N, const double p) {
 	return exp(lgamma(N+1.0) - lgamma(N-K+1.0) - lgamma(K+1.0) + K*log(p) + (N-K)*log(1-p));
+}
+
+/*
+*                         T(n+1)     T(k+alpah)T(n-k+beta)  T(alpha+beta)
+* f(k|n,alpha,beta) = --------------.---------------------.---------------
+*                     T(k+1)T(n-k+1)    T(n+alpha+beta)    T(alpha)T(beta)
+*/
+double TSpecFunc::BetaBinomial(const int k, const int n, const double alpha, const double beta) {
+	return exp(lgamma(n+1.0) - lgamma(k+1.0) - lgamma(n-k+1.0) +
+			    lgamma(k+alpha) + lgamma(n-k+beta) - lgamma(n+alpha+beta) +
+			    lgamma(alpha+beta) - lgamma(alpha) - lgamma(beta));
 }
 
 void TSpecFunc::GammaPSeries/*gser*/(

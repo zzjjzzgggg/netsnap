@@ -367,16 +367,46 @@ void test_bnegraph(){
 	G->Dump();
 }
 
+// method chaining
+class A {
+private:
+	int m_a, m_b;
+public:
+	A(): m_a(0), m_b(0) {}
+	A &fa(const int a) { this->m_a = a; return *this; }
+	A &fb(const int b) { this->m_b = b; return *this; }
+	void echo() { printf("a=%d, b=%d\n", m_a, m_b); }
+};
+
+void test_chain(){
+	A obj;
+	obj.echo();
+	obj.fa(1).fb(2);
+	obj.echo();
+}
+
+void test_beta_binom(){
+	const int n = 100000;
+	const double alpha = 0.001/0.005;
+	const double beta = (1-0.001)/0.005;
+	double sum = 0;
+	for (int k=0; k<=n; k++) sum += TSpecFunc::BetaBinomial(k, n, alpha, beta);
+	printf("sum = %g\n", sum);
+}
+
 int main(int argc, char* argv[]) {
-	Env = TEnv(argc, argv, TNotify::StdNotify);
-	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
-	const bool TrimTail = Env.GetIfArgPrefixBool("-nc:", false, "Trim tail");
-	if (Env.IsEndOfRun()) return 0;
+//	Env = TEnv(argc, argv, TNotify::StdNotify);
+//	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
+//	const bool TrimTail = Env.GetIfArgPrefixBool("-nc:", false, "Trim tail");
+//	if (Env.IsEndOfRun()) return 0;
 //	printf("%d\n", TrimTail);
 //	test_c11();
 //	test_fnm();
 //	test_binom();
 //	test_zip();
+//	test_chain();
+//	test_beta_binom();
+	printf("%d\n", abs(1));
 	return 0;
 }
 

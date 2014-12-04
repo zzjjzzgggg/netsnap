@@ -77,6 +77,7 @@ class TSpecFunc {
 public:
 	static double Normal(double x, const double mu=0, const double sigma=1);
 	static double Binomial(const int k, const int n, const double p);
+	static double BetaBinomial(const int k, const int n, const double alpha, const double beta);
 	static void GammaPSeries/*gser*/(double& gamser, const double& a, const double& x, double& gln);
 	static void GammaQContFrac/*gcf*/(double& gammcf, const double& a, const double& x, double& gln);
 	static double GammaQ/*gammq*/(const double& a, const double& x);

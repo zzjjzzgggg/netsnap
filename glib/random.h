@@ -26,6 +26,7 @@ template<class TKey> void Choose(const THashSet<TKey>& samples, THashSet<TKey>& 
 
 // initialize uniform distribution of dist in range [pos_start:]
 void InitUni(TFltV& dist, const int pos_start=0);
+void InitPowerLaw(TFltV& dist, const double alpha, const int pos_start=0);
 
 // Uniformly sample an item from samples
 template<class TKey>
