@@ -394,19 +394,20 @@ void test_beta_binom(){
 	printf("sum = %g\n", sum);
 }
 
+
 int main(int argc, char* argv[]) {
-//	Env = TEnv(argc, argv, TNotify::StdNotify);
-//	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
-//	const bool TrimTail = Env.GetIfArgPrefixBool("-nc:", false, "Trim tail");
+	Env = TEnv(argc, argv, TNotify::StdNotify);
+	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
+	TIntV ints = Env.GetIfArgPrefixIntV("-intv:");
 //	if (Env.IsEndOfRun()) return 0;
-//	printf("%d\n", TrimTail);
+	printf("%d\n", ints.Len());
+	for (int i=0; i<ints.Len(); i++) printf("[%d]: %d\n", i, ints[i].Val);
 //	test_c11();
 //	test_fnm();
 //	test_binom();
 //	test_zip();
 //	test_chain();
 //	test_beta_binom();
-	printf("%d\n", abs(1));
 	return 0;
 }
 

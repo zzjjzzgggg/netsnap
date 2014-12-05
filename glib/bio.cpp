@@ -7,25 +7,19 @@
 
 namespace BIO{
 
-void SaveIntV(const TIntV& list, const TStr& Fnm, const TStr& anno){
-	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
-	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
-	if(!anno.Empty()) FOutPt->PutStrLn(anno);
-	for(int i=0; i<list.Len(); i++) { FOutPt->PutInt(list[i]); FOutPt->PutLn(); }
-}
-void SaveFltV(const TFltV& list, const TStr& Fnm, const TStr& anno){
-	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
-	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
-	if(!anno.Empty()) FOutPt->PutStrLn(anno);
-	for(int i=0; i<list.Len(); i++) FOutPt->PutStrLn(TStr::Fmt("%.6e", list[i].Val));
-}
-void SaveIntPrV(const TIntPrV& list, const TStr& Fnm, const TStr& anno){
-	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
-	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
-	if(!anno.Empty()) FOutPt->PutStrLn(anno);
-	for(int i=0; i<list.Len(); i++)
-		FOutPt->PutStrLn(TStr::Fmt("%d\t%d", list[i].Val1.Val, list[i].Val2.Val));
-}
+
+
+void SaveIntV(const TIntV& IntV, const TStr& Fnm, const TStr& anno) { SaveVec(IntV, Fnm, "%d", anno); }
+void SaveFltV(const TFltV& FltV, const TStr& Fnm, const TStr& Fmt, const TStr& anno) { SaveVec(FltV, Fnm, Fmt, anno); }
+
+void SaveIntPrV(const TIntPrV& IntPrV, const TStr& Fnm, const TStr& anno) { SavePrV<TInt, TInt>(IntPrV, Fnm, "%d\t%d", anno); }
+void SaveFltPrV(const TFltPrV& FltPrV, const TStr& Fnm, const TStr& Fmt, const TStr& anno) { SavePrV<TFlt, TFlt>(FltPrV, Fnm, Fmt, anno); }
+
+void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const TStr& anno) { SaveVecWithIdx<TInt>(IntV, Fnm, "%d\t%d", anno); }
+void SaveFltVWithIdx(const TFltV& FltV, const TStr& Fnm, const TStr& anno) { SaveVecWithIdx<TFlt>(FltV, Fnm, "%d\t%.6e", anno); }
+
+
+
 void SaveIntFltKdV(const TIntFltKdV& list, const TStr& Fnm, const TStr& anno){
 	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
 	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
@@ -82,19 +76,6 @@ void SaveIntPrSet(const TIntPrSet& hash, const TStr& Fnm, const TStr& anno){
 		TIntPr pr=hash.GetKey(i);
 		FOutPt->PutStrLn(TStr::Fmt("%d\t%d", pr.Val1.Val, pr.Val2.Val));
 	}
-}
-
-void SaveIntVWithIdx(const TIntV& list, const TStr& Fnm, const TStr& anno){
-	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
-	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
-	if(!anno.Empty()) FOutPt->PutStrLn(anno);
-	for(int i=0; i<list.Len(); i++) FOutPt->PutStrLn(TStr::Fmt("%d\t%d", i, list[i].Val));
-}
-void SaveFltVWithIdx(const TFltV& list, const TStr& Fnm, const TStr& anno){
-	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
-	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), list.Len()));
-	if(!anno.Empty()) FOutPt->PutStrLn(anno);
-	for(int i=0; i<list.Len(); i++) FOutPt->PutStrLn(TStr::Fmt("%d\t%.6e", i, list[i].Val));
 }
 
 void SaveIntArray(const int* list, const int len, const TStr& Fnm, const TStr& anno){

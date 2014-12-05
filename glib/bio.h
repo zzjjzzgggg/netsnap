@@ -7,9 +7,46 @@
 
 namespace BIO {
 
-	void SaveIntV(const TIntV& list, const TStr& Fnm, const TStr& anno="");
-	void SaveFltV(const TFltV& list, const TStr& Fnm, const TStr& anno="");
-	void SaveIntPrV(const TIntPrV& list, const TStr& Fnm, const TStr& anno="");
+template<class TVal> void SaveVec(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno);
+void SaveIntV(const TIntV& IntV, const TStr& Fnm, const TStr& anno="");
+void SaveFltV(const TFltV& FltV, const TStr& Fnm, const TStr& Fmt="%.6e", const TStr& anno="");
+
+template<class TVal1, class TVal2> void SavePrV(const TVec< TPair<TVal1, TVal2> >& Pairs, const TStr& Fnm, const TStr& Fmt, const TStr& anno="");
+void SaveIntPrV(const TIntPrV& IntPrV, const TStr& Fnm, const TStr& anno="");
+void SaveFltPrV(const TFltPrV& FltPrV, const TStr& Fnm, const TStr& Fmt="%.6e\t%.6e", const TStr& anno="");
+
+template<class TVal> void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno);
+void SaveIntVWithIdx(const TIntV* IntV, const TStr& Fnm, const TStr& anno="");
+void SaveFltVWithIdx(const TIntV* IntV, const TStr& Fnm, const TStr& anno="");
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<class TVal>
+void SaveVec(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno){
+	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
+	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), Vec.Len()));
+	if(!anno.Empty()) FOutPt->PutStrLn(anno);
+	for(int i=0; i<Vec.Len(); i++) FOutPt->PutStrLn(TStr::Fmt(Fmt.CStr(), Vec[i].Val));
+}
+
+template<class TVal1, class TVal2>
+void SavePrV(const TVec< TPair<TVal1, TVal2> >& Pairs, const TStr& Fnm, const TStr& Fmt, const TStr& anno){
+	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
+	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), Pairs.Len()));
+	if(!anno.Empty()) FOutPt->PutStrLn(anno);
+	for(int i=0; i<Pairs.Len(); i++)
+		FOutPt->PutStrLn(TStr::Fmt(Fmt.CStr(), Pairs[i].Val1.Val, Pairs[i].Val2.Val));
+}
+
+template<class TVal>
+void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno){
+	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
+	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), Vec.Len()));
+	if(!anno.Empty()) FOutPt->PutStrLn(anno);
+	for(int i=0; i<Vec.Len(); i++) FOutPt->PutStrLn(TStr::Fmt(Fmt.CStr(), i, Vec[i].Val));
+}
+
+
 	void SaveIntFltKdV(const TIntFltKdV& data, const TStr& Fnm, const TStr& anno="");
 
 	void SaveIntSet(const TIntSet& set, const TStr& Fnm, const TStr& anno="");
@@ -21,8 +58,6 @@ namespace BIO {
 	void SaveIntPrIntH(const TIntPrIntH& hash, const TStr& Fnm, const TStr& anno="");
 	void SaveIntIntPrH(const TIntPrH& hash, const TStr& Fnm, const TStr& anno="");
 
-	void SaveIntVWithIdx(const TIntV& list, const TStr& Fnm, const TStr& anno="");
-	void SaveFltVWithIdx(const TFltV& list, const TStr& Fnm, const TStr& anno="");
 
 	void LoadIntV(const TStr& fnm, TIntV& dat, const int col=0);
 	void LoadIntSet(const TStr& fnm, TIntSet& dat, const int col=0);

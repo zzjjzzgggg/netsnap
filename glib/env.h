@@ -48,6 +48,8 @@ public:
   int GetIfArgPrefixInt(const TStr& PrefixStr, const int& DfVal=0, const TStr& DNm="") const;
   TIntV GetIfArgPrefixIntV(const TStr& PrefixStr, TIntV& DfValV, const TStr& DNm="") const;
   TIntV GetIfArgPrefixIntV(const TStr& PrefixStr, const TStr& DNm="") const { TIntV DfValV; return GetIfArgPrefixIntV(PrefixStr, DfValV, DNm);}
+  TFltV GetIfArgPrefixFltV(const TStr& PrefixStr, TFltV& DfValV, const TStr& DNm="") const;
+  TFltV GetIfArgPrefixFltV(const TStr& PrefixStr, const TStr& DNm="") const { TFltV DfValV; return GetIfArgPrefixFltV(PrefixStr, DfValV, DNm);}
   double GetIfArgPrefixFlt(const TStr& PrefixStr, const double& DfVal=0, const TStr& DNm="") const;
 
   // environment variables

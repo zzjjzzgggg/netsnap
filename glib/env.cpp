@@ -107,8 +107,7 @@ TStr TEnv::GetIfArgPrefixStr(
   }
 }
 
-TStrV TEnv::GetIfArgPrefixStrV(
- const TStr& PrefixStr, TStrV& DfValV, const TStr& DNm) const {
+TStrV TEnv::GetIfArgPrefixStrV( const TStr& PrefixStr, TStrV& DfValV, const TStr& DNm) const {
   TStrV ArgValV;
   if (Env.GetArgs()<=MnArgs){
     // 'usage' argument message
@@ -202,23 +201,36 @@ int TEnv::GetIfArgPrefixInt(
   }
 }
 
-TIntV TEnv::GetIfArgPrefixIntV(
- const TStr& PrefixStr, TIntV& DfValV, const TStr& DNm) const {
-  // convert default-integer-values to default-string-values
-  TStrV DfValStrV;
-  for (int ValN=0; ValN<DfValV.Len(); ValN++){
-    DfValStrV.Add(TInt::GetStr(DfValV[ValN]));}
-  // get string-values
-  TStrV ValStrV=GetIfArgPrefixStrV(PrefixStr, DfValStrV, DNm);
-  // convert string-values to integer-values
-  TIntV ValV;
-  for (int ValN=0; ValN<ValStrV.Len(); ValN++){
-    int Val;
-    if (ValStrV[ValN].IsInt(Val)){
-      ValV.Add(Val);}
-  }
-  // return value-vector
-  return ValV;
+TIntV TEnv::GetIfArgPrefixIntV(const TStr& PrefixStr, TIntV& DfValV, const TStr& DNm) const {
+	// convert default-integer-values to default-string-values
+	TStrV DfValStrV;
+	for (int ValN=0; ValN<DfValV.Len(); ValN++) DfValStrV.Add(TInt::GetStr(DfValV[ValN]));
+	// get string-values
+	TStrV ValStrV = GetIfArgPrefixStrV(PrefixStr, DfValStrV, DNm);
+	// convert string-values to integer-values
+	TIntV ValV;
+	int Val;
+	for (int ValN=0; ValN<ValStrV.Len(); ValN++){
+		if (ValStrV[ValN].IsInt(Val)) ValV.Add(Val);
+	}
+	// return value-vector
+	return ValV;
+}
+
+TFltV TEnv::GetIfArgPrefixFltV(const TStr& PrefixStr, TFltV& DfValV, const TStr& DNm) const {
+	// convert default-integer-values to default-string-values
+	TStrV DfValStrV;
+	for (int ValN=0; ValN<DfValV.Len(); ValN++) DfValStrV.Add(TFlt::GetStr(DfValV[ValN]));
+	// get string-values
+	TStrV ValStrV = GetIfArgPrefixStrV(PrefixStr, DfValStrV, DNm);
+	// convert string-values to integer-values
+	TFltV ValV;
+	double Val;
+	for (int ValN=0; ValN<ValStrV.Len(); ValN++){
+		if (ValStrV[ValN].IsFlt(Val)) ValV.Add(Val);
+	}
+	// return value-vector
+	return ValV;
 }
 
 double TEnv::GetIfArgPrefixFlt(
