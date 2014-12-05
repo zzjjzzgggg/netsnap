@@ -108,44 +108,41 @@ TStr TEnv::GetIfArgPrefixStr(
 }
 
 TStrV TEnv::GetIfArgPrefixStrV( const TStr& PrefixStr, TStrV& DfValV, const TStr& DNm) const {
-  TStrV ArgValV;
-  if (Env.GetArgs()<=MnArgs){
-    // 'usage' argument message
-    if (!SilentP){
-      printf("   %s%s (default:", PrefixStr.CStr(), DNm.CStr());
-      for (int DfValN=0; DfValN<DfValV.Len(); DfValN++){
-        if (DfValN>0){printf(", ");}
-        printf("'%s'", DfValV[DfValN].CStr());
-      }
-      printf(")\n");
-    }
-    return ArgValV;
-  } else {
-    // argument & value message
-    TStr ArgValVChA;
-    for (int ArgN=0; ArgN<GetArgs(); ArgN++){
-      // get argument string
-      TStr ArgStr=GetArg(ArgN);
-      if (ArgStr.GetSubStr(0, PrefixStr.Len()-1)==PrefixStr){
-        // extract & add argument value
-        TStr ArgVal=ArgStr.GetSubStr(PrefixStr.Len(), ArgStr.Len());
-        ArgValV.Add(ArgVal);
-        // add to message string
-        if (ArgValV.Len()>1){ArgValVChA+=", ";}
-        ArgValVChA+=ArgValV.Last();
-      }
-    }
-    if (ArgValV.Empty()){ArgValV=DfValV;}
-    // output argument values
-    TChA MsgChA;
-    MsgChA+=DNm; MsgChA+=" ("; MsgChA+=PrefixStr; MsgChA+=")=";
-    for (int ArgValN=0; ArgValN<ArgValV.Len(); ArgValN++){
-      if (ArgValN>0){MsgChA+=", ";}
-      MsgChA+="'"; MsgChA+=ArgValV[ArgValN]; MsgChA+="'";
-    }
-    if (!SilentP){TNotify::OnStatus(Notify, MsgChA);}
-    return ArgValV;
-  }
+	TStrV ArgValV;
+	if (Env.GetArgs() <= MnArgs){
+		// 'usage' argument message
+		if (!SilentP){
+			printf("   %s%s (default:", PrefixStr.CStr(), DNm.CStr());
+			for (int DfValN=0; DfValN<DfValV.Len(); DfValN++){
+				if (DfValN>0) printf(", ");
+				printf("%s", DfValV[DfValN].CStr());
+			}
+			printf(")\n");
+		}
+		return ArgValV;
+	} else {
+		// argument & value message
+		TStrV Items;
+		for (int ArgN=0; ArgN<GetArgs(); ArgN++){
+			// get argument string
+			TStr ArgStr = GetArg(ArgN);
+			if (ArgStr.GetSubStr(0, PrefixStr.Len()-1) == PrefixStr){
+				TStr ArgVals = ArgStr.GetSubStr(PrefixStr.Len(), ArgStr.Len());
+				ArgVals.SplitOnAllCh(',', Items);
+				for (int i = 0; i<Items.Len(); i++) ArgValV.Add(Items[i]);
+			}
+		}
+		if (ArgValV.Empty()) ArgValV = DfValV;
+		// output argument values
+		TChA MsgChA;
+		MsgChA += DNm; MsgChA+=" ("; MsgChA += PrefixStr; MsgChA += ")=";
+		for (int ArgValN=0; ArgValN<ArgValV.Len(); ArgValN++){
+			if (ArgValN>0) MsgChA+=", ";
+			MsgChA+=ArgValV[ArgValN];
+		}
+		if (!SilentP) TNotify::OnStatus(Notify, MsgChA);
+		return ArgValV;
+	}
 }
 
 bool TEnv::GetIfArgPrefixBool(

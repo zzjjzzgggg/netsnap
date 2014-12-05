@@ -398,10 +398,22 @@ void test_beta_binom(){
 int main(int argc, char* argv[]) {
 	Env = TEnv(argc, argv, TNotify::StdNotify);
 	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
-	TIntV ints = Env.GetIfArgPrefixIntV("-intv:");
-//	if (Env.IsEndOfRun()) return 0;
-	printf("%d\n", ints.Len());
-	for (int i=0; i<ints.Len(); i++) printf("[%d]: %d\n", i, ints[i].Val);
+	TStrV StrV = Env.GetIfArgPrefixStrV("-s:");
+	TIntV IntV = Env.GetIfArgPrefixIntV("-i:");
+	TFltV FltV = Env.GetIfArgPrefixFltV("-f:");
+	if (Env.IsEndOfRun()) return 0;
+	printf("%d, %d, %d\n", StrV.Len(), IntV.Len(), FltV.Len());
+	TStrV Items;
+	for (int i=0; i<StrV.Len(); i++) {
+		printf("[%d]: %s\n", i, StrV[i].CStr());
+	}
+	for (int i=0; i<IntV.Len(); i++) {
+		printf("[%d]: %d\n", i, IntV[i].Val);
+	}
+	for (int i=0; i<FltV.Len(); i++) {
+		printf("[%d]: %g\n", i, FltV[i].Val);
+	}
+
 //	test_c11();
 //	test_fnm();
 //	test_binom();
