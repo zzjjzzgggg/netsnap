@@ -16,8 +16,8 @@ void SaveIntPrV(const TIntPrV& IntPrV, const TStr& Fnm, const TStr& anno="");
 void SaveFltPrV(const TFltPrV& FltPrV, const TStr& Fnm, const TStr& Fmt="%.6e\t%.6e", const TStr& anno="");
 
 template<class TVal> void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno);
-void SaveIntVWithIdx(const TIntV* IntV, const TStr& Fnm, const TStr& anno="");
-void SaveFltVWithIdx(const TIntV* IntV, const TStr& Fnm, const TStr& anno="");
+void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const TStr& anno="");
+void SaveFltVWithIdx(const TFltV& FltV, const TStr& Fnm, const TStr& anno="");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
