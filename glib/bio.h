@@ -47,6 +47,8 @@ void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, con
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void SaveIntFltKdV(const TIntFltKdV& data, const TStr& Fnm, const TStr& anno="");
 
 	void SaveIntSet(const TIntSet& set, const TStr& Fnm, const TStr& anno="");
