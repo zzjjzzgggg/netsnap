@@ -325,6 +325,27 @@ public:
 	static char* GetCurTm(){static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr();}
 };
 
+class TExeSteadyTm{
+private:
+	std::chrono::steady_clock::time_point LastTick;
+public:
+	TExeSteadyTm() { Tick(); }
+	void Tick() { LastTick = std::chrono::steady_clock::now(); }
+	double GetSecs() const {
+		auto CurTime = std::chrono::steady_clock::now();
+		return std::chrono::duration<double, std::milli> (CurTime - LastTick).count()/1000;
+	}
+	const char* GetStr() const { return GetTmStr(); }
+	const char* GetTmStr() const {
+		static char TmStr[32];
+		if(GetSecs()<60) sprintf(TmStr, "%.2fs", GetSecs());
+		else if(GetSecs()<3600) sprintf(TmStr, "%02dm%02ds", int(GetSecs())/60, int(GetSecs())%60);
+		else sprintf(TmStr, "%02dh%02dm", int(GetSecs())/3600, (int(GetSecs())%3600)/60);
+		return TmStr;
+	}
+	static char* GetCurTm() { static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr(); }
+};
+
 /////////////////////////////////////////////////
 // Time-Stop-Watch
 class TTmStopWatch {

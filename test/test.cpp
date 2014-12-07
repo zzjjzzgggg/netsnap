@@ -6,9 +6,15 @@
 // Description : Hello World in C, Ansi-style
 //============================================================================
 
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <functional>
+#include <vector>
+
 #include "../snap/Snap.h"
+#include "ThreadPool.h"
 
 class Node{
 public:
@@ -394,8 +400,48 @@ void test_beta_binom(){
 	printf("sum = %g\n", sum);
 }
 
+void test_c11_chrono(){
+	auto start = std::chrono::steady_clock::now();
+	sleep(10);
+	auto end = std::chrono::steady_clock::now();
+	double mil = std::chrono::duration <double, std::milli> (end - start).count();
+	printf("%f\n", mil);
+
+	TExeSteadyTm Tm;
+	sleep(10);
+	printf("%f\n", Tm.GetSecs());
+}
+
+void sub_gt(const int id, SynQueue<int>& Que) {
+	TExeSteadyTm tm;
+	int nid, ntrids;
+	printf("[%d] is ready.\n", id);
+	while (Que.TryPop(nid)) {
+		// doing jobs
+		printf("From %d: %d\n", id, nid);
+	}
+	printf("[%d] costs time: %s\n", id, tm.GetStr());
+}
+
+void test_syn_queue() {
+	TExeTm tm;
+	// assign jobs
+	SynQueue<int> Qu;
+	for (int i=0; i<1000; i++) Qu.Push(i);
+	// assign threads
+	std::vector<std::thread> threads;
+	for (int n=0; n<2; n++) threads.emplace_back([n, &Qu] { sub_gt(n, Qu); });
+	for(std::thread& t: threads) t.join();
+}
+
+void test_thread_pool(){
+	ThreadPool Pool;
+	for (int i=0; i<2; i++) Pool.AssignJob( [i] { printf("%d\n", i); } );
+	Pool.Start();
+}
 
 int main(int argc, char* argv[]) {
+	/*
 	Env = TEnv(argc, argv, TNotify::StdNotify);
 	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
 	TStrV StrV = Env.GetIfArgPrefixStrV("-s:");
@@ -413,7 +459,10 @@ int main(int argc, char* argv[]) {
 	for (int i=0; i<FltV.Len(); i++) {
 		printf("[%d]: %g\n", i, FltV[i].Val);
 	}
-
+*/
+//	test_c11_chrono();
+//	test_syn_queue();
+	test_thread_pool();
 //	test_c11();
 //	test_fnm();
 //	test_binom();

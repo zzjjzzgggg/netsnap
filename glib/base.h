@@ -75,6 +75,15 @@
   #include <netdb.h>
   #include <arpa/inet.h>
   #include <netinet/in.h>
+
+
+	#include <thread>
+	#include <vector>
+	#include <mutex>
+	#include <condition_variable>
+	#include <chrono>
+	#include <queue>
+
 #endif
 
 // word size
@@ -181,6 +190,8 @@
 
 #include "bio.h"
 #include "random.h"
+
+#include "synqueue.h"
 
 void BaseTralala();
 
