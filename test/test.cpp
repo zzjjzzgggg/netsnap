@@ -462,13 +462,14 @@ int main(int argc, char* argv[]) {
 */
 //	test_c11_chrono();
 //	test_syn_queue();
-	test_thread_pool();
+//	test_thread_pool();
 //	test_c11();
 //	test_fnm();
 //	test_binom();
 //	test_zip();
 //	test_chain();
 //	test_beta_binom();
+	printf("%.6e\n", TFlt::Mx);
 	return 0;
 }
 
