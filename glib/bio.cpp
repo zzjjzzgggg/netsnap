@@ -15,8 +15,12 @@ void SaveFltV(const TFltV& FltV, const TStr& Fnm, const TStr& Fmt, const TStr& a
 void SaveIntPrV(const TIntPrV& IntPrV, const TStr& Fnm, const TStr& anno) { SavePrV<TInt, TInt>(IntPrV, Fnm, "%d\t%d", anno); }
 void SaveFltPrV(const TFltPrV& FltPrV, const TStr& Fnm, const TStr& Fmt, const TStr& anno) { SavePrV<TFlt, TFlt>(FltPrV, Fnm, Fmt, anno); }
 
-void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const TStr& anno) { SaveVecWithIdx<TInt>(IntV, Fnm, "%d\t%d", anno); }
-void SaveFltVWithIdx(const TFltV& FltV, const TStr& Fnm, const TStr& anno) { SaveVecWithIdx<TFlt>(FltV, Fnm, "%d\t%.6e", anno); }
+void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const int StartIdx, const TStr& anno) {
+	SaveVecWithIdx<TInt>(IntV, Fnm, "%d\t%d", StartIdx, anno);
+}
+void SaveFltVWithIdx(const TFltV& FltV, const TStr& Fnm, const int StartIdx, const TStr& anno) {
+	SaveVecWithIdx<TFlt>(FltV, Fnm, "%d\t%.6e", StartIdx, anno);
+}
 
 
 

@@ -15,9 +15,9 @@ template<class TVal1, class TVal2> void SavePrV(const TVec< TPair<TVal1, TVal2> 
 void SaveIntPrV(const TIntPrV& IntPrV, const TStr& Fnm, const TStr& anno="");
 void SaveFltPrV(const TFltPrV& FltPrV, const TStr& Fnm, const TStr& Fmt="%.6e\t%.6e", const TStr& anno="");
 
-template<class TVal> void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno);
-void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const TStr& anno="");
-void SaveFltVWithIdx(const TFltV& FltV, const TStr& Fnm, const TStr& anno="");
+template<class TVal> void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const int StartIdx, const TStr& anno);
+void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const int StartIdx=0, const TStr& anno="");
+void SaveFltVWithIdx(const TFltV& FltV, const TStr& Fnm, const int StartIdx=0, const TStr& anno="");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,11 +39,11 @@ void SavePrV(const TVec< TPair<TVal1, TVal2> >& Pairs, const TStr& Fnm, const TS
 }
 
 template<class TVal>
-void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno){
+	void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const int StartIdx, const TStr& anno){
 	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
 	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), Vec.Len()));
 	if(!anno.Empty()) FOutPt->PutStrLn(anno);
-	for(int i=0; i<Vec.Len(); i++) FOutPt->PutStrLn(TStr::Fmt(Fmt.CStr(), i, Vec[i].Val));
+	for(int i=0; i<Vec.Len(); i++) FOutPt->PutStrLn(TStr::Fmt(Fmt.CStr(), i+StartIdx, Vec[i].Val));
 }
 
 
@@ -76,4 +76,3 @@ void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, con
 	void SaveDubArray(const double* list, const int len, const TStr& Fnm, const TStr& anno="");
 
 }
-
