@@ -440,6 +440,18 @@ void test_thread_pool(){
 	Pool.Start();
 }
 
+void test_beta_binom2(int s, int n, double alpha, double p){
+	double bin = lgamma(n+1.0) - lgamma(s+1.0) - lgamma(n-s+1.0);
+	double sum = 0;
+	for(int k=0; k<n; k++) {
+		sum += (k<s) ? log(k * alpha + p) : log((k - s) * alpha + 1 - p);
+		sum -= log(k * alpha + 1);
+	}
+	double rst = exp(bin + sum);
+	double tru = TSpecFunc::BetaBinomial(s, n, p/alpha, (1-p)/alpha);
+	printf("%.6e\n%.6e\n", rst, tru);
+}
+
 int main(int argc, char* argv[]) {
 	/*
 	Env = TEnv(argc, argv, TNotify::StdNotify);
@@ -469,7 +481,6 @@ int main(int argc, char* argv[]) {
 //	test_zip();
 //	test_chain();
 //	test_beta_binom();
-	printf("%.6e\n", TFlt::Mx);
+	test_beta_binom2(2, 10, 0.000000002, 0.00004);
 	return 0;
 }
-

@@ -1,4 +1,3 @@
-
 /////////////////////////////////////////////////
 
 // Address-Pointer
@@ -10,21 +9,21 @@ public:
 	TAPt(): Addr(NULL) {}
 	TAPt(const TAPt& Pt): Addr(Pt.Addr) {}
 	TAPt(TRec* _Addr): Addr(_Addr) {}
-	TAPt(TSIn&) {Fail;}
-	void Save(TSOut&) const {Fail;}
+	TAPt(TSIn&) {Fail; }
+	void Save(TSOut&) const {Fail; }
 
-	TAPt& operator=(const TAPt& Pt) {Addr = Pt.Addr;return *this;}
-	TAPt& operator=(TRec* _Addr) {Addr = _Addr;	return *this;}
-	bool operator==(const TAPt& Pt) const {return *Addr == *Pt.Addr;}
-	bool operator!=(const TAPt& Pt) const {return *Addr != *Pt.Addr;}
-	bool operator<(const TAPt& Pt) const {return *Addr < *Pt.Addr;}
+	TAPt& operator=(const TAPt& Pt) {Addr = Pt.Addr;return *this; }
+	TAPt& operator=(TRec* _Addr) {Addr = _Addr;	return *this; }
+	bool operator==(const TAPt& Pt) const {return *Addr == *Pt.Addr; }
+	bool operator!=(const TAPt& Pt) const {return *Addr != *Pt.Addr; }
+	bool operator<(const TAPt& Pt) const {return *Addr < *Pt.Addr; }
 
-	TRec* operator->() const {Assert(Addr != NULL);	return Addr;}
-	TRec& operator*() const {Assert(Addr != NULL);	return *Addr;}
-	TRec& operator[](const int& RecN) const {Assert(Addr != NULL);	return Addr[RecN];}
-	TRec* operator()() const {return Addr;}
+	TRec* operator->() const {Assert(Addr != NULL);	return Addr; }
+	TRec& operator*() const {Assert(Addr != NULL);	return *Addr; }
+	TRec& operator[](const int& RecN) const {Assert(Addr != NULL);	return Addr[RecN]; }
+	TRec* operator()() const {return Addr; }
 
-	bool Empty() const {return Addr == NULL;}
+	bool Empty() const {return Addr == NULL; }
 };
 
 /////////////////////////////////////////////////
@@ -43,7 +42,7 @@ public:
 	void Load(TSIn& SIn) { Val1.Load(SIn);Val2.Load(SIn); }
 	void LoadXml(const PXmlTok& XmlTok, const TStr& Nm = "");
 	void SaveXml(TSOut& SOut, const TStr& Nm) const;
-	TPair& operator=(const TPair& Pair) { if (this != &Pair) {Val1 = Pair.Val1;Val2 = Pair.Val2;}return *this; }
+	TPair& operator=(const TPair& Pair) { if (this != &Pair) { Val1 = Pair.Val1; Val2 = Pair.Val2; } return *this; }
 	bool operator==(const TPair& Pair) const { return (Val1 == Pair.Val1) && (Val2 == Pair.Val2); }
 	bool operator<(const TPair& Pair) const { return (Val1 < Pair.Val1)||((Val1 == Pair.Val1)&&(Val2 < Pair.Val2)); }
 	int GetMemUsed() const { return Val1.GetMemUsed() + Val2.GetMemUsed(); }
@@ -120,7 +119,7 @@ public:
 	TTriple(const TTriple& Triple): Val1(Triple.Val1), Val2(Triple.Val2), Val3(Triple.Val3) {}
 	TTriple(const TVal1& _Val1, const TVal2& _Val2, const TVal3& _Val3): Val1(_Val1), Val2(_Val2), Val3(_Val3) {}
 	explicit TTriple(TSIn& SIn): Val1(SIn), Val2(SIn), Val3(SIn) {}
-	void Save(TSOut& SOut) const {	Val1.Save(SOut); Val2.Save(SOut); Val3.Save(SOut);}
+	void Save(TSOut& SOut) const { Val1.Save(SOut); Val2.Save(SOut); Val3.Save(SOut); }
 	void LoadXml(const PXmlTok& XmlTok, const TStr& Nm = "");
 	void SaveXml(TSOut& SOut, const TStr& Nm) const;
 
@@ -132,13 +131,16 @@ public:
 		}
 		return *this;
 	}
-	bool operator==(const TTriple& Triple) const {return Val1==Triple.Val1 && Val2==Triple.Val2 && Val3==Triple.Val3;}
-	bool operator<(const TTriple& Triple) const {return Val1<Triple.Val1 || (Val1==Triple.Val1 && Val2<Triple.Val2) || (Val1==Triple.Val1 && Val2==Triple.Val2 && Val3<Triple.Val3);}
+	bool operator==(const TTriple& Triple) const { return Val1==Triple.Val1 && Val2==Triple.Val2 && Val3==Triple.Val3; }
+	bool operator<(const TTriple& Triple) const {
+		return Val1<Triple.Val1 || (Val1==Triple.Val1 && Val2<Triple.Val2) ||
+			(Val1==Triple.Val1 && Val2==Triple.Val2 && Val3<Triple.Val3);
+	}
 
-	int GetPrimHashCd() const {return Val1.GetPrimHashCd() + Val2.GetPrimHashCd() + Val3.GetPrimHashCd();}
-	int GetSecHashCd() const {return Val1.GetSecHashCd() + Val2.GetSecHashCd() + Val3.GetSecHashCd();}
+	int GetPrimHashCd() const { return Val1.GetPrimHashCd() + Val2.GetPrimHashCd() + Val3.GetPrimHashCd(); }
+	int GetSecHashCd() const { return Val1.GetSecHashCd() + Val2.GetSecHashCd() + Val3.GetSecHashCd(); }
 
-	void GetVal(TVal1& _Val1, TVal2& _Val2, TVal3& _Val3) const {_Val1 = Val1; _Val2 = Val2; _Val3 = Val3;}
+	void GetVal(TVal1& _Val1, TVal2& _Val2, TVal3& _Val3) const { _Val1 = Val1; _Val2 = Val2; _Val3 = Val3; }
 };
 
 typedef TTriple<TCh, TCh, TCh> TChTr;
@@ -173,22 +175,22 @@ public:
 	TQuad(const TQuad& Quad): Val1(Quad.Val1), Val2(Quad.Val2), Val3(Quad.Val3), Val4(Quad.Val4) {}
 	TQuad(const TVal1& _Val1, const TVal2& _Val2, const TVal3& _Val3, const TVal4& _Val4): Val1(_Val1), Val2(_Val2), Val3(_Val3), Val4(_Val4) {}
 	explicit TQuad(TSIn& SIn): Val1(SIn), Val2(SIn), Val3(SIn), Val4(SIn) {}
-	void Save(TSOut& SOut) const {Val1.Save(SOut); Val2.Save(SOut); Val3.Save(SOut); Val4.Save(SOut);}
+	void Save(TSOut& SOut) const {Val1.Save(SOut); Val2.Save(SOut); Val3.Save(SOut); Val4.Save(SOut); }
 	void LoadXml(const PXmlTok& XmlTok, const TStr& Nm = "");
 	void SaveXml(TSOut& SOut, const TStr& Nm) const;
 
-	TQuad& operator=(const TQuad& Quad) {if (this != &Quad){ Val1 = Quad.Val1; Val2 = Quad.Val2; Val3 = Quad.Val3; Val4 = Quad.Val4;} return *this;}
-	bool operator==(const TQuad& Quad) const {return (Val1 == Quad.Val1) && (Val2 == Quad.Val2) && (Val3 == Quad.Val3) && (Val4 == Quad.Val4);}
+	TQuad& operator=(const TQuad& Quad) {if (this != &Quad){ Val1 = Quad.Val1; Val2 = Quad.Val2; Val3 = Quad.Val3; Val4 = Quad.Val4; } return *this; }
+	bool operator==(const TQuad& Quad) const {return (Val1 == Quad.Val1) && (Val2 == Quad.Val2) && (Val3 == Quad.Val3) && (Val4 == Quad.Val4); }
 	bool operator<(const TQuad& Quad) const {
 		return (Val1 < Quad.Val1)
 			||((Val1 == Quad.Val1) && (Val2 < Quad.Val2)) || ((Val1 == Quad.Val1) && (Val2 == Quad.Val2) && (Val3 < Quad.Val3))
 			||((Val1 == Quad.Val1) && (Val2 == Quad.Val2) && (Val3	== Quad.Val3) && (Val4 < Quad.Val4));
 	}
 
-	int GetPrimHashCd() const {return Val1.GetPrimHashCd() + Val2.GetPrimHashCd() + Val3.GetPrimHashCd() + Val4.GetPrimHashCd();}
-	int GetSecHashCd() const {return Val1.GetSecHashCd() + Val2.GetSecHashCd() + Val3.GetSecHashCd() + Val4.GetSecHashCd();}
+	int GetPrimHashCd() const {return Val1.GetPrimHashCd() + Val2.GetPrimHashCd() + Val3.GetPrimHashCd() + Val4.GetPrimHashCd(); }
+	int GetSecHashCd() const {return Val1.GetSecHashCd() + Val2.GetSecHashCd() + Val3.GetSecHashCd() + Val4.GetSecHashCd(); }
 
-	void GetVal(TVal1& _Val1, TVal2& _Val2, TVal3& _Val3, TVal4& _Val4) const {_Val1 = Val1; _Val2 = Val2; _Val3 = Val3; _Val4 = Val4;}
+	void GetVal(TVal1& _Val1, TVal2& _Val2, TVal3& _Val3, TVal4& _Val4) const {_Val1 = Val1; _Val2 = Val2; _Val3 = Val3; _Val4 = Val4; }
 };
 
 typedef TQuad<TStr, TStr, TInt, TInt> TStrStrIntIntQu;
@@ -207,16 +209,16 @@ private:
 	TVal ValV[NVals];
 public:
 	TTuple() {}
-	TTuple(const TVal& InitVal){for (int i = 0; i < Len(); i++) ValV[i] = InitVal;}
-	TTuple(const TTuple& Tup) { for (int i = 0; i < Len(); i++)	ValV[i] = Tup[i];}
-	TTuple(TSIn& SIn) {for (int i = 0; i < Len(); i++) ValV[i].Load(SIn);}
-	void Save(TSOut& SOut) const {for (int i = 0; i < Len(); i++)ValV[i].Save(SOut);}
-	void Load(TSIn& SIn) {for (int i = 0; i < Len(); i++) ValV[i].Load(SIn);}
+	TTuple(const TVal& InitVal){for (int i = 0; i < Len(); i++) ValV[i] = InitVal; }
+	TTuple(const TTuple& Tup) { for (int i = 0; i < Len(); i++)	ValV[i] = Tup[i]; }
+	TTuple(TSIn& SIn) {for (int i = 0; i < Len(); i++) ValV[i].Load(SIn); }
+	void Save(TSOut& SOut) const {for (int i = 0; i < Len(); i++)ValV[i].Save(SOut); }
+	void Load(TSIn& SIn) {for (int i = 0; i < Len(); i++) ValV[i].Load(SIn); }
 
-	int Len() const {return NVals;}
-	TVal& operator[](const int& ValN) {return ValV[ValN];}
-	const TVal& operator[](const int& ValN) const {return ValV[ValN];}
-	TTuple& operator =(const TTuple& Tup) {if (this != &Tup) for (int i = 0; i < Len(); i++) ValV[i] = Tup[i]; return *this;}
+	int Len() const {return NVals; }
+	TVal& operator[](const int& ValN) { return ValV[ValN]; }
+	const TVal& operator[](const int& ValN) const { return ValV[ValN]; }
+	TTuple& operator =(const TTuple& Tup) {if (this != &Tup) for (int i = 0; i < Len(); i++) ValV[i] = Tup[i]; return *this; }
 	bool operator ==(const TTuple& Tup) const {
 		if (Len() != Tup.Len()) return false;
 		if (&Tup == this) return true;
@@ -303,7 +305,7 @@ public:
 	explicit TKeyDat(const TKey& _Key): Key(_Key), Dat() {}
 	TKeyDat(const TKey& _Key, const TDat& _Dat): Key(_Key), Dat(_Dat) {}
 	explicit TKeyDat(TSIn& SIn): Key(SIn), Dat(SIn) {}
-	void Save(TSOut& SOut) const {Key.Save(SOut); Dat.Save(SOut);}
+	void Save(TSOut& SOut) const {Key.Save(SOut); Dat.Save(SOut); }
 	void LoadXml(const PXmlTok& XmlTok, const TStr& Nm = "");
 	void SaveXml(TSOut& SOut, const TStr& Nm) const;
 
@@ -314,11 +316,11 @@ public:
 		}
 		return *this;
 	}
-	bool operator==(const TKeyDat& KeyDat) const {return Key == KeyDat.Key;}
-	bool operator<(const TKeyDat& KeyDat) const {return Key < KeyDat.Key;}
+	bool operator==(const TKeyDat& KeyDat) const { return Key == KeyDat.Key; }
+	bool operator<(const TKeyDat& KeyDat) const { return Key < KeyDat.Key; }
 
-	int GetPrimHashCd() const {return Key.GetPrimHashCd();}
-	int GetSecHashCd() const {return Key.GetSecHashCd();}
+	int GetPrimHashCd() const { return Key.GetPrimHashCd(); }
+	int GetSecHashCd() const { return Key.GetSecHashCd(); }
 };
 
 template<class TKey, class TDat>
@@ -398,8 +400,8 @@ public:
 		else ValT = new TVal[_MxVals];
 	}
 	explicit TVec(TVal *_ValT, const int& _Vals): MxVals(-1), Vals(_Vals), ValT(_ValT) {}
-	~TVec() {if ((ValT!=NULL)&&(MxVals!=-1)) delete[] ValT;}
-	explicit TVec(TSIn& SIn): MxVals(0), Vals(0), ValT(NULL) {Load(SIn);}
+	~TVec() {if ((ValT!=NULL)&&(MxVals!=-1)) delete[] ValT; }
+	explicit TVec(TSIn& SIn): MxVals(0), Vals(0), ValT(NULL) {Load(SIn); }
 	void Load(TSIn& SIn);
 	void Save(TSOut& SOut) const;
 	void LoadXml(const PXmlTok& XmlTok, const TStr& Nm = "");
@@ -409,9 +411,9 @@ public:
 	TVec<TVal>& operator+(const TVal& Val) {	Add(Val);return *this;	}
 	bool operator==(const TVec<TVal>& Vec) const;
 	bool operator<(const TVec<TVal>& Vec) const;
-	const TVal& operator[](const int& ValN) const {	AssertR(0<=ValN && ValN<Vals, GetXOutOfBoundsErrMsg(ValN));	return ValT[ValN];}
-	TVal& operator[](const int& ValN) {AssertR(0<=ValN && ValN<Vals, GetXOutOfBoundsErrMsg(ValN)); return ValT[ValN];}
-	int GetMemUsed() const {return 2 * sizeof(int) + sizeof(TVal*) + MxVals * sizeof(TVal);}
+	const TVal& operator[](const int& ValN) const {	AssertR(0<=ValN && ValN<Vals, GetXOutOfBoundsErrMsg(ValN));	return ValT[ValN]; }
+	TVal& operator[](const int& ValN) {AssertR(0<=ValN && ValN<Vals, GetXOutOfBoundsErrMsg(ValN)); return ValT[ValN]; }
+	int GetMemUsed() const { return 2 * sizeof(int) + sizeof(TVal*) + MxVals * sizeof(TVal); }
 
 	int GetPrimHashCd() const;
 	int GetSecHashCd() const;
@@ -437,8 +439,8 @@ public:
 		Vals = _Vals;
 		ValT = _ValT;
 	}
-	bool IsExt() const {return MxVals == -1;}
-	void Reserve(const int& _MxVals) {Resize(_MxVals);}
+	bool IsExt() const { return MxVals == -1; }
+	void Reserve(const int& _MxVals) {Resize(_MxVals); }
 	void Reserve(const int& _MxVals, const int& _Vals) {
 		IAssert(0<=_Vals && _Vals<=_MxVals);
 		Resize(_MxVals);
@@ -449,15 +451,15 @@ public:
 	void Pack();
 	void MoveFrom(TVec<TVal>& Vec);
 	void Swap(TVec<TVal>& Vec);
-	bool Empty() const {return Vals == 0;}
-	int Len() const {return Vals;}
-	int Reserved() const {return MxVals;}
-	const TVal& Last() const {return GetVal(Len() - 1);}
-	TVal& Last() {return GetVal(Len() - 1);}
-	int LastValN() const {return Len() - 1;}
-	TIter BegI() const {return ValT;}
-	TIter EndI() const {return ValT + Vals;}
-	TIter GetI(const int& ValN) const {return ValT + ValN;}
+	bool Empty() const { return Vals == 0; }
+	int Len() const { return Vals; }
+	int Reserved() const { return MxVals; }
+	const TVal& Last() const { return GetVal(Len() - 1); }
+	TVal& Last() { return GetVal(Len() - 1); }
+	int LastValN() const { return Len() - 1; }
+	TIter BegI() const { return ValT; }
+	TIter EndI() const { return ValT + Vals; }
+	TIter GetI(const int& ValN) const { return ValT + ValN; }
 	int Add() {
 		Assert(MxVals != -1);
 		if(Vals == MxVals) Resize();
@@ -481,21 +483,21 @@ public:
 	int AddMerged(const TVal& Val);
 	int AddVMerged(const TVec<TVal>& ValV);
 	int AddUnique(const TVal& Val);
-	const TVal& GetVal(const int& ValN) const {return operator[](ValN);}
-	TVal& GetVal(const int& ValN) {return operator[](ValN);	}
+	const TVal& GetVal(const int& ValN) const { return operator[](ValN); }
+	TVal& GetVal(const int& ValN) { return operator[](ValN);	}
 	void GetSubValV(const int& BValN, const int& EValN, TVec<TVal>& ValV) const;
 	void Ins(const int& ValN, const TVal& Val);
 	void Del(const int& ValN);
 	void Del(const int& MnValN, const int& MxValN);
-	void DelLast() {Del(Len() - 1);}
+	void DelLast() {Del(Len() - 1); }
 	bool DelIfIn(const TVal& Val);
 	void DelAll(const TVal& Val);
 	void PutAll(const TVal& Val);
 
 	const TVal& GetRnd(TRnd& Rnd=TInt::Rnd) const { return ValT[Rnd.GetUniDevInt(Vals)]; }
 
-	void Swap(const int& ValN1, const int& ValN2) {TVal Val = ValT[ValN1];ValT[ValN1] = ValT[ValN2];ValT[ValN2] = Val;}
-	static void SwapI(TIter LVal, TIter RVal) {TVal Val = *LVal;	*LVal = *RVal;	*RVal = Val;}
+	void Swap(const int& ValN1, const int& ValN2) {TVal Val = ValT[ValN1];ValT[ValN1] = ValT[ValN2];ValT[ValN2] = Val; }
+	static void SwapI(TIter LVal, TIter RVal) {TVal Val = *LVal;	*LVal = *RVal;	*RVal = Val; }
 
 	int GetPivotValN(const int& LValN, const int& RValN) const;
 	void BSort(const int& MnLValN, const int& MxRValN, const bool& Asc);
@@ -504,10 +506,10 @@ public:
 	void QSort(const int& MnLValN, const int& MxRValN, const bool& Asc);
 	void Sort(const bool& Asc = true);
 	bool IsSorted(const bool& Asc = true) const;
-	void Shuffle(TRnd& Rnd){for(int ValN=0; ValN<Vals-1; ValN++) Swap(ValN, ValN+Rnd.GetUniDevInt(Vals-ValN));}
+	void Shuffle(TRnd& Rnd){for(int ValN=0; ValN<Vals-1; ValN++) Swap(ValN, ValN+Rnd.GetUniDevInt(Vals-ValN)); }
 
 	void Reverse();
-	void Reverse(int First, int Last) {Last--;while (First < Last) {	Swap(First++, Last--);}}
+	void Reverse(int First, int Last) {Last--;while (First < Last) {	Swap(First++, Last--); }}
 	void Merge();
 
 	// permutations
@@ -516,12 +518,12 @@ public:
 
 	// binary heap //J:
 	void MakeHeap() {MakeHeap(TLss<TVal> ());	} // build a heap
-	void PushHeap(const TVal& Val) {	PushHeap(Val, TLss<TVal> ());} // add element to the heap
-	const TVal& TopHeap() const {	return ValT[0];} // get largest element
-	TVal PopHeap() {	return PopHeap(TLss<TVal> ());} // remove largest element
-	template<class TCmp> void MakeHeap(const TCmp& Cmp) {MakeHeap(0, Len(), Cmp);}
-	template<class TCmp> void PushHeap(const TVal& Val, const TCmp& Cmp) {Add(Val);PushHeap(0, Len() - 1, 0, Val, Cmp);}
-	template<class TCmp> TVal PopHeap(const TCmp& Cmp) {IAssert(!Empty());	const TVal Top = ValT[0];ValT[0] = Last();DelLast();	if (!Empty()) {	AdjustHeap(0, 0, Len(), ValT[0], Cmp);}	return Top;	}
+	void PushHeap(const TVal& Val) {	PushHeap(Val, TLss<TVal> ()); } // add element to the heap
+	const TVal& TopHeap() const {	return ValT[0]; } // get largest element
+	TVal PopHeap() {	return PopHeap(TLss<TVal> ()); } // remove largest element
+	template<class TCmp> void MakeHeap(const TCmp& Cmp) {MakeHeap(0, Len(), Cmp); }
+	template<class TCmp> void PushHeap(const TVal& Val, const TCmp& Cmp) {Add(Val);PushHeap(0, Len() - 1, 0, Val, Cmp); }
+	template<class TCmp> TVal PopHeap(const TCmp& Cmp) {IAssert(!Empty());	const TVal Top = ValT[0];ValT[0] = Last();DelLast();	if (!Empty()) {	AdjustHeap(0, 0, Len(), ValT[0], Cmp); }	return Top;	}
 
 	// heap helper functions //J:
 	template<class TCmp>
@@ -592,7 +594,7 @@ public:
 	static void BSortCmp(TIter BI, TIter EI, const TCmp& Cmp) {
 		for (TIter i = BI; i != EI; ++i) {
 			for (TIter j = EI-1; j != i; --j) {
-				if (Cmp(*j, *(j-1))) SwapI(j, j-1);}
+				if (Cmp(*j, *(j-1))) SwapI(j, j-1); }
 		}
 	}
 	template <class TCmp>
@@ -600,7 +602,7 @@ public:
 		if (BI + 1 < EI) {
 			for (TIter i = BI, j; i != EI; ++i) {
 				TVal Tmp = *i; j = i;
-				while (j > BI && Cmp(Tmp, *(j-1))) {*j = *(j-1); --j;}
+				while (j > BI && Cmp(Tmp, *(j-1))) {*j = *(j-1); --j; }
 				*j = Tmp;
 			}
 		}
@@ -618,15 +620,15 @@ public:
 	}
 
 	//  void Sort(const bool& Asc = true) {
-	//    if (Asc){QSortCmp(Beg(), End(), TLss<TVal>());}
-	//    else {QSortCmp(Beg(), End(), TGtr<TVal>());}}
+	//    if (Asc){QSortCmp(Beg(), End(), TLss<TVal>()); }
+	//    else {QSortCmp(Beg(), End(), TGtr<TVal>()); }}
 
 	template <class TCmp>
-	void SortCmp(const TCmp& Cmp) {QSortCmp(BegI(), EndI(), Cmp);}
+	void SortCmp(const TCmp& Cmp) {QSortCmp(BegI(), EndI(), Cmp); }
 
 	//  bool IsSorted(const bool& Asc = true) const {
-	//    if (Asc){return IsSortedCmp(TLss<TVal>());}
-	//    else {return IsSortedCmp(TGtr<TVal>());}}
+	//    if (Asc){ return IsSortedCmp(TLss<TVal>()); }
+	//    else { return IsSortedCmp(TGtr<TVal>()); }}
 
 	template <class TCmp>
 	bool IsSortedCmp(const TCmp& Cmp) const {
@@ -651,11 +653,11 @@ public:
 	int SearchForw(const TVal& Val, const int& BValN=0) const;
 	int SearchBack(const TVal& Val) const;
 	int SearchVForw(const TVec<TVal>& ValV, const int& BValN=0) const;
-	bool IsIn(const TVal& Val) const {return SearchForw(Val)!=-1;}
-	bool IsIn(const TVal& Val, int& ValN) const {ValN=SearchForw(Val); return ValN!=-1;}
-	bool IsInBin(const TVal& Val) const {return SearchBin(Val)!=-1;}
+	bool IsIn(const TVal& Val) const { return SearchForw(Val)!=-1; }
+	bool IsIn(const TVal& Val, int& ValN) const {ValN=SearchForw(Val); return ValN!=-1; }
+	bool IsInBin(const TVal& Val) const { return SearchBin(Val)!=-1; }
 	int GetMxValN() const;
-	TVal& GetDat(const TVal& Val) const {int ValN=SearchForw(Val);return operator[](ValN);}
+	TVal& GetDat(const TVal& Val) const {int ValN=SearchForw(Val);return operator[](ValN); }
 	TVal& GetAddDat(const TVal& Val) {
 		Assert(MxVals!=-1);
 		int ValN=SearchForw(Val);
@@ -667,17 +669,17 @@ public:
 	}
 
 // short vectors
-static TVec<TVal> GetV(const TVal& Val1) { TVec<TVal> V(1, 0); V.Add(Val1); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2) { TVec<TVal> V(2, 0); V.Add(Val1); V.Add(Val2); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3) { TVec<TVal> V(3, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4) { TVec<TVal> V(4, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5) { TVec<TVal> V(5, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6) { TVec<TVal> V(6, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7) { TVec<TVal> V(7, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8) { TVec<TVal> V(8, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); return V;}
-static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8, const TVal& Val9) { 	TVec<TVal> V(9, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); V.Add(Val9); return V;}
+static TVec<TVal> GetV(const TVal& Val1) { TVec<TVal> V(1, 0); V.Add(Val1); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2) { TVec<TVal> V(2, 0); V.Add(Val1); V.Add(Val2); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3) { TVec<TVal> V(3, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4) { TVec<TVal> V(4, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5) { TVec<TVal> V(5, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6) { TVec<TVal> V(6, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7) { TVec<TVal> V(7, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8) { TVec<TVal> V(8, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); return V; }
+static TVec<TVal> GetV(const TVal& Val1, const TVal& Val2, const TVal& Val3, const TVal& Val4, const TVal& Val5, const TVal& Val6, const TVal& Val7, const TVal& Val8, const TVal& Val9) { 	TVec<TVal> V(9, 0); V.Add(Val1); V.Add(Val2); V.Add(Val3); V.Add(Val4); V.Add(Val5); V.Add(Val6); V.Add(Val7); V.Add(Val8); V.Add(Val9); return V; }
 //static TVec<TVal> GetV(const TVal* ValPt, const TVal& EndVal){
-//  TVec<TVal> V; while(*ValPt!=EndVal){V.Add(*ValPt); ValPt++;} return V;}
+//  TVec<TVal> V; while(*ValPt!=EndVal){V.Add(*ValPt); ValPt++; } return V; }
 };
 
 template<class TVal>
@@ -1114,14 +1116,14 @@ int TVec<TVal>::Partition(const int& MnLValN, const int& MxRValN,	const bool& As
 	int RValN = MxRValN + 1;
 	forever {
 		if (Asc) {
-			do {RValN--;}while (ValT[RValN]>PivotVal);
-			do {LValN++;}while (ValT[LValN]<PivotVal);
+			do {RValN--; }while (ValT[RValN]>PivotVal);
+			do {LValN++; }while (ValT[LValN]<PivotVal);
 		} else {
-			do {RValN--;}while (ValT[RValN]<PivotVal);
-			do {LValN++;}while (ValT[LValN]>PivotVal);
+			do {RValN--; }while (ValT[RValN]<PivotVal);
+			do {LValN++; }while (ValT[LValN]>PivotVal);
 		}
-		if (LValN<RValN) {Swap(LValN, RValN);}
-		else {return RValN;}
+		if (LValN<RValN) {Swap(LValN, RValN); }
+		else { return RValN; }
 	};
 }
 
@@ -1517,21 +1519,21 @@ public:
 	TVecPool(const ::TSize& ExpectVals = 0, const ::TSize& _GrowBy = 1000000, const bool& _FastCopy = false, const TVal& _EmptyVal = TVal());
 	TVecPool(const TVecPool& Pool);
 	TVecPool(TSIn& SIn);
-	~TVecPool() {if (ValBf != NULL) delete[] ValBf; ValBf = NULL;}
+	~TVecPool() {if (ValBf != NULL) delete[] ValBf; ValBf = NULL; }
 	static PVecPool New(const ::TSize& ExpectVals = 0, const ::TSize& GrowBy = 1000000, const bool& FastCopy = false) {	return new TVecPool(ExpectVals, GrowBy, FastCopy);	}
-	static PVecPool Load(TSIn& SIn) {	return new TVecPool(SIn);}
-	static PVecPool Load(const TStr& FNm) {TFIn FIn(FNm);	return Load(FIn);}
+	static PVecPool Load(TSIn& SIn) {	return new TVecPool(SIn); }
+	static PVecPool Load(const TStr& FNm) {TFIn FIn(FNm);	return Load(FIn); }
 	void Save(TSOut& SOut) const;
 	TVecPool& operator =(const TVecPool& Pool);
 
-	::TSize GetVals() const {return Vals;}
-	::TSize GetVecs() const {return IdToOffV.Len();}
-	bool IsVId(const int& VId) const {return (0 <= VId) && (VId < IdToOffV.Len());}
-	::TSize Reserved() const {return MxVals;}
-	void Reserve(const ::TSize& MxVals) {Resize(MxVals);}
-	const TVal& GetEmptyVal() const {return EmptyVal;}
-	void SetEmptyVal(const TVal& _EmptyVal) {EmptyVal = _EmptyVal;}
-	::TSize GetMemUsed() const {return sizeof(TCRef) + sizeof(TBool) + 3 * sizeof(TSize)	+ sizeof(TVal*) + MxVals * sizeof(TVal);}
+	::TSize GetVals() const { return Vals; }
+	::TSize GetVecs() const { return IdToOffV.Len(); }
+	bool IsVId(const int& VId) const { return (0 <= VId) && (VId < IdToOffV.Len()); }
+	::TSize Reserved() const { return MxVals; }
+	void Reserve(const ::TSize& MxVals) {Resize(MxVals); }
+	const TVal& GetEmptyVal() const { return EmptyVal; }
+	void SetEmptyVal(const TVal& _EmptyVal) {EmptyVal = _EmptyVal; }
+	::TSize GetMemUsed() const { return sizeof(TCRef) + sizeof(TBool) + 3 * sizeof(TSize)	+ sizeof(TVal*) + MxVals * sizeof(TVal); }
 
 	int AddV(const TValV& ValV);
 	int AddEmptyV(const int& ValVLen);
@@ -1560,7 +1562,7 @@ public:
 		}
 		if(!DoDel) PutAll(EmptyVal);
 	}
-	void PutAll(const TVal& Val) {for(TSize ValN=0; ValN<MxVals; ValN++) ValBf[ValN] = Val;}
+	void PutAll(const TVal& Val) {for(TSize ValN=0; ValN<MxVals; ValN++) ValBf[ValN] = Val; }
 
 	friend class TPt<TVecPool<TVal> > ;
 };
@@ -2394,9 +2396,9 @@ public:
 	TLstNd(const TLstNd&);
 	TLstNd(TLstNd* _PrevNd, TLstNd* _NextNd, const TVal& _Val): PrevNd(_PrevNd), NextNd(_NextNd), Val(_Val){}
 	TLstNd& operator=(const TLstNd&);
-	TLstNd* Prev() const {Assert(this != NULL); return PrevNd;}
-	TLstNd* Next() const {Assert(this != NULL); return NextNd;}
-	TVal& GetVal() {Assert(this != NULL); return Val;}
+	TLstNd* Prev() const {Assert(this != NULL); return PrevNd; }
+	TLstNd* Next() const {Assert(this != NULL); return NextNd; }
+	TVal& GetVal() {Assert(this != NULL); return Val; }
 };
 
 /////////////////////////////////////////////////
@@ -2412,7 +2414,7 @@ private:
 public:
 	TLst() : Nds(0), FirstNd(NULL), LastNd(NULL) {}
 	TLst(const TLst&);
-	~TLst() {Clr();}
+	~TLst() {Clr(); }
 	explicit TLst(TSIn& SIn);
 	void Save(TSOut& SOut) const;
 	TLst& operator=(const TLst&);
@@ -2427,10 +2429,10 @@ public:
 		FirstNd = NULL;
 		LastNd = NULL;
 	}
-	bool Empty() const {return Nds == 0;}
-	int Len() const {return Nds;}
-	PLstNd First() const {return FirstNd;}
-	PLstNd Last() const {return LastNd;}
+	bool Empty() const { return Nds == 0; }
+	int Len() const { return Nds; }
+	PLstNd First() const { return FirstNd; }
+	PLstNd Last() const { return LastNd; }
 	PLstNd AddFront(const TVal& Val);
 	PLstNd AddBack(const TVal& Val);
 	PLstNd AddFrontSorted(const TVal& Val, const bool& Asc = true);
@@ -2440,7 +2442,7 @@ public:
 	PLstNd Ins(const PLstNd& Nd, const TVal& Val);
 	void Del(const TVal& Val);
 	void Del(const PLstNd& Nd);
-	void Pop(){PLstNd p=FirstNd; Del(p);}
+	void Pop(){PLstNd p=FirstNd; Del(p); }
 	TVal Pop(TVal& Val);
 	PLstNd SearchForw(const TVal& Val);
 	PLstNd SearchBack(const TVal& Val);
@@ -2681,7 +2683,7 @@ public:
 	bool isHoriz;
 public:
 	TOLstHdr():FirstNd(NULL),LastNd(NULL),Nds(0),isHoriz(true){}
-	~TOLstHdr(){Clr();}
+	~TOLstHdr(){Clr(); }
 	void Clr(){
 		POLstNd p;
 		while(FirstNd!=NULL){
@@ -2692,8 +2694,8 @@ public:
 		Nds=0;
 		FirstNd=LastNd=NULL;
 	}
-	const bool Empty(){return Nds==0;}
-	const int Len(){return Nds;}
+	const bool Empty(){ return Nds==0; }
+	const int Len(){ return Nds; }
 	POLstNd AddFront(const TVal& Val);
 	POLstNd AddBack(const TVal& Val);
 	POLstNd Ins(const POLstNd& Nd, const TVal& Val);
@@ -2772,7 +2774,7 @@ public:
 		VLsts=new TOLstHdr<TVal>[nv];
 		for(int i=0;i<nv;i++) VLsts[i].isHoriz=false;
 	}
-	~TOLst() {Del();}
+	~TOLst() {Del(); }
 	void Del() {
 		for(int i=0;i<nh;i++) HLsts[i].Clr();
 		delete[] HLsts;
@@ -2787,12 +2789,12 @@ public:
 	void AddBack(const TInt& x, const TInt& y, const TVal& Val);
 	void AddFrontSorted(const TInt& x, const TInt& y, const TVal& Val, const bool& Asc = true);
 	void AddBackSorted(const TInt& x, const TInt& y, const TVal& Val, const bool& Asc = true);
-	const int LenH(){return nh;};
-	const int LenV(){return nv;};
-	const int Len(){return Nds;};
+	const int LenH(){ return nh; };
+	const int LenV(){ return nv; };
+	const int Len(){ return Nds; };
 
-	POLstHdr GetHLst(int i){Assert(i>=0&&i<nh); return &HLsts[i];}
-	POLstHdr GetVLst(int i){Assert(i>=0&&i<nv); return &VLsts[i];}
+	POLstHdr GetHLst(int i){Assert(i>=0&&i<nh); return &HLsts[i]; }
+	POLstHdr GetVLst(int i){Assert(i>=0&&i<nv); return &VLsts[i]; }
 };
 template<class TVal>
 void TOLst<TVal>::AddFront(const TInt& x, const TInt& y, const TVal& Val){
@@ -2839,7 +2841,7 @@ public:
 		if (this != &Func) 	FuncPt = Func.FuncPt;
 		return *this;
 	}
-	bool operator==(const TFunc& Func) const {return FuncPt == Func.FuncPt;}
-	bool operator<(const TFunc&) const {Fail;return false;}
-	TFuncPt operator()() const {return FuncPt;}
+	bool operator==(const TFunc& Func) const { return FuncPt == Func.FuncPt; }
+	bool operator<(const TFunc&) const {Fail;return false; }
+	TFuncPt operator()() const { return FuncPt; }
 };

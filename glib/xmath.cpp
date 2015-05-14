@@ -24,37 +24,37 @@ double TSpecFunc::Binomial(const int K, const int N, const double p) {
 */
 double TSpecFunc::BetaBinomial(const int k, const int n, const double alpha, const double beta) {
 	return exp(lgamma(n+1.0) - lgamma(k+1.0) - lgamma(n-k+1.0) +
-			    lgamma(k+alpha) + lgamma(n-k+beta) - lgamma(n+alpha+beta) +
-			    lgamma(alpha+beta) - lgamma(alpha) - lgamma(beta));
+               lgamma(k+alpha) + lgamma(n-k+beta) - lgamma(n+alpha+beta) +
+               lgamma(alpha+beta) - lgamma(alpha) - lgamma(beta));
 }
 
-void TSpecFunc::GammaPSeries/*gser*/(
- double& gamser, const double& a, const double& x, double& gln){
-  static const int ITMAX=100;
-  static const double EPS=3.0e-7;
-  int n;
-  double sum, del, ap;
+/*gser*/
+void TSpecFunc::GammaPSeries(double& gamser, const double& a, const double& x, double& gln){
+    static const int ITMAX=100;
+    static const double EPS=3.0e-7;
+    int n;
+    double sum, del, ap;
 
-  gln=LnGamma(a);
-  if (x <= 0.0){
-    IAssert(x>=0); /*if (x < 0.0) nrerror("x less than 0 in routine gser");*/
-    gamser=0.0;
-    return;
-  } else {
-    ap=a;
-    del=sum=1.0/a;
-    for (n=1; n<=ITMAX; n++){
-      ++ap;
-      del *= x/ap;
-      sum += del;
-      if (fabs(del) < fabs(sum)*EPS){
-        gamser=sum*exp(-x+a*log(x)-(gln));
-        return;
+    gln=LnGamma(a);
+    if (x <= 0.0){
+      IAssert(x>=0); /*if (x < 0.0) nrerror("x less than 0 in routine gser");*/
+      gamser=0.0;
+      return;
+    } else {
+      ap=a;
+      del=sum=1.0/a;
+      for (n=1; n<=ITMAX; n++){
+        ++ap;
+        del *= x/ap;
+        sum += del;
+        if (fabs(del) < fabs(sum)*EPS){
+          gamser=sum*exp(-x+a*log(x)-(gln));
+          return;
+        }
       }
+      Fail; /*nrerror("a too large, ITMAX too small in routine gser");*/
+      return;
     }
-    Fail; /*nrerror("a too large, ITMAX too small in routine gser");*/
-    return;
-  }
 }
 
 void TSpecFunc::GammaQContFrac/*gcf*/(
