@@ -39,7 +39,7 @@ void SavePrV(const TVec< TPair<TVal1, TVal2> >& Pairs, const TStr& Fnm, const TS
 }
 
 template<class TVal>
-	void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const int StartIdx, const TStr& anno){
+void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const int StartIdx, const TStr& anno){
 	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
 	FOutPt->PutStrLn(TStr::Fmt("# File: %s\n# Len: %d", Fnm.CStr(), Vec.Len()));
 	if(!anno.Empty()) FOutPt->PutStrLn(anno);

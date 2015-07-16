@@ -15,7 +15,7 @@
 #include "graph.h"           // graphs
 #include "network.h"         // networks
 #include "bignet.h"          // large networks
-//#include "timenet.h"         // time evolving networks
+#include "timenet.h"         // time evolving networks
 
 // algorithms
 #include "subgraph.h"        // subgraph manipulations
@@ -32,7 +32,7 @@
 
 // graph generators
 #include "ggen.h"            // graph generators (preferential attachment, small-world, ...)
-#include "ff.h"              // forest fire graph generator
+#include "ff.h"              // forest fire graph generator */
 //#include "cga.h"
 
 #include "gviz.h"

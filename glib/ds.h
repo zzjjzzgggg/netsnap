@@ -2392,13 +2392,13 @@ public:
 	TLstNd* NextNd;
 	TVal Val;
 public:
-	TLstNd(): PrevNd(NULL), NextNd(NULL), Val(){}
+	TLstNd(): PrevNd(NULL), NextNd(NULL), Val() { }
 	TLstNd(const TLstNd&);
-	TLstNd(TLstNd* _PrevNd, TLstNd* _NextNd, const TVal& _Val): PrevNd(_PrevNd), NextNd(_NextNd), Val(_Val){}
+	TLstNd(TLstNd* _PrevNd, TLstNd* _NextNd, const TVal& _Val): PrevNd(_PrevNd), NextNd(_NextNd), Val(_Val) { }
 	TLstNd& operator=(const TLstNd&);
-	TLstNd* Prev() const {Assert(this != NULL); return PrevNd; }
-	TLstNd* Next() const {Assert(this != NULL); return NextNd; }
-	TVal& GetVal() {Assert(this != NULL); return Val; }
+	TLstNd* Prev() const { Assert(this != NULL); return PrevNd; }
+	TLstNd* Next() const { Assert(this != NULL); return NextNd; }
+	TVal& GetVal() { Assert(this != NULL); return Val; }
 };
 
 /////////////////////////////////////////////////

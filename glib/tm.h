@@ -335,6 +335,10 @@ public:
 		auto CurTime = std::chrono::steady_clock::now();
 		return std::chrono::duration<double, std::milli> (CurTime - LastTick).count()/1000;
 	}
+	double GetMillSecs() const {
+		auto CurTime = std::chrono::steady_clock::now();
+		return std::chrono::duration<double, std::milli> (CurTime - LastTick).count();
+	}
 	const char* GetStr() const { return GetTmStr(); }
 	const char* GetTmStr() const {
 		static char TmStr[32];

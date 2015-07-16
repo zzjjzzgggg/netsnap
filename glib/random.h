@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////
-// Random (added by jzzhao)
+// Random (added by zhao)
 class TSampler{
 public:
 	static int sample(const TFltV &list){
@@ -20,7 +20,7 @@ template<class TKey> TKey& Sample(const TVec<TKey>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey, TFlt>& samples, TKey& rst);
 template<class TKey> TKey& Sample(const THashSet<TKey, TInt>& samples, TKey& rst);
-// sample
+// choose without replacement from samples
 template<class TKey> void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n);
 template<class TKey> void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n);
 
@@ -117,4 +117,3 @@ void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n){
 
 
 }
-

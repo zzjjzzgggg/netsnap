@@ -87,4 +87,3 @@ public:
 	double GetFlt(const int& FldN) const { double Val = 0.0; IAssert(GetFlt(FldN, Val)); return Val; }
 	const char* DumpStr() const;
 };
-

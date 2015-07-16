@@ -205,37 +205,37 @@ int CopyFile(const TStr& Src, const TStr& Dst);
 // System-Processes
 class TSysProc{
 public:
-  static void Sleep(const uint& MSecs);
-  static TStr GetExeFNm();
-  static void SetLowPriority();
-  static bool ExeProc(const TStr& ExeFNm, TStr& ParamStr);
+    static void Sleep(const uint& MSecs);
+    static TStr GetExeFNm();
+    static void SetLowPriority();
+    static bool ExeProc(const TStr& ExeFNm, TStr& ParamStr);
 };
 
 /////////////////////////////////////////////////
 // System-Messages
 class TSysMsg{
 public:
-  static void Loop();
-  static void Quit();
+    static void Loop();
+    static void Quit();
 };
 
 /////////////////////////////////////////////////
 // System-Time
 class TSysTm{
 public:
-  static TTm GetCurUniTm();
-  static TTm GetCurLocTm();
-  static uint64 GetCurUniMSecs();
-  static uint64 GetCurLocMSecs();
-  static uint64 GetMSecsFromTm(const TTm& Tm);
-  static TTm GetTmFromMSecs(const uint64& MSecs);
-  static uint GetMSecsFromOsStart();
-  static TTm GetLocTmFromUniTm(const TTm& Tm);
-  static TTm GetUniTmFromLocTm(const TTm& Tm);
-  static uint64 GetProcessMSecs();
-  static uint64 GetThreadMSecs();
-  static uint64 GetPerfTimerFq();
-  static uint64 GetPerfTimerTicks();
+    static TTm GetCurUniTm();
+    static TTm GetCurLocTm();
+    static uint64 GetCurUniMSecs();
+    static uint64 GetCurLocMSecs();
+    static uint64 GetMSecsFromTm(const TTm& Tm);
+    static TTm GetTmFromMSecs(const uint64& MSecs);
+    static uint GetMSecsFromOsStart();
+    static TTm GetLocTmFromUniTm(const TTm& Tm);
+    static TTm GetUniTmFromLocTm(const TTm& Tm);
+    static uint64 GetProcessMSecs();
+    static uint64 GetThreadMSecs();
+    static uint64 GetPerfTimerFq();
+    static uint64 GetPerfTimerTicks();
 };
 
 /////////////////////////////////////////////////
@@ -243,17 +243,17 @@ public:
 // J: not yet ported to Linux
 class TStdIOPipe {
 private:
-  int ChildStdinRd, ChildStdinWrDup;
-  int ChildStdoutWr, ChildStdoutRdDup;
-  void CreateProc(const TStr& Cmd);
+    int ChildStdinRd, ChildStdinWrDup;
+    int ChildStdoutWr, ChildStdoutRdDup;
+    void CreateProc(const TStr& Cmd);
 private:
-  UndefDefaultCopyAssign(TStdIOPipe);
+    UndefDefaultCopyAssign(TStdIOPipe);
 public:
-  TStdIOPipe(const TStr& CmdToExe);
-  ~TStdIOPipe();
+    TStdIOPipe(const TStr& CmdToExe);
+    ~TStdIOPipe();
 
-  int Write(const char* Bf) { return Write(Bf, (int) strlen(Bf)); }
-  int Write(const char* Bf, const int& BfLen);
-  int Read(char *Bf, const int& BfMxLen);
+    int Write(const char* Bf) { return Write(Bf, (int) strlen(Bf)); }
+    int Write(const char* Bf, const int& BfLen);
+    int Read(char *Bf, const int& BfMxLen);
 };
 #endif

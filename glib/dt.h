@@ -1336,4 +1336,3 @@ public:
   // string
   TStr GetStr() const;
 };
-

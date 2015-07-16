@@ -5,9 +5,9 @@
 // Includes
 //#include "base.h"
 
-// #define TFileIn(FNm) 
+// #define TFileIn(FNm)
 //   (TZipIn::IsZipFNm((FNm)) ? TZipIn(FNm) : TFIn(FNm));
-// #define TFileOut(FNm) 
+// #define TFileOut(FNm)
 //   TZipOut::IsZipFNm(FNm) ? TZipOut(FNm) : TFOut(FNm);
 
 /////////////////////////////////////////////////

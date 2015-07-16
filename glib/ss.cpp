@@ -537,4 +537,3 @@ const char* TSsParser::DumpStr() const {
 	for (int i = 0; i < FldV.Len(); i++) ChA += TStr::Fmt("  %d: '%s'\n", i, FldV[i]);
 	return ChA.CStr();
 }
-

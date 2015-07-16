@@ -1,4 +1,3 @@
-/////////////////////////////////////////////////
 // Basic-Macro-Definitions
 #define forever for(;;)
 
@@ -261,7 +260,7 @@ void ExeStop(
 #define EAssertRAA(Cond, MsgStr, ArgStr1, ArgStr2) ((Cond) ? static_cast<void>(0) : TExcept::Throw(MsgStr, ArgStr1, ArgStr2))
 #define ESAssert(Cond) 	((Cond)? static_cast<void>(0): TExcept::Throw(TSysStr::GetLastMsgCStr(), TStr(__FILE__) + " line " + TInt::GetStr(__LINE__) +": "+ TStr(#Cond)))
 
-// compile time assert 
+// compile time assert
 // #define STATIC_ASSERT(x) { const char temp[ (((x) == 0) ? 0 : 1) ] = {'\0'}; }
 template <bool BoolVal> struct TStaticAssert;
 template <> struct TStaticAssert<true> { enum { value = 1 }; };

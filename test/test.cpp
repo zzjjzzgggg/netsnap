@@ -186,6 +186,7 @@ void test_bignet(){
 	net.AddEdge(1, 3);
 	printf("nodes: %d, edges: %ld\n", net.GetNodes(), net.GetEdges());
 }
+
 void test_bignet1(){
 	TStr root="/data/SNSDATA/G+/gplus/imc12/";
 	TIntPrH nodeH; int nedge =0;
@@ -358,7 +359,10 @@ void test_binom(){
 }
 
 const TStr GetFNm(const TStr& GFNm) {
-	return GFNm.GetFPath();
+	// return GFNm.GetFPath();
+	// return GFNm.GetFMid();
+	// return GFNm.GetFBase();
+	return GFNm.GetFExt();
 }
 
 void test_bnegraph(){
@@ -434,7 +438,7 @@ void test_syn_queue() {
 	for(std::thread& t: threads) t.join();
 }
 
-void test_thread_pool(){
+void test_thread_pool() {
 	ThreadPool Pool;
 	for (int i=0; i<2; i++) Pool.AssignJob( [i] { printf("%d\n", i); } );
 	Pool.Start();
@@ -450,6 +454,16 @@ void test_beta_binom2(int s, int n, double alpha, double p){
 	double rst = exp(bin + sum);
 	double tru = TSpecFunc::BetaBinomial(s, n, p/alpha, (1-p)/alpha);
 	printf("%.6e\n%.6e\n", rst, tru);
+}
+
+void test_os() {
+	TStr parm = "3";
+	bool suc = TSysProc::ExeProc("sleep", parm);
+	printf("suc = %d\n", suc);
+	TStr exeFnm = TSysProc::GetExeFNm();
+	printf("%s\n", exeFnm.CStr());
+	int i = system("sleep 3");
+	printf("i = %d\n", i);
 }
 
 int main(int argc, char* argv[]) {
@@ -472,15 +486,6 @@ int main(int argc, char* argv[]) {
 		printf("[%d]: %g\n", i, FltV[i].Val);
 	}
 */
-//	test_c11_chrono();
-//	test_syn_queue();
-//	test_thread_pool();
-//	test_c11();
-//	test_fnm();
-//	test_binom();
-//	test_zip();
-//	test_chain();
-//	test_beta_binom();
-	test_beta_binom2(2, 10, 0.000000002, 0.00004);
+	test_os();
 	return 0;
 }

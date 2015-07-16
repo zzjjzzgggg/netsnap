@@ -12,7 +12,7 @@
 
 // graph data structures
 #include "graph.cpp"         // graphs
-//#include "timenet.cpp"       // time evolving networks
+#include "timenet.cpp"       // time evolving networks
 
 // algorithms
 #include "subgraph.cpp"      // subgraph manipulations
