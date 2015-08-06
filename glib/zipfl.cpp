@@ -1,14 +1,12 @@
-/////////////////////////////////////////////////
-// Includes
-//#include "zipfl.h"
-
-/////////////////////////////////////////////////
-// ZIP Input-File
+/**
+ * ZIP Input-File
+ */
 TStrStrH TZipIn::FExtToCmdH;
 const int TZipIn::MxBfL = 32 * 1024;
 
 void TZipIn::CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm) {
-	const TStr CmdLine = TStr::Fmt("%s %s", Cmd.CStr(), ZipFNm.CStr());
+	TStr CmdLine = TStr::Fmt("%s %s", Cmd.CStr(), ZipFNm.CStr());
+	if (Silent) CmdLine += " 2>/dev/null";
 #ifdef GLib_WIN
 	PROCESS_INFORMATION piProcInfo;
 	STARTUPINFO siStartInfo;
@@ -19,15 +17,15 @@ void TZipIn::CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm) {
 	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
 	// Create the child process.
 	const BOOL FuncRetn = CreateProcess(NULL,
-			(LPSTR) CmdLine.CStr(),// command line
-			NULL,// process security attributes
-			NULL,// primary thread security attributes
-			TRUE,// handles are inherited
-			0,// creation flags
-			NULL,// use parent's environment
-			NULL,// use parent's current directory
-			&siStartInfo,// STARTUPINFO pointer
-			&piProcInfo);// receives PROCESS_INFORMATION
+										(LPSTR) CmdLine.CStr(),// command line
+										NULL,// process security attributes
+										NULL,// primary thread security attributes
+										TRUE,// handles are inherited
+										0,// creation flags
+										NULL,// use parent's environment
+										NULL,// use parent's current directory
+										&siStartInfo,// STARTUPINFO pointer
+										&piProcInfo);// receives PROCESS_INFORMATION
 	EAssertR(FuncRetn!=0, TStr::Fmt("Can not execute '%s'", CmdLine.CStr()).CStr());
 	CloseHandle(piProcInfo.hProcess);
 	CloseHandle(piProcInfo.hThread);
@@ -54,7 +52,10 @@ void TZipIn::FillBf() {
 	BfC = 0;
 }
 
-TZipIn::TZipIn(const TStr& FNm): TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL), ZipStdoutWr(NULL), FLen(0), CurFPos(0), Bf(NULL), BfC(0), BfL(0) {
+TZipIn::TZipIn(const TStr& FNm, const bool& Silent):
+	TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL), ZipStdoutWr(NULL),
+	FLen(0), CurFPos(0), Bf(NULL), BfC(0), BfL(0), Silent(Silent) {
+
 	EAssertR(!FNm.Empty(), "Empty file-name.");
 	EAssertR(TFile::Exists(FNm), TStr::Fmt("File %s does not exist", FNm.CStr()).CStr());
 	FLen = TZipIn::GetFLen(FNm);
@@ -77,10 +78,12 @@ TZipIn::TZipIn(const TStr& FNm): TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL
 	Bf = new char[MxBfL];
 	BfC = BfL = -1;
 	FillBf();
-	printf("\n");
 }
 
-TZipIn::TZipIn(const TStr& FNm, bool& OpenedP): TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL), ZipStdoutWr(NULL), FLen(0), CurFPos(0), Bf(NULL), BfC(0), BfL(0) {
+TZipIn::TZipIn(const TStr& FNm, bool& OpenedP, const bool& Silent):
+	TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL), ZipStdoutWr(NULL),
+	FLen(0), CurFPos(0), Bf(NULL), BfC(0), BfL(0), Silent(Silent) {
+
 	EAssertR(!FNm.Empty(), "Empty file-name.");
 	FLen = TZipIn::GetFLen(FNm);
 	OpenedP = TFile::Exists(FNm);
@@ -101,16 +104,7 @@ TZipIn::TZipIn(const TStr& FNm, bool& OpenedP): TSBase(FNm.CStr()), TSIn(FNm), Z
 		Bf = new char[MxBfL];
 		BfC = BfL = -1;
 		FillBf();
-		printf("\n");
 	}
-}
-
-PSIn TZipIn::New(const TStr& FNm) {
-	return PSIn(new TZipIn(FNm));
-}
-
-PSIn TZipIn::New(const TStr& FNm, bool& OpenedP) {
-	return PSIn(new TZipIn(FNm, OpenedP));
 }
 
 TZipIn::~TZipIn() {
@@ -228,9 +222,7 @@ uint64 TZipIn::GetFLen(const TStr& ZipFNm) {
 	delete[] Bf;
 	TStrV StrV;
 	Str.SplitOnWs(StrV);
-	//for(int i=0; i<StrV.Len(); i++) printf("%d:[%s]\n", i, StrV[i].CStr());
 	int n = StrV.Len();
-	//while (n > 0 && !StrV[n].IsPrefix("-----")) n--;
 	if (n - 5 <= 0) {
 		WrNotify(TStr::Fmt("Corrupt file %s: MESSAGE:\n", ZipFNm.CStr()).CStr(), Str.CStr());
 		SaveToErrLog(TStr::Fmt("Corrupt file %s. Message:\n:%s\n", ZipFNm.CStr(), Str.CStr()).CStr());
@@ -256,7 +248,8 @@ void TZipOut::FlushBf() {
 }
 
 void TZipOut::CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm) {
-	const TStr CmdLine = TStr::Fmt("%s %s", Cmd.CStr(), ZipFNm.CStr());
+	TStr CmdLine = TStr::Fmt("%s %s", Cmd.CStr(), ZipFNm.CStr());
+	if (Silent) CmdLine += " >/dev/null";
 #ifdef GLib_WIN
 	PROCESS_INFORMATION piProcInfo;
 	STARTUPINFO siStartInfo;
@@ -267,15 +260,15 @@ void TZipOut::CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm) {
 	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
 	// Create the child process.
 	const BOOL FuncRetn = CreateProcess(NULL,
-			(LPSTR) CmdLine.CStr(),// command line
-			NULL,// process security attributes
-			NULL,// primary thread security attributes
-			TRUE,// handles are inherited
-			0,// creation flags
-			NULL,// use parent's environment
-			NULL,// use parent's current directory
-			&siStartInfo,// STARTUPINFO pointer
-			&piProcInfo);// receives PROCESS_INFORMATION
+										(LPSTR) CmdLine.CStr(),// command line
+										NULL,// process security attributes
+										NULL,// primary thread security attributes
+										TRUE,// handles are inherited
+										0,// creation flags
+										NULL,// use parent's environment
+										NULL,// use parent's current directory
+										&siStartInfo,// STARTUPINFO pointer
+										&piProcInfo);// receives PROCESS_INFORMATION
 	EAssertR(FuncRetn!=0, TStr::Fmt("Can not execute '%s'", CmdLine.CStr()).CStr());
 	CloseHandle(piProcInfo.hProcess);
 	CloseHandle(piProcInfo.hThread);
@@ -285,7 +278,10 @@ void TZipOut::CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm) {
 #endif
 }
 
-TZipOut::TZipOut(const TStr& FNm): TSBase(FNm.CStr()), TSOut(FNm), ZipStdinRd(NULL), ZipStdinWr(NULL), Bf(NULL), BfL(0) {
+TZipOut::TZipOut(const TStr& FNm, const bool& Silent):
+	TSBase(FNm.CStr()), TSOut(FNm), ZipStdinRd(NULL), ZipStdinWr(NULL),
+	Bf(NULL), BfL(0), Silent(Silent) {
+
 	EAssertR(!FNm.Empty(), "Empty file-name.");
 #ifdef GLib_WIN
 	// create pipes
@@ -305,17 +301,28 @@ TZipOut::TZipOut(const TStr& FNm): TSBase(FNm.CStr()), TSOut(FNm), ZipStdinRd(NU
 	BfL = 0;
 }
 
-PSOut TZipOut::New(const TStr& FNm) {return PSOut(new TZipOut(FNm));}
-
 TZipOut::~TZipOut() {
+	Close();
+	if (Bf != NULL) delete[] Bf;
+}
+
+void TZipOut::Close() {
 	if (BfL != 0) FlushBf();
 #ifdef GLib_WIN
-	if (ZipStdinWr != NULL) {EAssertR(CloseHandle(ZipStdinWr), "Closing write-end of pipe failed");}
-	if (ZipStdinRd != NULL) {EAssertR(CloseHandle(ZipStdinRd), "Closing read-end of pipe failed");}
+	if (ZipStdinWr != NULL) {
+		EAssertR(CloseHandle(ZipStdinWr), "Closing write-end of pipe failed");
+		ZipStdinWr = NULL;
+	}
+	if (ZipStdinRd != NULL) {
+		EAssertR(CloseHandle(ZipStdinRd), "Closing read-end of pipe failed");
+		ZipStdinRd = NULL;
+	}
 #else
-	if (ZipStdinWr != NULL) EAssertR(pclose(ZipStdinWr) != -1, "Closing of the process failed");
+	if (ZipStdinWr != NULL) {
+		EAssertR(pclose(ZipStdinWr) != -1, "Closing of the process failed");
+		ZipStdinWr = NULL;
+	}
 #endif
-	if (Bf != NULL) delete[] Bf;
 }
 
 int TZipOut::PutCh(const char& Ch) {

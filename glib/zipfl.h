@@ -37,6 +37,7 @@ private:
 	uint64 FLen, CurFPos;
 	char* Bf;
 	int BfC, BfL;
+	bool Silent;
 private:
 	void FillBf();
 	void CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm);
@@ -45,10 +46,10 @@ private:
 	TZipIn(const TZipIn&);
 	TZipIn& operator=(const TZipIn&);
 public:
-	TZipIn(const TStr& FNm);
-	TZipIn(const TStr& FNm, bool& OpenedP);
-	static PSIn New(const TStr& FNm);
-	static PSIn New(const TStr& FNm, bool& OpenedP);
+	TZipIn(const TStr& FNm, const bool& Silent=false);
+	TZipIn(const TStr& FNm, bool& OpenedP, const bool& Silent);
+	static PSIn New(const TStr& FNm, const bool& Silent=false) { return PSIn(new TZipIn(FNm, Silent)); }
+	static PSIn New(const TStr& FNm, bool& OpenedP, const bool& Silent) { return PSIn(new TZipIn(FNm, OpenedP, Silent)); }
 	~TZipIn();
 
 	bool Eof() {return BfL<MxBfL && BfC == BfL;}
@@ -81,6 +82,7 @@ private:
 #endif
 	char* Bf;
 	TSize BfL;
+	bool Silent;
 private:
 	void FlushBf();
 	void CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm);
@@ -89,16 +91,17 @@ private:
 	TZipOut(const TZipOut&);
 	TZipOut& operator=(const TZipOut&);
 public:
-	TZipOut(const TStr& _FNm);
-	static PSOut New(const TStr& FNm);
+	TZipOut(const TStr& _FNm, const bool& Silent=false);
+	static PSOut New(const TStr& FNm, const bool& Silent=false) { return PSOut(new TZipOut(FNm, Silent)); }
 	~TZipOut();
 
 	int PutCh(const char& Ch);
 	int PutBf(const void* LBf, const TSize& LBfL);
 	void Flush();
+	void Close();
 
 	static void AddZipExtCmd(const TStr& ZipFNmExt, const TStr& ZipCmd);
-	static bool IsZipFNm(const TStr& FNm) {return IsZipExt(FNm.GetFExt());}
+	static bool IsZipFNm(const TStr& FNm) { return IsZipExt(FNm.GetFExt()); }
 	static bool IsZipExt(const TStr& FNmExt);
 	static void FillFExtToCmdH();
 	static TStr GetCmd(const TStr& ZipFNm);

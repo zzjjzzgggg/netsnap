@@ -341,10 +341,12 @@ public:
 	}
 	const char* GetStr() const { return GetTmStr(); }
 	const char* GetTmStr() const {
+		double Secs = GetSecs();
+		int NSecs = int(Secs);
 		static char TmStr[32];
-		if(GetSecs()<60) sprintf(TmStr, "%.2fs", GetSecs());
-		else if(GetSecs()<3600) sprintf(TmStr, "%02dm%02ds", int(GetSecs())/60, int(GetSecs())%60);
-		else sprintf(TmStr, "%02dh%02dm", int(GetSecs())/3600, (int(GetSecs())%3600)/60);
+		if(Secs<60) sprintf(TmStr, "%.2fs", Secs);
+		else if(Secs<3600) sprintf(TmStr, "%02dm%02ds", NSecs/60, NSecs%60);
+		else sprintf(TmStr, "%02dh%02dm", NSecs/3600, NSecs%3600/60);
 		return TmStr;
 	}
 	static char* GetCurTm() { static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr(); }

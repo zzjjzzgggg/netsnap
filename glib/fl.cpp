@@ -206,7 +206,7 @@ int TStdOut::PutBf(const void* LBf, const TSize& LBfL){
 
 /////////////////////////////////////////////////
 // Input-File
-const int TFIn::MxBfL=16*1024;
+const int TFIn::MxBfL=64*1024;
 
 void TFIn::SetFPos(const int& FPos) const {
     EAssertR(fseek(FileId, FPos, SEEK_SET)==0,"Error seeking into file '"+GetSNm()+"'.");
@@ -233,7 +233,7 @@ void TFIn::FillBf(){
 }
 
 TFIn::TFIn(const TStr& FNm):
-    TSBase(FNm.CStr()), TSIn(FNm), FileId(NULL), Bf(NULL), BfC(0), BfL(0){
+    TSBase(FNm.CStr()), TSIn(FNm), FileId(NULL), Bf(NULL), BfC(0), BfL(0) {
     EAssertR(!FNm.Empty(), "Empty file-name.");
     FileId=fopen(FNm.CStr(), "rb");
     if(FileId==NULL) printf("Can not open file %s.", FNm.CStr());
@@ -242,11 +242,13 @@ TFIn::TFIn(const TStr& FNm):
 }
 
 TFIn::TFIn(const TStr& FNm, bool& OpenedP):
-    TSBase(FNm.CStr()), TSIn(FNm), FileId(NULL), Bf(NULL), BfC(0), BfL(0){
+    TSBase(FNm.CStr()), TSIn(FNm), FileId(NULL), Bf(NULL), BfC(0), BfL(0) {
     EAssertR(!FNm.Empty(), "Empty file-name.");
     FileId=fopen(FNm.CStr(), "rb");
     OpenedP=(FileId!=NULL);
-    if (OpenedP) Bf=new char[MxBfL]; BfC=BfL=-1; FillBf();
+    if (OpenedP) Bf=new char[MxBfL];
+    BfC=BfL=-1;
+    FillBf();
 }
 
 PSIn TFIn::New(const TStr& FNm){
@@ -258,8 +260,15 @@ PSIn TFIn::New(const TStr& FNm, bool& OpenedP){
 }
 
 TFIn::~TFIn(){
-    if (FileId!=NULL) EAssertR(fclose(FileId)==0, "Can not close file '"+GetSNm()+"'.");
+    Close();
     if (Bf!=NULL) delete[] Bf;
+}
+
+void TFIn::Close() {
+    if (FileId!=NULL) {
+        EAssertR(fclose(FileId)==0, "Can not close file '"+GetSNm()+"'.");
+        FileId=NULL;
+    }
 }
 
 int TFIn::GetBf(const void* LBf, const TSize& LBfL){
@@ -279,7 +288,7 @@ int TFIn::GetBf(const void* LBf, const TSize& LBfL){
 
 /////////////////////////////////////////////////
 // Output-File
-const TSize TFOut::MxBfL=16*1024;;
+const TSize TFOut::MxBfL=64*1024;;
 
 void TFOut::FlushBf(){
     EAssertR(fwrite(Bf, 1, BfL, FileId)==BfL,"Error writting to the file '"+GetSNm()+"'.");
@@ -288,11 +297,10 @@ void TFOut::FlushBf(){
 
 TFOut::TFOut(const TStr& FNm, const bool& Append):
     TSBase(FNm.CStr()), TSOut(FNm), FileId(NULL), Bf(NULL), BfL(0){
-    if (FNm.GetUc()=="CON"){
-        FileId=stdout;
-    } else {
-        if (Append){FileId=fopen(FNm.CStr(), "a+b");}
-        else {FileId=fopen(FNm.CStr(), "w+b");}
+    if (FNm.GetUc()=="CON") FileId=stdout;
+    else {
+        if (Append) FileId=fopen(FNm.CStr(), "a+b");
+        else FileId=fopen(FNm.CStr(), "w+b");
         EAssertR(FileId!=NULL, "Can not open file '"+FNm+"'.");
         Bf=new char[MxBfL]; BfL=0;
     }
@@ -300,14 +308,15 @@ TFOut::TFOut(const TStr& FNm, const bool& Append):
 
 TFOut::TFOut(const TStr& FNm, const bool& Append, bool& OpenedP):
     TSBase(FNm.CStr()), TSOut(FNm), FileId(NULL), Bf(NULL), BfL(0){
-    if (FNm.GetUc()=="CON"){
-        FileId=stdout;
-    } else {
-        if (Append){FileId=fopen(FNm.CStr(), "a+b");}
-        else {FileId=fopen(FNm.CStr(), "w+b");}
+    if (FNm.GetUc()=="CON") FileId=stdout;
+    else {
+        if (Append) FileId=fopen(FNm.CStr(), "a+b");
+        else FileId=fopen(FNm.CStr(), "w+b");
         OpenedP=(FileId!=NULL);
         if (OpenedP){
-            Bf=new char[MxBfL]; BfL=0;}
+            Bf=new char[MxBfL];
+            BfL=0;
+        }
     }
 }
 
@@ -317,17 +326,25 @@ PSOut TFOut::New(const TStr& FNm, const bool& Append){
 
 PSOut TFOut::New(const TStr& FNm, const bool& Append, bool& OpenedP){
     PSOut SOut=PSOut(new TFOut(FNm, Append, OpenedP));
-    if (OpenedP){return SOut;} else {return NULL;}
+    if (OpenedP) return SOut;
+    else return NULL;
 }
 
 TFOut::~TFOut(){
-    if (FileId!=NULL) FlushBf();
+    Close();
     if (Bf!=NULL) delete[] Bf;
-    if (FileId!=NULL) EAssertR(fclose(FileId)==0, "Can not close file '"+GetSNm()+"'.");
+}
+
+void TFOut::Close() {
+    if (FileId!=NULL) {
+        FlushBf();
+        EAssertR(fclose(FileId)==0, "Can not close file '"+GetSNm()+"'.");
+        FileId = NULL;
+    }
 }
 
 int TFOut::PutCh(const char& Ch){
-    if (BfL==TSize(MxBfL)){FlushBf();}
+    if (BfL==TSize(MxBfL)) FlushBf();
     return Bf[BfL++]=Ch;
 }
 
@@ -765,9 +782,8 @@ const TStr TFile::GifFExt=".Gif";
 const TStr TFile::JarFExt=".Jar";
 
 bool TFile::Exists(const TStr& FNm){
-    bool DoExists;
-    TFIn FIn(FNm, DoExists);
-    return DoExists;
+    struct stat st;
+    return stat(FNm.CStr(), &st) == 0;
 }
 
 void TFile::Del(const TStr& FNm, const bool& ThrowExceptP){

@@ -1,6 +1,6 @@
-/////////////////////////////////////////////////
-
-// Address-Pointer
+/**
+ * Address-Pointer
+ */
 template<class TRec>
 class TAPt {
 private:

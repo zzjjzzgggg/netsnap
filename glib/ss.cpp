@@ -15,9 +15,9 @@ void TSs::PutVal(const int& X, const int& Y, const TStr& Str) {
 
 TStr TSs::GetVal(const int& X, const int& Y) const {
 	if ((0 <= Y) && (Y < CellStrVV.Len())) {
-		if ((0 <= X) && (X < CellStrVV[Y]->Len())) 	return CellStrVV[Y]->V[X];
+		if ((0 <= X) && (X < CellStrVV[Y]->Len()))	return CellStrVV[Y]->V[X];
 		else return TStr::GetNullStr();
-	} else 	return TStr::GetNullStr();
+	} else	return TStr::GetNullStr();
 }
 
 int TSs::GetXLen() const {
@@ -84,7 +84,7 @@ int TSs::GetFldY(const TStr& FldNm, const TStr& NewFldNm, const int& X) const {
 }
 
 PSs TSs::LoadTxt(const TSsFmt& SsFmt, const TStr& FNm, const PNotify& Notify, const bool& IsExcelEoln,
-		const int& MxY, const TIntV& AllowedColNV, const bool& IsQStr) {
+				 const int& MxY, const TIntV& AllowedColNV, const bool& IsQStr) {
 	TNotify::OnNotify(Notify, ntInfo, TStr("Loading File ") + FNm + " ...");
 	PSIn SIn = TFIn::New(FNm);
 	PSs Ss = TSs::New();
@@ -109,78 +109,78 @@ PSs TSs::LoadTxt(const TSsFmt& SsFmt, const TStr& FNm, const PNotify& Notify, co
 						else break;
 					}
 				}
-		} else {
-			if (SsFmt==ssfTabSep) {
-				while ((!SIn->Eof())&&(Ch!='\t')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln))	ChA+=Ch; Ch=SIn->GetCh();
-			} else
-			if (SsFmt==ssfCommaSep) {
-				while ((!SIn->Eof())&&(Ch!=',')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln)) {
-					ChA+=Ch; Ch=SIn->GetCh();
-				}
-			} else
-			if (SsFmt==ssfSemicolonSep) {
-				while ((!SIn->Eof())&&(Ch!=';')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln)) {
-					ChA+=Ch; Ch=SIn->GetCh();
-				}
-			} else
-			if (SsFmt==ssfSpaceSep) {
-				while ((!SIn->Eof())&&(Ch!=' ')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln)) {
-					ChA+=Ch; Ch=SIn->GetCh();
-				}
 			} else {
-				Fail;
+				if (SsFmt==ssfTabSep) {
+					while ((!SIn->Eof())&&(Ch!='\t')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln))	ChA+=Ch; Ch=SIn->GetCh();
+				} else
+					if (SsFmt==ssfCommaSep) {
+						while ((!SIn->Eof())&&(Ch!=',')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln)) {
+							ChA+=Ch; Ch=SIn->GetCh();
+						}
+					} else
+						if (SsFmt==ssfSemicolonSep) {
+							while ((!SIn->Eof())&&(Ch!=';')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln)) {
+								ChA+=Ch; Ch=SIn->GetCh();
+							}
+						} else
+							if (SsFmt==ssfSpaceSep) {
+								while ((!SIn->Eof())&&(Ch!=' ')&&(Ch!='\r')&&((Ch!='\n')||IsExcelEoln)) {
+									ChA+=Ch; Ch=SIn->GetCh();
+								}
+							} else {
+								Fail;
+							}
 			}
-		}
-		// add new line if neccessary
-		if (PrevY!=Y) {
-			if ((MxY!=-1)&&(Ss->CellStrVV.Len()==MxY)) {break;}
-			Ss->CellStrVV.Add(TStrVP::New()); PrevY=Y;
-			int Recs=Ss->CellStrVV.Len();
-			if (Recs%1000==0) {
-				TNotify::OnStatus(Notify, TStr::Fmt("  %d\r", Recs));}
-		}
-		// add value to spreadsheet
-		if (AllowedColNV.Empty()||AllowedColNV.IsIn(X)) {
-			Ss->CellStrVV[Y]->V.Add(ChA);
-		}
-		// process delimiters
-		if (SIn->Eof()) {
-			break;
-		} else
-		if ((SsFmt==ssfTabSep)&&(Ch=='\t')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if ((SsFmt==ssfCommaSep)&&(Ch==',')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if ((SsFmt==ssfSemicolonSep)&&(Ch==';')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if ((SsFmt==ssfSpaceSep)&&(Ch==' ')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if (Ch=='\r') {
-			if ((PrevX!=-1)&&(X!=PrevX)) {
-				TNotify::OnNotify(Notify, ntWarn, "Number of fields is not the same!");}
-			PrevX=X; X=0; Y++; Ch=SIn->GetCh();
-			if ((Ch=='\n')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
-			//if (Ss->CellStrVV.Len()%1000==0){Y--; break;}
-		} else
-		if (Ch=='\n') {
-			if ((PrevX!=-1)&&(X!=PrevX)) {
-				TNotify::OnNotify(Notify, ntWarn, "Number of fields is not the same!");}
-			PrevX=X; X=0; Y++; Ch=SIn->GetCh();
-			if ((Ch=='\r')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
-			//if (Ss->CellStrVV.Len()%1000==0){Y--; break;}
-		} else {
-			Fail;
+			// add new line if neccessary
+			if (PrevY!=Y) {
+				if ((MxY!=-1)&&(Ss->CellStrVV.Len()==MxY)) {break;}
+				Ss->CellStrVV.Add(TStrVP::New()); PrevY=Y;
+				int Recs=Ss->CellStrVV.Len();
+				if (Recs%1000==0) {
+					TNotify::OnStatus(Notify, TStr::Fmt("  %d\r", Recs));}
+			}
+			// add value to spreadsheet
+			if (AllowedColNV.Empty()||AllowedColNV.IsIn(X)) {
+				Ss->CellStrVV[Y]->V.Add(ChA);
+			}
+			// process delimiters
+			if (SIn->Eof()) {
+				break;
+			} else
+				if ((SsFmt==ssfTabSep)&&(Ch=='\t')) {
+					X++; Ch=SIn->GetCh();
+				} else
+					if ((SsFmt==ssfCommaSep)&&(Ch==',')) {
+						X++; Ch=SIn->GetCh();
+					} else
+						if ((SsFmt==ssfSemicolonSep)&&(Ch==';')) {
+							X++; Ch=SIn->GetCh();
+						} else
+							if ((SsFmt==ssfSpaceSep)&&(Ch==' ')) {
+								X++; Ch=SIn->GetCh();
+							} else
+								if (Ch=='\r') {
+									if ((PrevX!=-1)&&(X!=PrevX)) {
+										TNotify::OnNotify(Notify, ntWarn, "Number of fields is not the same!");}
+									PrevX=X; X=0; Y++; Ch=SIn->GetCh();
+									if ((Ch=='\n')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
+									//if (Ss->CellStrVV.Len()%1000==0){Y--; break;}
+								} else
+									if (Ch=='\n') {
+										if ((PrevX!=-1)&&(X!=PrevX)) {
+											TNotify::OnNotify(Notify, ntWarn, "Number of fields is not the same!");}
+										PrevX=X; X=0; Y++; Ch=SIn->GetCh();
+										if ((Ch=='\r')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
+										//if (Ss->CellStrVV.Len()%1000==0){Y--; break;}
+									} else {
+										Fail;
+									}
 		}
 	}
-}
-int Recs=Ss->CellStrVV.Len();
-TNotify::OnNotify(Notify, ntInfo, TStr::Fmt("  %d records read.", Recs));
-TNotify::OnNotify(Notify, ntInfo, "... Done.");
-return Ss;
+	int Recs=Ss->CellStrVV.Len();
+	TNotify::OnNotify(Notify, ntInfo, TStr::Fmt("  %d records read.", Recs));
+	TNotify::OnNotify(Notify, ntInfo, "... Done.");
+	return Ss;
 }
 
 void TSs::SaveTxt(const TStr& FNm, const PNotify&) const {
@@ -206,7 +206,7 @@ void TSs::SaveTxt(const TStr& FNm, const PNotify&) const {
 }
 
 void TSs::LoadTxtFldV(const TSsFmt& SsFmt, const PSIn& SIn, char& Ch,
-		TStrV& FldValV, const bool& IsExcelEoln, const bool& IsQStr) {
+					  TStrV& FldValV, const bool& IsExcelEoln, const bool& IsQStr) {
 	if (!SIn->Eof()) {
 		FldValV.Clr(false);
 		int X = 0;
@@ -220,69 +220,69 @@ void TSs::LoadTxtFldV(const TSsFmt& SsFmt, const PSIn& SIn, char& Ch,
 			if (IsQStr && (Ch == '"')) {
 				// quoted string ('""' sequence means '"')
 				Ch = SIn->GetCh();
-forever			{
-				while ((!SIn->Eof())&&(Ch!='"')) {
-					ChA+=Ch; Ch=SIn->GetCh();}
-				if (Ch=='"') {
-					Ch=SIn->GetCh();
-					if (Ch=='"') {ChA+=Ch; Ch=SIn->GetCh();}
-					else {break;}
-				}
-			}
-		} else {
-			if (SsFmt==ssfTabSep) {
-				while ((!SIn->Eof())&&(Ch!='\t')&&(Ch!='\r')&&
-						((Ch!='\n')||IsExcelEoln)) {
-					ChA+=Ch; Ch=SIn->GetCh();
-				}
-				if ((!ChA.Empty())&&(ChA.LastCh()=='\"')) {
-					ChA.Trunc(ChA.Len()-1);}
-			} else
-			if (SsFmt==ssfCommaSep) {
-				while ((!SIn->Eof())&&(Ch!=',')&&(Ch!='\r')&&
-						((Ch!='\n')||IsExcelEoln)) {
-					ChA+=Ch; Ch=SIn->GetCh();
-				}
-			} else
-			if (SsFmt==ssfSemicolonSep) {
-				while ((!SIn->Eof())&&(Ch!=';')&&(Ch!='\r')&&
-						((Ch!='\n')||IsExcelEoln)) {
-					ChA+=Ch; Ch=SIn->GetCh();
+				forever			{
+					while ((!SIn->Eof())&&(Ch!='"')) {
+						ChA+=Ch; Ch=SIn->GetCh();}
+					if (Ch=='"') {
+						Ch=SIn->GetCh();
+						if (Ch=='"') {ChA+=Ch; Ch=SIn->GetCh();}
+						else {break;}
+					}
 				}
 			} else {
-				Fail;
+				if (SsFmt==ssfTabSep) {
+					while ((!SIn->Eof())&&(Ch!='\t')&&(Ch!='\r')&&
+						   ((Ch!='\n')||IsExcelEoln)) {
+						ChA+=Ch; Ch=SIn->GetCh();
+					}
+					if ((!ChA.Empty())&&(ChA.LastCh()=='\"')) {
+						ChA.Trunc(ChA.Len()-1);}
+				} else
+					if (SsFmt==ssfCommaSep) {
+						while ((!SIn->Eof())&&(Ch!=',')&&(Ch!='\r')&&
+							   ((Ch!='\n')||IsExcelEoln)) {
+							ChA+=Ch; Ch=SIn->GetCh();
+						}
+					} else
+						if (SsFmt==ssfSemicolonSep) {
+							while ((!SIn->Eof())&&(Ch!=';')&&(Ch!='\r')&&
+								   ((Ch!='\n')||IsExcelEoln)) {
+								ChA+=Ch; Ch=SIn->GetCh();
+							}
+						} else {
+							Fail;
+						}
 			}
-		}
-		// add value to spreadsheet
-		ChA.Trunc();
-		FldValV.Add(ChA);
-		// process delimiters
-		if (SIn->Eof()) {
-			break;
-		} else
-		if ((SsFmt==ssfTabSep)&&(Ch=='\t')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if ((SsFmt==ssfCommaSep)&&(Ch==',')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if ((SsFmt==ssfSemicolonSep)&&(Ch==';')) {
-			X++; Ch=SIn->GetCh();
-		} else
-		if (Ch=='\r') {
-			Ch=SIn->GetCh();
-			if ((Ch=='\n')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
-			break;
-		} else
-		if (Ch=='\n') {
-			X=0; Ch=SIn->GetCh();
-			if ((Ch=='\r')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
-			break;
-		} else {
-			Fail;
+			// add value to spreadsheet
+			ChA.Trunc();
+			FldValV.Add(ChA);
+			// process delimiters
+			if (SIn->Eof()) {
+				break;
+			} else
+				if ((SsFmt==ssfTabSep)&&(Ch=='\t')) {
+					X++; Ch=SIn->GetCh();
+				} else
+					if ((SsFmt==ssfCommaSep)&&(Ch==',')) {
+						X++; Ch=SIn->GetCh();
+					} else
+						if ((SsFmt==ssfSemicolonSep)&&(Ch==';')) {
+							X++; Ch=SIn->GetCh();
+						} else
+							if (Ch=='\r') {
+								Ch=SIn->GetCh();
+								if ((Ch=='\n')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
+								break;
+							} else
+								if (Ch=='\n') {
+									X=0; Ch=SIn->GetCh();
+									if ((Ch=='\r')&&(!SIn->Eof())) {Ch=SIn->GetCh();}
+									break;
+								} else {
+									Fail;
+								}
 		}
 	}
-}
 }
 
 TSsFmt TSs::GetSsFmtFromStr(const TStr& SsFmtNm) {
@@ -337,10 +337,12 @@ TStr TSs::GetSsFmtNmVStr() {
 
 /////////////////////////////////////////////////
 // Fast-Spread-Sheet-Parser
-TSsParser::TSsParser(const TStr& FNm, const TSsFmt _SsFmt,const bool& _SkipLeadBlanks, const bool& _SkipCmt,
-		const bool& _SkipEmptyFld) :SsFmt(_SsFmt), SkipLeadBlanks(_SkipLeadBlanks), SkipCmt(_SkipCmt),
-		SkipEmptyFld(_SkipEmptyFld), LineCnt(0), SplitCh('\t'), FldV(), FInPt(NULL) {
-	if (TZipIn::IsZipExt(FNm.GetFExt())) FInPt = TZipIn::New(FNm);
+TSsParser::TSsParser(const TStr& FNm, const bool& Silent, const TSsFmt _SsFmt,
+					 const bool& _SkipLeadBlanks, const bool& _SkipCmt, const bool& _SkipEmptyFld) :
+	SsFmt(_SsFmt), SkipLeadBlanks(_SkipLeadBlanks), SkipCmt(_SkipCmt),
+	SkipEmptyFld(_SkipEmptyFld), LineCnt(0), SplitCh('\t'), FldV(), FInPt(NULL), Silent(Silent) {
+
+	if (TZipIn::IsZipExt(FNm.GetFExt())) FInPt = TZipIn::New(FNm, Silent);
 	else FInPt = TFIn::New(FNm);
 
 	//Bf = new char [BfLen];
@@ -366,10 +368,12 @@ TSsParser::TSsParser(const TStr& FNm, const TSsFmt _SsFmt,const bool& _SkipLeadB
 	}
 }
 
-TSsParser::TSsParser(const TStr& FNm, const char& Separator, const bool& _SkipLeadBlanks,	const bool& _SkipCmt, const bool& _SkipEmptyFld) :
+TSsParser::TSsParser(const TStr& FNm, const char& Separator, const bool& Silent, const bool& _SkipLeadBlanks,
+					 const bool& _SkipCmt, const bool& _SkipEmptyFld) :
 	SsFmt(ssfSpaceSep), SkipLeadBlanks(_SkipLeadBlanks), SkipCmt(_SkipCmt),	SkipEmptyFld(_SkipEmptyFld),
-	LineCnt(0), /*Bf(NULL),*/	SplitCh('\t'), FldV(), FInPt(NULL) {
-	if (TZipIn::IsZipExt(FNm.GetFExt()))  FInPt = TZipIn::New(FNm);
+	LineCnt(0), /*Bf(NULL),*/	SplitCh('\t'), FldV(), FInPt(NULL), Silent(Silent) {
+
+	if (TZipIn::IsZipExt(FNm.GetFExt()))  FInPt = TZipIn::New(FNm, Silent);
 	else FInPt = TFIn::New(FNm);
 	SplitCh = Separator;
 }
@@ -379,40 +383,40 @@ TSsParser::~TSsParser() {
 }
 
 /*bool TSsParser::Next() { // split on SplitCh
- const char* EndBf = Bf+BfLen-1;
- memset(Bf, 0, BfLen);
- char *cur = Bf, *last = Bf;
- FldV.Clr(false);
- TSIn& FIn = *FInPt;
- if (SkipLeadBlanks) { // skip leadning blanks
- while (! FIn.Eof() && cur < EndBf && (FIn.PeekCh()=='\t' || FIn.PeekCh()==' ')) { FIn.GetCh(); }
- }
- while (! FIn.Eof() && cur < EndBf) {
- if (SsFmt == ssfWhiteSep) {
- while (! FIn.Eof() && cur < EndBf && ! TCh::IsWs(*cur=FIn.GetCh())) { cur++; }
- } else {
- while (! FIn.Eof() && cur < EndBf && (*cur=FIn.GetCh())!=SplitCh && *cur!='\r' && *cur!='\n') { cur++; }
- }
- if (*cur=='\r' || *cur=='\n') {
- *cur = 0; cur++;
- if (*last) { FldV.Add(last); }
- last = cur;
- break;
- }
- *cur = 0;  cur++;
- FldV.Add(last);  last = cur;
- if (SkipEmpty && strlen(FldV.Last())==0) { FldV.DelLast(); }
- }
- if (SkipEmpty && FldV.Len()>0 && strlen(FldV.Last())==0) {
- FldV.DelLast();
- }
- LineCnt++;
- if (! FldV.Empty() && cur < EndBf) {
- if (SkipCmt && IsCmt()) { return Next(); }
- else { return true; } }
- else if (! FIn.Eof() && ! SkipEmpty) { return true; }
- else { return false; }
- }*/
+  const char* EndBf = Bf+BfLen-1;
+  memset(Bf, 0, BfLen);
+  char *cur = Bf, *last = Bf;
+  FldV.Clr(false);
+  TSIn& FIn = *FInPt;
+  if (SkipLeadBlanks) { // skip leadning blanks
+  while (! FIn.Eof() && cur < EndBf && (FIn.PeekCh()=='\t' || FIn.PeekCh()==' ')) { FIn.GetCh(); }
+  }
+  while (! FIn.Eof() && cur < EndBf) {
+  if (SsFmt == ssfWhiteSep) {
+  while (! FIn.Eof() && cur < EndBf && ! TCh::IsWs(*cur=FIn.GetCh())) { cur++; }
+  } else {
+  while (! FIn.Eof() && cur < EndBf && (*cur=FIn.GetCh())!=SplitCh && *cur!='\r' && *cur!='\n') { cur++; }
+  }
+  if (*cur=='\r' || *cur=='\n') {
+  *cur = 0; cur++;
+  if (*last) { FldV.Add(last); }
+  last = cur;
+  break;
+  }
+  *cur = 0;  cur++;
+  FldV.Add(last);  last = cur;
+  if (SkipEmpty && strlen(FldV.Last())==0) { FldV.DelLast(); }
+  }
+  if (SkipEmpty && FldV.Len()>0 && strlen(FldV.Last())==0) {
+  FldV.DelLast();
+  }
+  LineCnt++;
+  if (! FldV.Empty() && cur < EndBf) {
+  if (SkipCmt && IsCmt()) { return Next(); }
+  else { return true; } }
+  else if (! FIn.Eof() && ! SkipEmpty) { return true; }
+  else { return false; }
+  }*/
 
 bool TSsParser::Next() { // split on SplitCh
 	FldV.Clr(false);
@@ -449,35 +453,35 @@ bool TSsParser::Next() { // split on SplitCh
 	//memset(Bf, 0, BfLen);
 	//char *cur = Bf, *last = Bf;
 	/*if (SkipLeadBlanks) { // skip leadning blanks
-	 while (! FIn.Eof() && cur < EndBf && (FIn.PeekCh()=='\t' || FIn.PeekCh()==' ')) { FIn.GetCh(); }
-	 }
-	 while (! FIn.Eof() && cur < EndBf) {
-	 if (SsFmt == ssfWhiteSep) {
-	 while (! FIn.Eof() && cur < EndBf && ! TCh::IsWs(*cur=FIn.GetCh())) { cur++; }
-	 } else {
-	 while (! FIn.Eof() && cur < EndBf && (*cur=FIn.GetCh())!=SplitCh && *cur!='\r' && *cur!='\n') { cur++; }
-	 }
-	 if (*cur=='\r' || *cur=='\n') {
-	 if (! FIn.Eof()) { // read the remaining of the line
-	 if (*cur == '\r' && FIn.PeekCh()=='\n') { FIn.GetCh(); }
-	 else if (*cur == '\n' && FIn.PeekCh()=='\r') { FIn.GetCh(); }
-	 }
-	 *cur = 0; cur++;
-	 FldV.Add(last);
-	 last = cur;
-	 break;
-	 }
-	 *cur = 0;  cur++;
-	 FldV.Add(last);  last = cur;
-	 if (SkipEmptyFld && strlen(FldV.Last())==0) { FldV.DelLast(); } // skip empty fields
-	 }
-	 LineCnt++;
-	 if (SkipCmt && IsCmt() && ! FIn.Eof()) { return Next(); }
-	 if (FldV.Len() == 1 && strlen(FldV[0])==0) { FldV.Clr(); return true; }
-	 if (SkipEmptyFld && FldV.Len()>0 && strlen(FldV.Last())==0) { FldV.DelLast(); }
-	 return ! FIn.Eof() || ! FldV.Empty();
-	 //if (SkipEmptyFld && FldV.Empty() && ! FIn.Eof()) { return Next(); } // skip empty line
-	 */
+	  while (! FIn.Eof() && cur < EndBf && (FIn.PeekCh()=='\t' || FIn.PeekCh()==' ')) { FIn.GetCh(); }
+	  }
+	  while (! FIn.Eof() && cur < EndBf) {
+	  if (SsFmt == ssfWhiteSep) {
+	  while (! FIn.Eof() && cur < EndBf && ! TCh::IsWs(*cur=FIn.GetCh())) { cur++; }
+	  } else {
+	  while (! FIn.Eof() && cur < EndBf && (*cur=FIn.GetCh())!=SplitCh && *cur!='\r' && *cur!='\n') { cur++; }
+	  }
+	  if (*cur=='\r' || *cur=='\n') {
+	  if (! FIn.Eof()) { // read the remaining of the line
+	  if (*cur == '\r' && FIn.PeekCh()=='\n') { FIn.GetCh(); }
+	  else if (*cur == '\n' && FIn.PeekCh()=='\r') { FIn.GetCh(); }
+	  }
+	  *cur = 0; cur++;
+	  FldV.Add(last);
+	  last = cur;
+	  break;
+	  }
+	  *cur = 0;  cur++;
+	  FldV.Add(last);  last = cur;
+	  if (SkipEmptyFld && strlen(FldV.Last())==0) { FldV.DelLast(); } // skip empty fields
+	  }
+	  LineCnt++;
+	  if (SkipCmt && IsCmt() && ! FIn.Eof()) { return Next(); }
+	  if (FldV.Len() == 1 && strlen(FldV[0])==0) { FldV.Clr(); return true; }
+	  if (SkipEmptyFld && FldV.Len()>0 && strlen(FldV.Last())==0) { FldV.DelLast(); }
+	  return ! FIn.Eof() || ! FldV.Empty();
+	  //if (SkipEmptyFld && FldV.Empty() && ! FIn.Eof()) { return Next(); } // skip empty line
+	  */
 }
 
 void TSsParser::ToLc() {
@@ -503,7 +507,7 @@ bool TSsParser::GetInt(const int& FldN, int& Val) const {
 		_Val = 10 * _Val + TCh::GetNum(*c);
 		c++;
 	}
-	if (Minus) 	_Val = -_Val;
+	if (Minus)	_Val = -_Val;
 	if (*c != 0) return false;
 	Val = _Val;
 	return true;
@@ -515,16 +519,16 @@ bool TSsParser::GetFlt(const int& FldN, double& Val) const {
 	while (TCh::IsWs(*c)) c++;
 	if (*c == '+' || *c == '-') c++;
 	if (!TCh::IsNum(*c) && *c != '.') return false;
-	while (TCh::IsNum(*c)) 	c++;
+	while (TCh::IsNum(*c))	c++;
 	if (*c == '.') {
 		c++;
-		while (TCh::IsNum(*c)) 	c++;
+		while (TCh::IsNum(*c))	c++;
 	}
 	if (*c == 'e' || *c == 'E') {
 		c++;
 		if (*c == '+' || *c == '-') c++;
 		if (!TCh::IsNum(*c)) return false;
-		while (TCh::IsNum(*c)) 	c++;
+		while (TCh::IsNum(*c))	c++;
 	}
 	if (*c != 0) return false;
 	Val = atof(GetFld(FldN));

@@ -1,11 +1,13 @@
-/////////////////////////////////////////////////
-// Forward-Definitions
+/**
+ * Forward-Definitions
+ */
 class TMem;
 class TChA;
 class TStr;
 
-/////////////////////////////////////////////////
-// Check-Sum
+/**
+ * Check-Sum
+ */
 class TCs{
 private:
     static const int MxMask;
@@ -70,6 +72,7 @@ public:
     virtual char PeekCh()=0;    // get one char and do NOT advance
     virtual int GetBf(const void* Bf, const TSize& BfL)=0; // get BfL chars and advance
     virtual void Reset(){Fail;}
+    virtual void Close() {}
 
     bool IsFastMode() const {return FastMode;}
     void SetFastMode(const bool& _FastMode){FastMode=_FastMode;}
@@ -137,6 +140,7 @@ public:
     virtual int PutBf(const void* LBf, const TSize& LBfL)=0;
     virtual void Flush()=0;
     virtual TFileId GetFileId() const {return NULL;}
+    virtual void Close() {}
 
     int PutMem(const TMem& Mem);
     int PutCh(const char& Ch, const int& Chs);
@@ -281,6 +285,7 @@ public:
     static PSIn New(const TStr& FNm);
     static PSIn New(const TStr& FNm, bool& OpenedP);
     ~TFIn();
+    void Close();
 
     bool Eof() {
         if ((BfC==BfL)&&(BfL==MxBfL)) FillBf();
@@ -332,7 +337,8 @@ public:
 
 	int PutCh(const char& Ch);
 	int PutBf(const void* LBf, const TSize& LBfL);
-	void Flush();
+    void Flush();
+    void Close();
 
 	TFileId GetFileId() const {return FileId;}
 };

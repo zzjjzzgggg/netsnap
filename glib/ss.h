@@ -61,12 +61,14 @@ private:
 	TChA LineStr;
 	TVec<char*> FldV;
 	PSIn FInPt;
+    bool Silent;
 	UndefDefaultCopyAssign(TSsParser);
 public:
-	TSsParser(const TStr& FNm, const TSsFmt _SsFmt=ssfTabSep, const bool& _SkipLeadBlanks=true, const bool& _SkipCmt=true, const bool& _SkipEmptyFld=true);
-	TSsParser(const TStr& FNm, const char& Separator, const bool& _SkipLeadBlanks=false, const bool& _SkipCmt=true, const bool& _SkipEmptyFld=false);
+TSsParser(const TStr& FNm, const bool& Silent=false, const TSsFmt _SsFmt=ssfTabSep, const bool& _SkipLeadBlanks=true, const bool& _SkipCmt=true, const bool& _SkipEmptyFld=true);
+TSsParser(const TStr& FNm, const TSsFmt _SsFmt): TSsParser(FNm, false, _SsFmt) {}
+TSsParser(const TStr& FNm, const char& Separator, const bool& Silent=false, const bool& _SkipLeadBlanks=false, const bool& _SkipCmt=true, const bool& _SkipEmptyFld=false);
 	~TSsParser();
-	static PSsParser New(const TStr& FNm, const TSsFmt SsFmt) { return new TSsParser(FNm, SsFmt); }
+    static PSsParser New(const TStr& FNm, const TSsFmt SsFmt) { return new TSsParser(FNm, SsFmt); }
 	bool Next();
 	int Len() const { return FldV.Len(); }
 	int GetFlds() const { return Len(); }

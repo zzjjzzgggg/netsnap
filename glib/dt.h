@@ -1,5 +1,6 @@
-/////////////////////////////////////////////////
-// Forward
+/**
+ * Forward
+ */
 class TILx;
 class TOLx;
 ClassHdTP(TXmlTok, PXmlTok);

@@ -296,14 +296,40 @@ void test_zip(){
 //	}
 //	printf("n=%d, time=%.2fmins\n", n, tm.GetSecs()/60);
 
-	TStr Fnm("t.txt.gz");
-	PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
-	FOutPt->PutStrLn("hello");
-	FOutPt->PutStrLn("hello again");
-	FOutPt->PutInt(12);
-	FOutPt->PutLn();
-	FOutPt->PutFlt(12.123, (char*)"%g");
-	FOutPt->PutLn();
+	// TStr Fnm("t.txt.gz");
+	// PSOut FOutPt = TZipOut::IsZipFNm(Fnm) ? TZipOut::New(Fnm) : TFOut::New(Fnm);
+	// FOutPt->PutStrLn("hello");
+	// FOutPt->PutStrLn("hello again");
+	// FOutPt->PutInt(12);
+	// FOutPt->PutLn();
+	// FOutPt->PutFlt(12.123, (char*)"%g");
+	// FOutPt->PutLn();
+
+	TStr Ln;
+	PSIn Fr = TZipIn::New("/home/jzzhao/test.txt.gz", true);
+	char buf[32];
+	char* BufPtr = buf;
+	while (!Fr->Eof()) Fr->Load(*(BufPtr++));
+	*(BufPtr++) = 'f';
+	*(BufPtr++) = '\n';
+	printf("results:\n%s", buf);
+
+	// PSOut Fw = TZipOut::New("/home/jzzhao/test2.txt.gz", true);
+	// Fw->PutInt(12);
+	// Fw->PutInt(35);
+}
+
+void test_pip() {
+	const TStr CmdLine = "7za e -y -bd -so /home/jzzhao/test.txt.gz 2>/dev/null";
+	FILE* ZipStdoutRd = popen(CmdLine.CStr(), "r");
+	char buf[32]={0};
+	fread(buf, 1, 32, ZipStdoutRd);
+	pclose(ZipStdoutRd);
+	printf("rst:%s\n", buf);
+
+	FILE* ZipStdinWt = popen("7za a -y -bd -si /home/jzzhao/test2.txt.gz >/dev/null", "w");
+	fwrite(buf, 1, 32, ZipStdinWt);
+	pclose(ZipStdinWt);
 }
 
 void test_lst(){
@@ -466,6 +492,18 @@ void test_os() {
 	printf("i = %d\n", i);
 }
 
+/**
+ * test smart pointer TPt
+ */
+void test_tpt() {
+	PSOut fw;
+	if(!fw.Empty()) {
+		fw->Close();
+		printf("closed\n");
+	}
+	printf("%d\n", fw.Empty());
+}
+
 int main(int argc, char* argv[]) {
 	/*
 	Env = TEnv(argc, argv, TNotify::StdNotify);
@@ -486,6 +524,9 @@ int main(int argc, char* argv[]) {
 		printf("[%d]: %g\n", i, FltV[i].Val);
 	}
 */
-	test_os();
+	// test_os();
+	// test_tpt();
+	test_zip();
+	// test_pip();
 	return 0;
 }
