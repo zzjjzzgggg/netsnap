@@ -504,6 +504,12 @@ void test_tpt() {
 	printf("%d\n", fw.Empty());
 }
 
+void test_dir() {
+	TStr Dir = "/home/jzzhao/test";
+	if (TFile::Exists(Dir)) printf("Exists.\n");
+	else CreateDirectory(Dir, NULL);
+}
+
 int main(int argc, char* argv[]) {
 	/*
 	Env = TEnv(argc, argv, TNotify::StdNotify);
@@ -526,7 +532,8 @@ int main(int argc, char* argv[]) {
 */
 	// test_os();
 	// test_tpt();
-	test_zip();
+	// test_zip();
 	// test_pip();
+	test_dir();
 	return 0;
 }

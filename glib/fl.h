@@ -564,6 +564,7 @@ public:
     static const TStr JarFExt;
 public:
     static bool Exists(const TStr& FNm);
+    static bool MkDir(const TStr& FNm);
     static void Del(const TStr& FNm, const bool& ThrowExceptP=true);
     static void DelWc(const TStr& WcStr, const bool& RecurseDirP=false);
     static void Rename(const TStr& SrcFNm, const TStr& DstFNm);

@@ -786,6 +786,10 @@ bool TFile::Exists(const TStr& FNm){
     return stat(FNm.CStr(), &st) == 0;
 }
 
+bool TFile::MkDir(const TStr& FNm) {
+    return mkdir(FNm.CStr(), 0777)==0;
+}
+
 void TFile::Del(const TStr& FNm, const bool& ThrowExceptP){
     if (ThrowExceptP){
         EAssertR(remove(FNm.CStr())==0,"Error removing file '"+FNm+"'.");
