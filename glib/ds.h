@@ -1520,9 +1520,11 @@ public:
 	TVecPool(const TVecPool& Pool);
 	TVecPool(TSIn& SIn);
 	~TVecPool() {if (ValBf != NULL) delete[] ValBf; ValBf = NULL; }
-	static PVecPool New(const ::TSize& ExpectVals = 0, const ::TSize& GrowBy = 1000000, const bool& FastCopy = false) {	return new TVecPool(ExpectVals, GrowBy, FastCopy);	}
-	static PVecPool Load(TSIn& SIn) {	return new TVecPool(SIn); }
-	static PVecPool Load(const TStr& FNm) {TFIn FIn(FNm);	return Load(FIn); }
+	static PVecPool New(const ::TSize& ExpectVals = 0, const ::TSize& GrowBy = 1000000, const bool& FastCopy = false) {
+		return new TVecPool(ExpectVals, GrowBy, FastCopy);
+	}
+	static PVecPool Load(TSIn& SIn) { return new TVecPool(SIn); }
+	static PVecPool Load(const TStr& FNm) { TFIn FIn(FNm); return Load(FIn); }
 	void Save(TSOut& SOut) const;
 	TVecPool& operator =(const TVecPool& Pool);
 
@@ -1532,7 +1534,7 @@ public:
 	::TSize Reserved() const { return MxVals; }
 	void Reserve(const ::TSize& MxVals) {Resize(MxVals); }
 	const TVal& GetEmptyVal() const { return EmptyVal; }
-	void SetEmptyVal(const TVal& _EmptyVal) {EmptyVal = _EmptyVal; }
+	void SetEmptyVal(const TVal& _EmptyVal) { EmptyVal = _EmptyVal; }
 	::TSize GetMemUsed() const { return sizeof(TCRef) + sizeof(TBool) + 3 * sizeof(TSize)	+ sizeof(TVal*) + MxVals * sizeof(TVal); }
 
 	int AddV(const TValV& ValV);

@@ -75,7 +75,7 @@ int TSOut::PutMem(const TMem& Mem){
 
 int TSOut::PutCh(const char& Ch, const int& Chs){
     int Cs=0;
-    for (int ChN=0; ChN<Chs; ChN++){Cs+=PutCh(Ch);}
+    for (int ChN=0; ChN<Chs; ChN++) Cs+=PutCh(Ch);
     return Cs;
 }
 
@@ -288,7 +288,7 @@ int TFIn::GetBf(const void* LBf, const TSize& LBfL){
 
 /////////////////////////////////////////////////
 // Output-File
-const TSize TFOut::MxBfL=64*1024;;
+const TSize TFOut::MxBfL=1<<16; //65536
 
 void TFOut::FlushBf(){
     EAssertR(fwrite(Bf, 1, BfL, FileId)==BfL,"Error writting to the file '"+GetSNm()+"'.");

@@ -5,7 +5,7 @@
 ## Linux  (uncomment the 2 lines below for compilation on Linux)
 CXXFLAGS += -Wall -std=c++11
 LDFLAGS += -lrt -pthread -std=c++11
-OBJ = Snap.o ThreadPool.o
+OBJ = Snap.o ThreadPool.o argsparser.o
 
 ## Main application file
 MAIN = test
@@ -19,6 +19,9 @@ all: $(MAIN)
 # COMPILE
 $(MAIN): $(MAIN).cpp $(OBJ)
 	g++ -o $(MAIN) $(MAIN).cpp $(OBJ) $(LDFLAGS)
+
+argsparser.o: argsparser.cpp argsparser.h
+	g++ -c $(CXXFLAGS) $<
 
 ThreadPool.o: ThreadPool.cpp ThreadPool.h
 	g++ -c $(CXXFLAGS) $<

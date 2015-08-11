@@ -1,11 +1,11 @@
 #ifndef shash_h
 #define shash_h
 
-/////////////////////////////////////////////////
-// Hash-List-File
-//J: saves and loads hash tables into files and allows fast
-// iteration over the saved hash table file
-
+/**
+ * Hash-List-File:
+ * saves and loads hash tables into files and allows fast
+ * iteration over the saved hash table file.
+ */
 template<class TKey, class TDat, class THashFunc = TDefaultHashFunc<TKey> >
 class TKeyDatFl {
 private:
@@ -271,7 +271,7 @@ private:
 public:
   TSparseTableI() : CurOff(0), GroupI(NULL), EndI(NULL) { }
   TSparseTableI(const TGroupVI& BegIter, const TGroupVI& CurIter, const TGroupVI& EndIter,
-    const int& Offset = 0) : CurOff(Offset), BegI(BegIter), GroupI(CurIter), EndI(EndIter) { }
+                const int& Offset = 0) : CurOff(Offset), BegI(BegIter), GroupI(CurIter), EndI(EndIter) { }
   TSparseTableI(const TSparseTableI& STI) :
     CurOff(STI.CurOff), BegI(STI.BegI), GroupI(STI.GroupI), EndI(STI.EndI) { }
 
@@ -320,7 +320,7 @@ private:
   TSGroup& GetGrp1(const int& ValN) { return GroupV[GroupNum(ValN)]; }
 public:
   TSparseTable(const int& MaxVals = 0) : MxVals(MaxVals),
-    Vals(0), GroupV(GetGroups(MaxVals), GetGroups(MaxVals)) { }
+                                         Vals(0), GroupV(GetGroups(MaxVals), GetGroups(MaxVals)) { }
   TSparseTable(const TSparseTable& ST) : MxVals(ST.MxVals), Vals(ST.Vals), GroupV(ST.GroupV) { }
   TSparseTable(TSIn& SIn) : MxVals(SIn), Vals(SIn), GroupV(SIn) { }
   void Load(TSIn& SIn) { MxVals.Load(SIn);  Vals.Load(SIn);  GroupV.Load(SIn); }
@@ -459,7 +459,7 @@ public:
   explicit TSHashKeyDat(TSIn& SIn) : Key(SIn), Dat(SIn) { }
   void Save(TSOut& SOut) const { Key.Save(SOut);  Dat.Save(SOut); }
   TSHashKeyDat& operator = (const TSHashKeyDat& HashKeyDat) { if (this != &HashKeyDat) {
-    Key = HashKeyDat.Key;  Dat = HashKeyDat.Dat; }  return *this; }
+      Key = HashKeyDat.Key;  Dat = HashKeyDat.Dat; }  return *this; }
   bool operator == (const TSHashKeyDat& HashKeyDat) const { return Key == HashKeyDat.Key; }
   bool operator < (const TSHashKeyDat& HashKeyDat) const { return Key < HashKeyDat.Key; }
   int Hash() const { return Key.GetPrimHashCd(); }
@@ -576,7 +576,7 @@ void TSparseHash<TKey, TDat, GroupSize>::CopyFrom(const TSparseHash& HT, const i
     for (int b = 0; b < Group.Len(); b++) {
       int Tries = 0; uint BuckNum;
       for (BuckNum = Group.Offset(b).Hash() & BuckM1;
-       ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
+           ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
         Tries++;
         Assert(Tries < Reserved());
       }
@@ -601,7 +601,7 @@ void TSparseHash<TKey, TDat, GroupSize>::MoveFrom(TSparseHash& HT, const int& Mn
     for (int b = 0; b < Group.Len(); b++) {
       int Tries = 0; uint BuckNum;
       for (BuckNum = Group.Offset(b).Hash() & BuckM1;
-       ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
+           ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
         Tries++;
         Assert(Tries < Reserved());
       }
@@ -860,7 +860,7 @@ void TSparseSet<TKey, GroupSize>::CopyFrom(const TSparseSet& SSet, const int& Mn
     for (int b = 0; b < Group.Len(); b++) {
       int Tries = 0; uint BuckNum;
       for (BuckNum = Group.Offset(b).GetPrimHashCd() & BuckM1;
-       ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
+           ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
         Tries++;
         Assert(Tries < Reserved());
       }
@@ -885,7 +885,7 @@ void TSparseSet<TKey, GroupSize>::MoveFrom(TSparseSet& SSet, const int& MnWanted
     for (int b = 0; b < Group.Len(); b++) {
       int Tries = 0; uint BuckNum;
       for (BuckNum = Group.Offset(b).GetPrimHashCd() & BuckM1;
-       ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
+           ! Table.IsEmpty(BuckNum); BuckNum = (BuckNum + Tries) & BuckM1) {
         Tries++;
         Assert(Tries < Reserved());
       }
@@ -1152,8 +1152,8 @@ THashSet<TKey, THashFunc>::THashSet(const int& ExpectVals, const bool& _AutoSize
 
 template <class TKey, class THashFunc>
 THashSet<TKey, THashFunc>::THashSet(const TVec<TKey>& _KeyV) :
- PortV(GetNextPrime(_KeyV.Len()/2+1)), KeyV(_KeyV.Len(), 0),
- AutoSizeP(false), FFreeKeyId(-1), FreeKeys(0) {
+  PortV(GetNextPrime(_KeyV.Len()/2+1)), KeyV(_KeyV.Len(), 0),
+  AutoSizeP(false), FFreeKeyId(-1), FreeKeys(0) {
   PortV.PutAll(TInt(-1));
   for (int i = 0; i < _KeyV.Len(); i++) {
     AddKey(_KeyV[i]);
@@ -1189,7 +1189,7 @@ int THashSet<TKey, THashFunc>::AddKey(const TKey& Key) {
   int KeyId=PortV[PortN];
 
   while ((KeyId!=-1) &&
-   !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
+         !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
     PrevKeyId=KeyId; KeyId=KeyV[KeyId].Next; }
 
   if (KeyId==-1) {
@@ -1224,7 +1224,7 @@ void THashSet<TKey, THashFunc>::DelKey(const TKey& Key) {
   int KeyId=PortV[PortN];
 
   while ((KeyId!=-1) &&
-   !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
+         !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
     PrevKeyId=KeyId; KeyId=KeyV[KeyId].Next; }
 
   IAssertR(KeyId!=-1, Key.GetStr());
@@ -1244,7 +1244,7 @@ void THashSet<TKey, THashFunc>::MarkDelKey(const TKey& Key) {
   int KeyId=PortV[PortN];
 
   while ((KeyId!=-1) &&
-   !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
+         !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
     PrevKeyId=KeyId; KeyId=KeyV[KeyId].Next; }
 
   IAssertR(KeyId!=-1, Key.GetStr());
@@ -1262,7 +1262,7 @@ int THashSet<TKey, THashFunc>::GetKeyId(const TKey& Key) const {
   int KeyId=PortV[PortN];
 
   while ((KeyId!=-1) &&
-   !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
+         !((KeyV[KeyId].HashCd==HashCd) && (KeyV[KeyId].Key==Key))) {
     KeyId=KeyV[KeyId].Next; }
   return KeyId;
 }

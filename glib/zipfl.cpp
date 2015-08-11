@@ -7,48 +7,14 @@ const int TZipIn::MxBfL = 32 * 1024;
 void TZipIn::CreateZipProcess(const TStr& Cmd, const TStr& ZipFNm) {
 	TStr CmdLine = TStr::Fmt("%s %s", Cmd.CStr(), ZipFNm.CStr());
 	if (Silent) CmdLine += " 2>/dev/null";
-#ifdef GLib_WIN
-	PROCESS_INFORMATION piProcInfo;
-	STARTUPINFO siStartInfo;
-	ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION));
-	ZeroMemory( &siStartInfo, sizeof(STARTUPINFO));
-	siStartInfo.cb = sizeof(STARTUPINFO);
-	siStartInfo.hStdOutput = ZipStdoutWr;
-	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
-	// Create the child process.
-	const BOOL FuncRetn = CreateProcess(NULL,
-										(LPSTR) CmdLine.CStr(),// command line
-										NULL,// process security attributes
-										NULL,// primary thread security attributes
-										TRUE,// handles are inherited
-										0,// creation flags
-										NULL,// use parent's environment
-										NULL,// use parent's current directory
-										&siStartInfo,// STARTUPINFO pointer
-										&piProcInfo);// receives PROCESS_INFORMATION
-	EAssertR(FuncRetn!=0, TStr::Fmt("Can not execute '%s'", CmdLine.CStr()).CStr());
-	CloseHandle(piProcInfo.hProcess);
-	CloseHandle(piProcInfo.hThread);
-#else
 	ZipStdoutRd = popen(CmdLine.CStr(), "r");
 	EAssertR(ZipStdoutRd != NULL, TStr::Fmt("Can not execute '%s'", CmdLine.CStr()).CStr());
-#endif
 }
 
 void TZipIn::FillBf() {
-	//EAssertR(CurFPos < FLen, "End of file " + GetSNm() + " reached.");
-	EAssertR((BfC == BfL)/*&&((BfL==-1)||(BfL==MxBfL))*/, "Error reading file '" + GetSNm() + "'.");
-#ifdef GLib_WIN
-	// Read output from the child process
-	DWORD BytesRead;
-	EAssert(ReadFile(ZipStdoutRd, Bf, MxBfL, &BytesRead, NULL) != 0);
-#else
 	size_t BytesRead = fread(Bf, 1, MxBfL, ZipStdoutRd);
-	EAssert(BytesRead != 0);
-#endif
 	BfL = (int) BytesRead;
 	CurFPos += BytesRead;
-	EAssertR((BfC != 0) || (BfL != 0), "Error reading file '" + GetSNm() + "'.");
 	BfC = 0;
 }
 
@@ -56,24 +22,6 @@ TZipIn::TZipIn(const TStr& FNm, const bool& Silent):
 	TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL), ZipStdoutWr(NULL),
 	FLen(0), CurFPos(0), Bf(NULL), BfC(0), BfL(0), Silent(Silent) {
 
-	EAssertR(!FNm.Empty(), "Empty file-name.");
-	EAssertR(TFile::Exists(FNm), TStr::Fmt("File %s does not exist", FNm.CStr()).CStr());
-	FLen = TZipIn::GetFLen(FNm);
-	if (FLen == 0) return; // empty file
-#ifdef GLib_WIN
-	// create pipes
-	SECURITY_ATTRIBUTES saAttr;
-	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-	saAttr.bInheritHandle = TRUE;
-	saAttr.lpSecurityDescriptor = NULL;
-	// Create a pipe for the child process's STDOUT.
-	const int PipeBufferSz = 32*1024;
-	EAssertR(CreatePipe(&ZipStdoutRd, &ZipStdoutWr, &saAttr, PipeBufferSz), "Stdout pipe creation failed");
-	// Ensure the read handle to the pipe for STDOUT is not inherited.
-	SetHandleInformation(ZipStdoutRd, HANDLE_FLAG_INHERIT, 0);
-#else
-	// no implementation needed
-#endif
 	CreateZipProcess(GetCmd(FNm), FNm);
 	Bf = new char[MxBfL];
 	BfC = BfL = -1;
@@ -84,22 +32,8 @@ TZipIn::TZipIn(const TStr& FNm, bool& OpenedP, const bool& Silent):
 	TSBase(FNm.CStr()), TSIn(FNm), ZipStdoutRd(NULL), ZipStdoutWr(NULL),
 	FLen(0), CurFPos(0), Bf(NULL), BfC(0), BfL(0), Silent(Silent) {
 
-	EAssertR(!FNm.Empty(), "Empty file-name.");
-	FLen = TZipIn::GetFLen(FNm);
 	OpenedP = TFile::Exists(FNm);
 	if (OpenedP) {
-#ifdef GLib_WIN
-		SECURITY_ATTRIBUTES saAttr;
-		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-		saAttr.bInheritHandle = TRUE;
-		saAttr.lpSecurityDescriptor = NULL;
-		// Create a pipe for the child process's STDOUT.
-		EAssertR(CreatePipe(&ZipStdoutRd, &ZipStdoutWr, &saAttr, 0), "Stdout pipe creation failed");
-		// Ensure the read handle to the pipe for STDOUT is not inherited.
-		SetHandleInformation(ZipStdoutRd, HANDLE_FLAG_INHERIT, 0);
-#else
-		// no implementation needed
-#endif
 		CreateZipProcess(GetCmd(FNm.GetFExt()), FNm);
 		Bf = new char[MxBfL];
 		BfC = BfL = -1;
@@ -108,12 +42,7 @@ TZipIn::TZipIn(const TStr& FNm, bool& OpenedP, const bool& Silent):
 }
 
 TZipIn::~TZipIn() {
-#ifdef GLib_WIN
-	if (ZipStdoutRd != NULL) EAssertR(CloseHandle(ZipStdoutRd), "Closing read-end of pipe failed");
-	if (ZipStdoutWr != NULL) EAssertR(CloseHandle(ZipStdoutWr)!=0, "Closing write-end of pipe failed");
-#else
 	if (ZipStdoutRd != NULL) EAssertR(pclose(ZipStdoutRd) != -1, "Closing of the process failed");
-#endif
 	if (Bf != NULL) delete[] Bf;
 }
 
@@ -143,11 +72,7 @@ bool TZipIn::IsZipExt(const TStr& FNmExt) {
 
 void TZipIn::FillFExtToCmdH() {
 	// 7za decompress: "e -y -bd -so";
-#ifdef GLib_WIN
-	const char* ZipCmd = "7z.exe e -y -bd -so";
-#else
 	const char* ZipCmd = "7za e -y -bd -so";
-#endif
 	if (FExtToCmdH.Empty()) {
 		FExtToCmdH.AddDat(".gz", ZipCmd);
 		FExtToCmdH.AddDat(".7z", ZipCmd);
@@ -168,52 +93,17 @@ TStr TZipIn::GetCmd(const TStr& ZipFNm) {
 }
 
 uint64 TZipIn::GetFLen(const TStr& ZipFNm) {
-#ifdef GLib_WIN
-	HANDLE ZipStdoutRd, ZipStdoutWr;
-	// create pipes
-	SECURITY_ATTRIBUTES saAttr;
-	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-	saAttr.bInheritHandle = TRUE;
-	saAttr.lpSecurityDescriptor = NULL;
-	// Create a pipe for the child process's STDOUT.
-	const int PipeBufferSz = 32*1024;
-	EAssertR(CreatePipe(&ZipStdoutRd, &ZipStdoutWr, &saAttr, PipeBufferSz), "Stdout pipe creation failed");
-	// Ensure the read handle to the pipe for STDOUT is not inherited.
-	SetHandleInformation(ZipStdoutRd, HANDLE_FLAG_INHERIT, 0);
-	//CreateZipProcess(GetCmd(FNm), FNm);
-	{
-		const TStr CmdLine = TStr::Fmt("7z.exe l %s", ZipFNm.CStr());
-		PROCESS_INFORMATION piProcInfo;
-		STARTUPINFO siStartInfo;
-		ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION));
-		ZeroMemory( &siStartInfo, sizeof(STARTUPINFO));
-		siStartInfo.cb = sizeof(STARTUPINFO);
-		siStartInfo.hStdOutput = ZipStdoutWr;
-		siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
-		// Create the child process.
-		const BOOL FuncRetn = CreateProcess(NULL, (LPSTR) CmdLine.CStr(), NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo);
-		EAssertR(FuncRetn!=0, TStr::Fmt("Can not execute '%s'", CmdLine.CStr()).CStr());
-		CloseHandle(piProcInfo.hProcess);
-		CloseHandle(piProcInfo.hThread);
-	}
-#else
 	const TStr CmdLine = TStr::Fmt("7za l %s", ZipFNm.CStr());
 	FILE* ZipStdoutRd = popen(CmdLine.CStr(), "r");
 	EAssertR(ZipStdoutRd != NULL, TStr::Fmt("Can not execute '%s'", CmdLine.CStr()).CStr());
-#endif
 	// Read output from the child process
 	const int BfSz = 32 * 1024;
 	char* Bf = new char[BfSz];
 	int BfC = 0, BfL = 0;
 	memset(Bf, 0, BfSz);
-#ifdef GLib_WIN
-	DWORD BytesRead;
-	EAssert(ReadFile(ZipStdoutRd, Bf, MxBfL, &BytesRead, NULL) != 0);
-#else
 	size_t BytesRead = fread(Bf, 1, MxBfL, ZipStdoutRd);
 	EAssert(BytesRead != 0);
 	EAssert(pclose(ZipStdoutRd) != -1);
-#endif
 	BfL = (int) BytesRead;
 	IAssert((BfC != 0) || (BfL != 0));
 	BfC = Bf[BfL] = 0;

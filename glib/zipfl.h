@@ -29,11 +29,7 @@ class TZipIn: public TSIn {
 private:
 	static TStrStrH FExtToCmdH;
 	static const int MxBfL;
-#ifdef GLib_WIN
-	HANDLE ZipStdoutRd, ZipStdoutWr;
-#else
 	FILE* ZipStdoutRd, *ZipStdoutWr;
-#endif
 	uint64 FLen, CurFPos;
 	char* Bf;
 	int BfC, BfL;

@@ -10,11 +10,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <functional>
+#include <string>
 #include <vector>
 
 #include "../snap/Snap.h"
 #include "ThreadPool.h"
+#include "argsparser.h"
 
 class Node{
 public:
@@ -510,30 +513,32 @@ void test_dir() {
 	else CreateDirectory(Dir, NULL);
 }
 
+void test_cpp11() {
+	std::vector<std::string> strs;
+	char buf[10];
+	buf[0] = '1'; buf[1] = '2'; buf[2] = '\0';
+	char* ptr = buf;
+	strs.push_back(std::move(ptr));
+	std::string str = std::move(buf);
+
+	std::cout << strs.at(0) <<std::endl;
+	std::cout << buf <<std::endl;
+	std::cout << ptr <<std::endl;
+	std::cout << str <<std::endl;
+}
+
+void test_argsparser(int argc, char** argv) {
+	ArgsParser parser(argc, argv);
+	parser.GetIntArg("-n", 0, "integer n");
+	parser.GetStrArg("-str", "hello", "string n");
+	if (parser.IsEnd()) return;
+
+	printf("other tasks ...\n");
+}
+
 int main(int argc, char* argv[]) {
-	/*
-	Env = TEnv(argc, argv, TNotify::StdNotify);
-	Env.PrepArgs(TStr::Fmt("Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
-	TStrV StrV = Env.GetIfArgPrefixStrV("-s:");
-	TIntV IntV = Env.GetIfArgPrefixIntV("-i:");
-	TFltV FltV = Env.GetIfArgPrefixFltV("-f:");
-	if (Env.IsEndOfRun()) return 0;
-	printf("%d, %d, %d\n", StrV.Len(), IntV.Len(), FltV.Len());
-	TStrV Items;
-	for (int i=0; i<StrV.Len(); i++) {
-		printf("[%d]: %s\n", i, StrV[i].CStr());
-	}
-	for (int i=0; i<IntV.Len(); i++) {
-		printf("[%d]: %d\n", i, IntV[i].Val);
-	}
-	for (int i=0; i<FltV.Len(); i++) {
-		printf("[%d]: %g\n", i, FltV[i].Val);
-	}
-*/
-	// test_os();
-	// test_tpt();
-	// test_zip();
-	// test_pip();
-	test_dir();
+	// test_argsparser(argc, argv);
+	TStr FNm = "/home/jzzhao/tst.gz";
+	printf("%s\n", TStr::AddToFMid(FNm, "_hh").CStr());
 	return 0;
 }

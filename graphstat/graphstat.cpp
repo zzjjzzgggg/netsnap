@@ -223,4 +223,3 @@ int main(int argc, char* argv[]) {
 	printf("\nTime duration: %s\n", ExeTm.GetTmStr());
 	return 0;
 }
-

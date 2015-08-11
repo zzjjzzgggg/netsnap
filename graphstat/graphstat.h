@@ -3,8 +3,6 @@
 void MapingNodes(const TStr& InFNm, const bool IsDir){
 	TStr OutFNm = TStr::AddToFMid(InFNm, "_mapped");
 	PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
-	if (IsDir) FOutPt->PutStrLn("# Directed graph: "+OutFNm);
-	else FOutPt->PutStrLn("# Undirected graph (each unordered pair of nodes is saved once): " + OutFNm);
 
 	TStrIntH nidmap;
 	int uid=0;
@@ -18,6 +16,7 @@ void MapingNodes(const TStr& InFNm, const bool IsDir){
 		FOutPt->PutStrLn(TStr::Fmt("%d\t%d", nidmap(srcstr).Val, nidmap(dststr).Val));
 	}
 	BIO::SaveStrIntH(nidmap, TStr::AddToFMid(InFNm, "_nmap"), "# Node\tNID");
+	printf("Node range [0, %d]\n", uid-1);
 }
 
 void SaveNodes(const TStr& InFNm){
@@ -29,12 +28,12 @@ void SaveNodes(const TStr& InFNm){
 		nedge++;
 	}
 	printf("Nodes: %d, Edges: %d\n", nodes.Len(), nedge);
-	BIO::SaveIntSet(nodes, InFNm.GetFPath()+"_nodes.gz", TStr::Fmt("# Total: %d", nodes.Len()));
+	BIO::SaveIntSet(nodes, TStr::AddToFMid(InFNm, "_nodes.gz"), TStr::Fmt("# Total: %d", nodes.Len()));
 }
 
 void ReverseEdgeDirection(const TStr& InFNm){
 	int u, v;
-	TStr OutFNm = TStr::Fmt("%s_reversed%s", InFNm.GetFPath().CStr(), InFNm.GetFExt().CStr());
+	TStr OutFNm = TStr::AddToFMid(InFNm, "_reversed");
 	PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
 	TSsParser Ss(InFNm);
 	while(Ss.Next()) {
@@ -45,7 +44,7 @@ void ReverseEdgeDirection(const TStr& InFNm){
 
 void RemoveSelfLoops(const TStr& InFNm){
 	int u, v, n=0;
-	TStr OutFNm = InFNm.GetFPath() + TStr::Fmt("%s_looprmed%s", InFNm.GetFMid().CStr(), InFNm.GetFExt().CStr());
+	TStr OutFNm = TStr::AddToFMid(InFNm, "_looprmed");
 	PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
 	TSsParser Ss(InFNm);
 	while(Ss.Next()) {
