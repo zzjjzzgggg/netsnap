@@ -1,20 +1,14 @@
-/*
- * ThreadPool.h
- *
- *  Created on: Dec 7, 2014
- *      Author: jzzhao
- */
+#ifndef __THREADPOOL_H_
+#define __THREADPOOL_H_
 
-#ifndef THREADPOOL_H_
-#define THREADPOOL_H_
-
-
+#include <functional>
 #include <vector>
 #include <thread>
 
 class ThreadPool {
 private:
-	std::vector<std::thread> WorkerPool;
+    SynQueue<int> queue_;
+    std::vector<std::thread> workers_;
 
 public:
 	ThreadPool();
@@ -24,4 +18,4 @@ public:
 
 };
 
-#endif /* THREADPOOL_H_ */
+#endif /* __THREADPOOL_H_ */
