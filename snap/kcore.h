@@ -41,7 +41,7 @@ int TKCore<PGraph>::GetCoreEdges() const {
 
 template<class PGraph>
 int TKCore<PGraph>::GetNextCore() {
-	int NDel=-1, Pass=1, AllDeg=0;
+  int NDel=-1, AllDeg=0; //Pass = 1;
 	TExeTm ExeTm;
 	CurK++;
 	DelV.Clr();

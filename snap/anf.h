@@ -178,7 +178,7 @@ template <class PGraph> void Test() {
   }
   TMom Mom(AnfV);
   printf("-----------\nAvgAnf: %f  StDev:  %f\n", Mom.GetMean(), Mom.GetSDev());//*/
-  const int NApprox = 32;
+  // const int NApprox = 32;
   /*printf("\nANF vs. SAMPLE diam test (10 runs of ANF, NApprox=%d):\n", NApprox);
   //Graph = TGGen<PGraph>::GenGrid(20, 20);
   Graph = TGAlg::GetMxWcc(TGGen<PGraph>::GenRnd(1000, 10000));

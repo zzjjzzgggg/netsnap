@@ -28,7 +28,7 @@
 #include "gsvd.h"            // SVD and eigenvector computations
 #include "gstat.h"           // graph statistics
 #include "centr.h"           // centrality measures
-#include "cmty.h"            // community detection algorithms
+// #include "cmty.h"            // community detection algorithms
 
 // graph generators
 #include "ggen.h"            // graph generators (preferential attachment, small-world, ...)

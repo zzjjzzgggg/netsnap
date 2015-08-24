@@ -96,6 +96,11 @@ public:
 		std::unique_lock<std::mutex> mlock(mutex_);
 		return queue_.empty();
 	}
+
+	const size_t GetSize() const {
+		return queue_.size();
+	}
+
 };
 
 #endif

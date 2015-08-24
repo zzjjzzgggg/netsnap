@@ -62,7 +62,7 @@ template<class PGraph> double GetClustCf(const PGraph& Graph, TFltPrV& DegToCCfV
 	}
 	// get average clustering coefficient for each degree
 	DegToCCfV.Gen(DegSumCnt.Len(), 0);
-	for (int d = 0; d < DegSumCnt.Len(); d++) DegToCCfV.Add(TFltPr(DegSumCnt.GetKey(d), DegSumCnt[d].Val1() / DegSumCnt[d].Val2()));
+	for (int d = 0; d < DegSumCnt.Len(); d++) DegToCCfV.Add(TFltPr(DegSumCnt.GetKey(d).Val, DegSumCnt[d].Val1() / DegSumCnt[d].Val2()));
 	DegToCCfV.Sort();
 	return SumCcf / double(NIdCOTriadV.Len());
 }
@@ -114,7 +114,6 @@ template<class PGraph>
 double GetNodeClustCf(const PGraph& Graph, const int& NId) {
 	int Open, Closed;
 	GetNodeTriads(Graph, NId, Open, Closed);
-	const double Deg = Graph->GetNI(NId).GetDeg();
 	return (Open + Closed) == 0 ? 0 : double(Open) / double(Open + Closed);
 }
 
@@ -574,4 +573,3 @@ void TNetConstraint<PGraph>::Test() {
 	NetConstraint.Dump();
 	printf("middle node network constraint: %f\n", NetConstraint.GetNodeC(0));
 }
-

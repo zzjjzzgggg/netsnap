@@ -576,8 +576,9 @@ int RemoveFile(const TStr& FNm){
 
 int ListDir(const TStr& Dir, TStrV& FNms, const bool IgnoreHidden){
 	FNms.Clr();
-	class dirent* ent;
-	class stat st;
+  // class dirent* ent;
+  struct dirent* ent;
+  struct stat st;
 	DIR* dir=opendir(Dir.CStr());
 	while((ent=readdir(dir))!=NULL){
 		TStr fnm = ent->d_name;
