@@ -42,9 +42,9 @@ private:
 	TZipIn(const TZipIn&);
 	TZipIn& operator=(const TZipIn&);
 public:
-	TZipIn(const TStr& FNm, const bool& Silent=false);
+	TZipIn(const TStr& FNm, const bool& Silent=true);
 	TZipIn(const TStr& FNm, bool& OpenedP, const bool& Silent);
-	static PSIn New(const TStr& FNm, const bool& Silent=false) { return PSIn(new TZipIn(FNm, Silent)); }
+	static PSIn New(const TStr& FNm, const bool& Silent=true) { return PSIn(new TZipIn(FNm, Silent)); }
 	static PSIn New(const TStr& FNm, bool& OpenedP, const bool& Silent) { return PSIn(new TZipIn(FNm, OpenedP, Silent)); }
 	~TZipIn();
 

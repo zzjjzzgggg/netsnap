@@ -23,6 +23,7 @@ private:
             rst_ = item;
         }
     }
+
     void WaitToFinish(const int set_num_tries) {
         int num_tries = set_num_tries;
         bool still_working;

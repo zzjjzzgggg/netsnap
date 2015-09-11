@@ -38,8 +38,8 @@ template<class PGraph> void SaveBinary(const PGraph& Graph, const TStr& ZipOutFN
 // SrcColId and DstColId are column indexes of source/destination INTEGER node id
 template<class PGraph>
 PGraph LoadEdgeList(const TStr& InFNm, const int& SrcColId,	const int& DstColId) {
-	// printf("Loading %s...", InFNm.CStr()); fflush(stdout);
-	TSsParser Ss(InFNm, true);
+	printf("Loading %s...", InFNm.CStr()); fflush(stdout);
+	TSsParser Ss(InFNm);
 	PGraph Graph = PGraph::TObj::New();
 	int SrcNId, DstNId;
 	while (Ss.Next()) {
@@ -49,7 +49,7 @@ PGraph LoadEdgeList(const TStr& InFNm, const int& SrcColId,	const int& DstColId)
 		Graph->AddEdge(SrcNId, DstNId);
 	}
 	Graph->Defrag();
-	// printf("Done. (Nodes:%d Edges:%d)\n", Graph->GetNodes(), Graph->GetEdges());
+	printf("loaded. (Nodes: %d Edges: %d)\n", Graph->GetNodes(), Graph->GetEdges());
 	return Graph;
 }
 

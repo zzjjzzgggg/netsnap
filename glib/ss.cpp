@@ -337,12 +337,18 @@ TStr TSs::GetSsFmtNmVStr() {
 
 /////////////////////////////////////////////////
 // Fast-Spread-Sheet-Parser
-TSsParser::TSsParser(const TStr& FNm, const bool& Silent, const TSsFmt _SsFmt,
-					 const bool& _SkipLeadBlanks, const bool& _SkipCmt, const bool& _SkipEmptyFld) :
+TSsParser::TSsParser(const TStr& FNm,
+					 const bool& Silent,
+					 const TSsFmt _SsFmt,
+					 const bool& _SkipLeadBlanks,
+					 const bool& _SkipCmt,
+					 const bool& _SkipEmptyFld) :
 	SsFmt(_SsFmt), SkipLeadBlanks(_SkipLeadBlanks), SkipCmt(_SkipCmt),
-	SkipEmptyFld(_SkipEmptyFld), LineCnt(0), SplitCh('\t'), FldV(), FInPt(NULL), Silent(Silent) {
+	SkipEmptyFld(_SkipEmptyFld), LineCnt(0), SplitCh('\t'), FldV(),
+	FInPt(NULL), Silent(Silent) {
 
-	if (TZipIn::IsZipExt(FNm.GetFExt())) FInPt = TZipIn::New(FNm, Silent);
+	if (TZipIn::IsZipExt(FNm.GetFExt()))
+		FInPt = TZipIn::New(FNm, Silent);
 	else FInPt = TFIn::New(FNm);
 
 	//Bf = new char [BfLen];
@@ -368,12 +374,19 @@ TSsParser::TSsParser(const TStr& FNm, const bool& Silent, const TSsFmt _SsFmt,
 	}
 }
 
-TSsParser::TSsParser(const TStr& FNm, const char& Separator, const bool& Silent, const bool& _SkipLeadBlanks,
-					 const bool& _SkipCmt, const bool& _SkipEmptyFld) :
-	SsFmt(ssfSpaceSep), SkipLeadBlanks(_SkipLeadBlanks), SkipCmt(_SkipCmt),	SkipEmptyFld(_SkipEmptyFld),
-	LineCnt(0), /*Bf(NULL),*/	SplitCh('\t'), FldV(), FInPt(NULL), Silent(Silent) {
+TSsParser::TSsParser(const TStr& FNm,
+					 const char& Separator,
+					 const bool& Silent,
+					 const bool& _SkipLeadBlanks,
+					 const bool& _SkipCmt,
+					 const bool& _SkipEmptyFld):
+	SsFmt(ssfSpaceSep), SkipLeadBlanks(_SkipLeadBlanks),
+	SkipCmt(_SkipCmt), SkipEmptyFld(_SkipEmptyFld),
+	LineCnt(0), /*Bf(NULL),*/ SplitCh('\t'), FldV(),
+	FInPt(NULL), Silent(Silent) {
 
-	if (TZipIn::IsZipExt(FNm.GetFExt()))  FInPt = TZipIn::New(FNm, Silent);
+	if (TZipIn::IsZipExt(FNm.GetFExt()))
+		FInPt = TZipIn::New(FNm, Silent);
 	else FInPt = TFIn::New(FNm);
 	SplitCh = Separator;
 }
