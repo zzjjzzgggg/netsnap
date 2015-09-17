@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
 											"\n\tm: maping graph (assign nid from 0)"
 											"\n\tl: remove self-loops"
 											"\n\tn: save all nodes in the graph to a file"
+											"\n\td: get degree sequence, e.g., (nd deg)"
 											"\n\tr: reverse the edge direction\n\t");
 	const TStr Save = Env.GetIfArgPrefixStr("-s:", "", "Save graph:"
 											"\n\te: edgelist"
@@ -59,6 +60,7 @@ int main(int argc, char* argv[]) {
 	bool Fmt_l = Fmts.SearchCh('l') != -1;
 	bool Fmt_n = Fmts.SearchCh('n') != -1;
 	bool Fmt_r = Fmts.SearchCh('r') != -1;
+	bool Fmt_d = Fmts.SearchCh('d') != -1;
 
 	bool Sav_e = Save.SearchCh('e') != -1;
 	bool Sav_b = Save.SearchCh('b') != -1;
@@ -83,6 +85,11 @@ int main(int argc, char* argv[]) {
 		}
 		// save nodes in the graph
 		if(Fmt_n) SaveNodes(InFNm);
+
+		if(Fmt_d){
+			printf("Geting degree sequence ...\n");
+			GetDegSeq(InFNm, IsDir);
+		}
 
 		if(!Fmt_b) return 0;
 	}

@@ -87,8 +87,8 @@ private:
 	TZipOut(const TZipOut&);
 	TZipOut& operator=(const TZipOut&);
 public:
-	TZipOut(const TStr& _FNm, const bool& Silent=false);
-	static PSOut New(const TStr& FNm, const bool& Silent=false) { return PSOut(new TZipOut(FNm, Silent)); }
+	TZipOut(const TStr& _FNm, const bool& Silent=true);
+	static PSOut New(const TStr& FNm, const bool& Silent=true) { return PSOut(new TZipOut(FNm, Silent)); }
 	~TZipOut();
 
 	int PutCh(const char& Ch);

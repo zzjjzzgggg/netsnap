@@ -24,10 +24,10 @@ opt: $(MAIN)
 
 # COMPILE
 $(MAIN): $(MAIN).cpp  $(MAIN).h Snap.o
-	g++ -o $(MAIN) $(MAIN).cpp Snap.o $(LDFLAGS)
+	clang++ -o $(MAIN) $(MAIN).cpp Snap.o $(LDFLAGS)
 
 Snap.o:
-	g++ -c $(CXXFLAGS) $(LIB) $(SNAPDIR)/snap/Snap.cpp
+	clang++ -c $(CXXFLAGS) $(LIB) $(SNAPDIR)/snap/Snap.cpp
 
 clean:
 	rm -f *.o $(MAIN) $(MAIN).exe $(MAIN).Err

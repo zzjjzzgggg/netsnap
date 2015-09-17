@@ -56,3 +56,25 @@ void RemoveSelfLoops(const TStr& InFNm){
 	}
 	printf("Number of edges without selfloops: %d\n", n);
 }
+
+
+void GetDegSeq(const TStr& InFNm, const bool IsDir) {
+	TSsParser Ss(InFNm);
+	if(IsDir) {
+		TIntH InDegSeq, OutDegSeq;
+		while(Ss.Next()) {
+			OutDegSeq(Ss.GetInt(0))++;
+			InDegSeq(Ss.GetInt(1))++;
+		}
+		BIO::SaveIntH(InDegSeq, TStr::AddToFMid(InFNm, "_indegseq"), "#node in-degree");
+		BIO::SaveIntH(OutDegSeq, TStr::AddToFMid(InFNm, "_outdegseq"), "#node out-degree");
+	} else {
+		printf("NOTE: Assume an edge is stored only once.\n");
+		TIntH DegSeq;
+		while(Ss.Next()) {
+			DegSeq(Ss.GetInt(0))++;
+			DegSeq(Ss.GetInt(1))++;
+		}
+		BIO::SaveIntH(DegSeq, TStr::AddToFMid(InFNm, "_degseq"), "#node degree");
+	}
+}
