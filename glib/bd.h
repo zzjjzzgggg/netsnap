@@ -376,19 +376,27 @@ public:
 /////////////////////////////////////////////////
 // Operator-Definitions
 template <class TRec>
-bool operator!=(const TRec& Rec1, const TRec& Rec2){return !(Rec1==Rec2);}
+bool operator!=(const TRec& Rec1, const TRec& Rec2) {
+	return !(Rec1==Rec2);
+}
 
 template <class TRec>
-bool operator>(const TRec& Rec1, const TRec& Rec2){return Rec2<Rec1;}
+bool operator>(const TRec& Rec1, const TRec& Rec2) {
+	return Rec2<Rec1;
+}
 
 template <class TRec>
-bool operator<=(const TRec& Rec1, const TRec& Rec2){return !(Rec2<Rec1);}
+bool operator<=(const TRec& Rec1, const TRec& Rec2) {
+	return !(Rec2<Rec1);
+}
 
 template <class TRec>
-bool operator>=(const TRec& Rec1, const TRec& Rec2){return !(Rec1<Rec2);}
+bool operator>=(const TRec& Rec1, const TRec& Rec2) {
+	return !(Rec1<Rec2);
+}
 
 template <class TRec>
-bool Cmp(const int& RelOp, const TRec& Rec1, const TRec& Rec2){
+bool Cmp(const int& RelOp, const TRec& Rec1, const TRec& Rec2) {
 	switch (RelOp){
 		case roLs: return Rec1<Rec2;
 		case roLEq: return Rec1<=Rec2;
@@ -409,13 +417,13 @@ private:
 	TCRef& operator=(const TCRef&);
 	TCRef(const TCRef&);
 public:
-	TCRef(): Refs(0){}
-	~TCRef(){Assert(Refs==0);}
+	TCRef(): Refs(0) {}
+	~TCRef(){ Assert(Refs==0); }
 
-	void MkRef(){Refs++;}
-	void UnRef(){Assert(Refs>0); Refs--;}
-	bool NoRef() const {return Refs==0;}
-	int GetRefs() const {return Refs;}
+	void MkRef(){ Refs++; }
+	void UnRef(){ Assert(Refs>0); Refs--; }
+	bool NoRef() const { return Refs==0; }
+	int GetRefs() const { return Refs; }
 };
 
 /////////////////////////////////////////////////
@@ -426,7 +434,8 @@ public:
 	typedef TRec TObj;
 private:
 	TRec* Addr;
-	void MkRef() const {if (Addr!=NULL) Addr->CRef.MkRef();}
+
+	void MkRef() const { if (Addr!=NULL) Addr->CRef.MkRef(); }
 	void UnRef() const {
 		if (Addr!=NULL){
 			Addr->CRef.UnRef();
@@ -435,31 +444,46 @@ private:
 	}
 public:
 	TPt(): Addr(NULL){}
-	TPt(const TPt& Pt): Addr(Pt.Addr){MkRef();}
-	TPt(TRec* _Addr): Addr(_Addr){MkRef();}
-	static TPt New(){return TObj::New();}
-	~TPt(){UnRef();}
+	TPt(const TPt& Pt):Addr(Pt.Addr) { MkRef(); }
+	TPt(TRec* _Addr):Addr(_Addr) { MkRef(); }
+
+	static TPt New(){ return TObj::New(); }
+
+	~TPt(){ UnRef(); }
+
 	explicit TPt(TSIn& SIn);
 	explicit TPt(TSIn& SIn, void* ThisPt);
+
 	void Save(TSOut& SOut) const;
 	void LoadXml(const TPt<TXmlTok>& XmlTok, const TStr& Nm);
 	void SaveXml(TSOut& SOut, const TStr& Nm) const;
 
-	TPt& operator=(const TPt& Pt){if (this!=&Pt){Pt.MkRef(); UnRef(); Addr=Pt.Addr;} return *this;}
-	bool operator==(const TPt& Pt) const {return *Addr==*Pt.Addr;}
-	bool operator!=(const TPt& Pt) const {return *Addr!=*Pt.Addr;}
-	bool operator<(const TPt& Pt) const {return *Addr<*Pt.Addr;}
+	TPt& operator=(const TPt& Pt){
+		if (this!=&Pt){
+			Pt.MkRef();
+			UnRef();
+			Addr=Pt.Addr;
+		}
+		return *this;
+	}
+	bool operator==(const TPt& Pt) const { return *Addr == *Pt.Addr; }
+	bool operator!=(const TPt& Pt) const { return *Addr != *Pt.Addr; }
+	bool operator<(const TPt& Pt) const { return *Addr < *Pt.Addr; }
 
-	TRec* operator->() const {Assert(Addr!=NULL); return Addr;}
-	TRec& operator*() const {Assert(Addr!=NULL); return *Addr;}
-	TRec& operator[](const int& RecN) const {Assert(Addr!=NULL); return Addr[RecN];}
-	TRec* operator()() const {return Addr;}
-	//const TRec* operator()() const {return Addr;}
-	//TRec* operator()() {return Addr;}
+	TRec* operator->() const { Assert(Addr!=NULL); return Addr; }
+	TRec& operator*() const { Assert(Addr!=NULL); return *Addr; }
+	TRec& operator[](const int& RecN) const {
+		Assert(Addr!=NULL);
+		return Addr[RecN];
+	}
+	TRec* operator()() const { return Addr; }
 
 	bool Empty() const {return Addr==NULL;}
 	void Clr(){UnRef(); Addr=NULL;}
-	int GetRefs() const {if (Addr==NULL){return -1;} else {return Addr->CRef.GetRefs();}}
+	int GetRefs() const {
+		if (Addr==NULL) return -1;
+		else return Addr->CRef.GetRefs();
+	}
 
 	int GetPrimHashCd() const {return Addr->GetPrimHashCd();}
 	int GetSecHashCd() const {return Addr->GetSecHashCd();}
@@ -473,9 +497,15 @@ class TSStr{
 private:
 	char* Bf;
 public:
-	TSStr(): Bf(NULL){Bf=new char[0+1]; Bf[0]=0;}
-	TSStr(const TSStr& SStr): Bf(NULL){Bf=new char[strlen(SStr.Bf)+1]; strcpy(Bf, SStr.Bf);}
-	TSStr(const char* _Bf): Bf(NULL){Bf=new char[strlen(_Bf)+1]; strcpy(Bf, _Bf);}
+	TSStr(): Bf(NULL) { Bf=new char[0+1]; Bf[0]=0; }
+	TSStr(const TSStr& SStr): Bf(NULL) {
+		Bf=new char[strlen(SStr.Bf)+1];
+		strcpy(Bf, SStr.Bf);
+	}
+	TSStr(const char* _Bf): Bf(NULL){
+		Bf=new char[strlen(_Bf)+1];
+		strcpy(Bf, _Bf);
+	}
 	~TSStr(){delete[] Bf;}
 
 	TSStr& operator=(const TSStr& SStr){
@@ -505,8 +535,12 @@ private:
 	UndefCopyAssign(TConv_Pt64Ints32);
 public:
 	TConv_Pt64Ints32(){Val.Pt=0; Val.UInt32.Ms=0; Val.UInt32.Ls=0;}
-	TConv_Pt64Ints32(void* Pt){Val.UInt32.Ms=0; Val.UInt32.Ls=0; Val.Pt=Pt;}
-	TConv_Pt64Ints32(const uint& Ms, const uint& Ls){Val.Pt=0; Val.UInt32.Ms=Ms; Val.UInt32.Ls=Ls;}
+	TConv_Pt64Ints32(void* Pt){
+		Val.UInt32.Ms=0; Val.UInt32.Ls=0; Val.Pt=Pt;
+	}
+	TConv_Pt64Ints32(const uint& Ms, const uint& Ls){
+		Val.Pt=0; Val.UInt32.Ms=Ms; Val.UInt32.Ls=Ls;
+	}
 
 	void PutPt(void* Pt){Val.Pt=Pt;}
 	void* GetPt() const {return Val.Pt;}

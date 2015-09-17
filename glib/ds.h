@@ -523,7 +523,14 @@ public:
 	TVal PopHeap() {	return PopHeap(TLss<TVal> ()); } // remove largest element
 	template<class TCmp> void MakeHeap(const TCmp& Cmp) {MakeHeap(0, Len(), Cmp); }
 	template<class TCmp> void PushHeap(const TVal& Val, const TCmp& Cmp) {Add(Val);PushHeap(0, Len() - 1, 0, Val, Cmp); }
-	template<class TCmp> TVal PopHeap(const TCmp& Cmp) {IAssert(!Empty());	const TVal Top = ValT[0];ValT[0] = Last();DelLast();	if (!Empty()) {	AdjustHeap(0, 0, Len(), ValT[0], Cmp); }	return Top;	}
+	template<class TCmp> TVal PopHeap(const TCmp& Cmp) {
+		IAssert(!Empty());
+		const TVal Top = ValT[0];
+		ValT[0] = Last();
+		DelLast();
+		if (!Empty()) AdjustHeap(0, 0, Len(), ValT[0], Cmp);
+		return Top;
+	}
 
 	// heap helper functions //J:
 	template<class TCmp>
@@ -562,7 +569,6 @@ public:
 			Parent--;
 		}
 	}
-
 	template<class TCmp>
 	static TIter GetPivotValNCmp(const TIter& BI, const TIter& EI,	const TCmp& Cmp) {
 		TIter MiddleI = BI + (EI - BI) / 2;
@@ -624,7 +630,9 @@ public:
 	//    else {QSortCmp(Beg(), End(), TGtr<TVal>()); }}
 
 	template <class TCmp>
-	void SortCmp(const TCmp& Cmp) {QSortCmp(BegI(), EndI(), Cmp); }
+	void SortCmp(const TCmp& Cmp) {
+		QSortCmp(BegI(), EndI(), Cmp);
+	}
 
 	//  bool IsSorted(const bool& Asc = true) const {
 	//    if (Asc){ return IsSortedCmp(TLss<TVal>()); }
@@ -696,7 +704,8 @@ void TVec<TVal>::Resize(const int& _MxVals) {
 		try {
 			ValT = new TVal[MxVals];
 		} catch (std::exception& Ex) {
-			EFailR(TStr::Fmt("TVec::Resize: %s, Vals:%d, MxVals:%d, _MxVals:%d, Type:%s",Ex.what(), Vals, MxVals, _MxVals,	GetTypeNm(*this).CStr()));
+			EFailR(TStr::Fmt("TVec::Resize: %s, Vals:%d, MxVals:%d, _MxVals:%d, Type:%s",
+							 Ex.what(), Vals, MxVals, _MxVals, GetTypeNm(*this).CStr()));
 		}
 	} else {
 		//if (Vals > 1000000) {
@@ -705,7 +714,8 @@ void TVec<TVal>::Resize(const int& _MxVals) {
 		try {
 			NewValT = new TVal[MxVals];
 		} catch (std::exception& Ex) {
-			EFailR(TStr::Fmt("TVec::Resize: %s, Vals:%d, MxVals:%d, _MxVals:%d, Type:%s", Ex.what(), Vals, MxVals, _MxVals, GetTypeNm(*this).CStr()));
+			EFailR(TStr::Fmt("TVec::Resize: %s, Vals:%d, MxVals:%d, _MxVals:%d, Type:%s",
+							 Ex.what(), Vals, MxVals, _MxVals, GetTypeNm(*this).CStr()));
 		}
 		Assert(NewValT != NULL);
 		for (int ValN = 0; ValN < Vals; ValN++) NewValT[ValN] = ValT[ValN];
@@ -1512,46 +1522,76 @@ private:
 	::TSize GrowBy, MxVals, Vals;
 	TVal EmptyVal; // empty vector
 	TVal *ValBf; // buffer storing all the values
-	TVec< ::TSize> IdToOffV; // id to one past last (vector starts at [id-1])
+	// id to one past last (vector starts at [id-1])
+	TVec< ::TSize> IdToOffV;
 private:
 	void Resize(const ::TSize& _MxVals);
 public:
-	TVecPool(const ::TSize& ExpectVals = 0, const ::TSize& _GrowBy = 1000000, const bool& _FastCopy = false, const TVal& _EmptyVal = TVal());
+	TVecPool(const ::TSize& ExpectVals = 0,
+			 const ::TSize& _GrowBy = 1000000,
+			 const bool& _FastCopy = false,
+			 const TVal& _EmptyVal = TVal());
 	TVecPool(const TVecPool& Pool);
 	TVecPool(TSIn& SIn);
 	~TVecPool() {if (ValBf != NULL) delete[] ValBf; ValBf = NULL; }
-	static PVecPool New(const ::TSize& ExpectVals = 0, const ::TSize& GrowBy = 1000000, const bool& FastCopy = false) {
+	static PVecPool New(const ::TSize& ExpectVals = 0,
+						const ::TSize& GrowBy = 1000000,
+						const bool& FastCopy = false) {
 		return new TVecPool(ExpectVals, GrowBy, FastCopy);
 	}
 	static PVecPool Load(TSIn& SIn) { return new TVecPool(SIn); }
-	static PVecPool Load(const TStr& FNm) { TFIn FIn(FNm); return Load(FIn); }
+	static PVecPool Load(const TStr& FNm) {
+		TFIn FIn(FNm);
+		return Load(FIn);
+	}
 	void Save(TSOut& SOut) const;
 	TVecPool& operator =(const TVecPool& Pool);
 
 	::TSize GetVals() const { return Vals; }
 	::TSize GetVecs() const { return IdToOffV.Len(); }
-	bool IsVId(const int& VId) const { return (0 <= VId) && (VId < IdToOffV.Len()); }
+	bool IsVId(const int& VId) const {
+		return (0 <= VId) && (VId < IdToOffV.Len());
+	}
 	::TSize Reserved() const { return MxVals; }
 	void Reserve(const ::TSize& MxVals) {Resize(MxVals); }
 	const TVal& GetEmptyVal() const { return EmptyVal; }
 	void SetEmptyVal(const TVal& _EmptyVal) { EmptyVal = _EmptyVal; }
-	::TSize GetMemUsed() const { return sizeof(TCRef) + sizeof(TBool) + 3 * sizeof(TSize)	+ sizeof(TVal*) + MxVals * sizeof(TVal); }
+	::TSize GetMemUsed() const {
+		return sizeof(TCRef) + sizeof(TBool) +
+			3 * sizeof(TSize) + sizeof(TVal*) +
+			MxVals * sizeof(TVal);
+	}
 
 	int AddV(const TValV& ValV);
 	int AddEmptyV(const int& ValVLen);
-	uint GetVLen(const int& VId) const {if (VId == 0) return 0; else return uint(IdToOffV[VId] - IdToOffV[VId - 1]); }
-	TVal* GetValVPt(const int& VId) const {if (GetVLen(VId) == 0) return (TVal*) &EmptyVal; else return ValBf + IdToOffV[VId - 1]; }
-	void GetV(const int& VId, TValV& ValV) const {if (GetVLen(VId) == 0) ValV.Clr(); else ValV.GenExt(GetValVPt(VId), GetVLen(VId)); }
+	uint GetVLen(const int& VId) const {
+		if (VId == 0) return 0;
+		else return uint(IdToOffV[VId] - IdToOffV[VId - 1]);
+	}
+	TVal* GetValVPt(const int& VId) const {
+		if (GetVLen(VId) == 0) return (TVal*) &EmptyVal;
+		else return ValBf + IdToOffV[VId - 1];
+	}
+	void GetV(const int& VId, TValV& ValV) const {
+		if (GetVLen(VId) == 0) ValV.Clr();
+		else ValV.GenExt(GetValVPt(VId), GetVLen(VId));
+	}
 	void PutV(const int& VId, const TValV& ValV) {
 		IAssert(IsVId(VId) && GetVLen(VId) == ValV.Len());
-		if (FastCopy) memcpy(GetValVPt(VId), ValV.BegI(), sizeof(TVal) * ValV.Len());
+		if (FastCopy)
+			memcpy(GetValVPt(VId), ValV.BegI(),
+				   sizeof(TVal) * ValV.Len());
 		else {
 			TVal* ValPt = GetValVPt(VId);
-			for (uint ValN = 0; ValN < uint(ValV.Len()); ValN++, ValPt++) *ValPt = ValV[ValN];
+			for (uint ValN = 0; ValN < uint(ValV.Len());
+				 ValN++, ValPt++) *ValPt = ValV[ValN];
 		}
 	}
-	void CompactPool(const TVal& DelVal); // delete all elements of value DelVal from all vectors
-	void ShuffleAll(TRnd& Rnd = TInt::Rnd); // shuffles all the order of elements in the Pool (does not respect vector boundaries)
+	// delete all elements of value DelVal from all vectors
+	void CompactPool(const TVal& DelVal);
+	// shuffles all the order of elements in the Pool(does not respect
+	// vector boundaries)
+	void ShuffleAll(TRnd& Rnd = TInt::Rnd);
 
 	//bool HasIdMap() const { return ! IdToOffV.Empty(); }
 	//void ClrIdMap() { IdToOffV.Clr(true); }
@@ -1564,7 +1604,9 @@ public:
 		}
 		if(!DoDel) PutAll(EmptyVal);
 	}
-	void PutAll(const TVal& Val) {for(TSize ValN=0; ValN<MxVals; ValN++) ValBf[ValN] = Val; }
+	void PutAll(const TVal& Val) {
+		for(TSize ValN=0; ValN<MxVals; ValN++) ValBf[ValN] = Val;
+	}
 
 	friend class TPt<TVecPool<TVal> > ;
 };
@@ -1577,25 +1619,30 @@ void TVecPool<TVal>::Resize(const ::TSize& _MxVals) {
 		try {
 			ValBf = new TVal[MxVals];
 		} catch (std::exception& Ex) {
-			EFailR(TStr::Fmt("TVecPool::Resize: %s, MxVals: %d", Ex.what(), _MxVals));
+			EFailR(TStr::Fmt("TVecPool::Resize: %s, MxVals: %d",
+							 Ex.what(), _MxVals));
 		}
 		IAssert(ValBf != NULL);
 		if (EmptyVal != TVal()) PutAll(EmptyVal);
 	} else {
-		printf("*** Resize vector pool: %ld -> %ld\n", uint64(Vals), uint64(MxVals));
+		printf("*** Resize vector pool: %ld -> %ld\n",
+			   uint64(Vals), uint64(MxVals));
 		TVal* NewValBf = NULL;
 		try {
 			NewValBf = new TVal[MxVals];
 		} catch (std::exception& Ex) {
-			EFailR(TStr::Fmt("TVecPool::Resize: %s, MxVals: %d", Ex.what(), _MxVals));
+			EFailR(TStr::Fmt("TVecPool::Resize: %s, MxVals: %d",
+							 Ex.what(), _MxVals));
 		}
 		IAssert(NewValBf != NULL);
 		if (FastCopy) memcpy(NewValBf, ValBf, Vals * sizeof(TVal));
 		else {
-			for (TSize ValN = 0; ValN < Vals; ValN++) NewValBf[ValN] = ValBf[ValN];
+			for (TSize ValN = 0; ValN < Vals; ValN++)
+				NewValBf[ValN] = ValBf[ValN];
 		}
 		if (EmptyVal != TVal()) { // init empty values
-			for (TSize ValN = Vals; ValN < MxVals; ValN++) NewValBf[ValN] = EmptyVal;
+			for (TSize ValN = Vals; ValN < MxVals; ValN++)
+				NewValBf[ValN] = EmptyVal;
 		}
 		delete[] ValBf;
 		ValBf = NewValBf;
@@ -1603,25 +1650,31 @@ void TVecPool<TVal>::Resize(const ::TSize& _MxVals) {
 }
 
 template<class TVal>
-TVecPool<TVal>::TVecPool(const ::TSize& ExpectVals, const ::TSize& _GrowBy,
-		const bool& _FastCopy, const TVal& _EmptyVal) :
-	GrowBy(_GrowBy), MxVals(0), Vals(0), EmptyVal(_EmptyVal), ValBf(NULL) {
+TVecPool<TVal>::TVecPool(const ::TSize& ExpectVals,
+						 const ::TSize& _GrowBy,
+						 const bool& _FastCopy,
+						 const TVal& _EmptyVal):
+	GrowBy(_GrowBy), MxVals(0), Vals(0), EmptyVal(_EmptyVal),
+	ValBf(NULL) {
 	IdToOffV.Add(0);
 	Resize(ExpectVals);
 }
 
 template<class TVal>
-TVecPool<TVal>::TVecPool(const TVecPool& Pool): FastCopy(Pool.FastCopy), GrowBy(Pool.GrowBy),
-MxVals(Pool.MxVals), Vals(Pool.Vals), EmptyVal(Pool.EmptyVal), IdToOffV(Pool.IdToOffV) {
+TVecPool<TVal>::TVecPool(const TVecPool& Pool):
+	FastCopy(Pool.FastCopy), GrowBy(Pool.GrowBy), MxVals(Pool.MxVals),
+	Vals(Pool.Vals), EmptyVal(Pool.EmptyVal), IdToOffV(Pool.IdToOffV){
 	try {
 		ValBf = new TVal[MxVals];
 	} catch (std::exception& Ex) {
-		EFailR(TStr::Fmt("TVecPool::TVecPool: %s, MxVals: %d", Ex.what(), MxVals));
+		EFailR(TStr::Fmt("TVecPool::TVecPool: %s, MxVals: %d",
+						 Ex.what(), MxVals));
 	}
 	IAssert(ValBf != NULL);
 	if (FastCopy) memcpy(ValBf, Pool.ValBf, MxVals*sizeof(TVal));
 	else {
-		for (TSize ValN = 0; ValN < MxVals; ValN++) ValBf[ValN] = Pool.ValBf[ValN];
+		for (TSize ValN = 0; ValN < MxVals; ValN++)
+			ValBf[ValN] = Pool.ValBf[ValN];
 	}
 }
 
@@ -1632,14 +1685,16 @@ TVecPool<TVal>::TVecPool(TSIn& SIn) :
 	SIn.Load(_GrowBy);
 	SIn.Load(_MxVals);
 	SIn.Load(_Vals);
-	IAssert(_GrowBy < TSizeMx && _MxVals < TSizeMx && _Vals < TSizeMx);
+	IAssert(_GrowBy < TSizeMx && _MxVals < TSizeMx &&
+			_Vals < TSizeMx);
 	GrowBy = TSize(_GrowBy);
 	MxVals = TSize(_Vals);
 	Vals = TSize(_Vals); //note MxVals==Vals
 	EmptyVal = TVal(SIn);
 	if (MxVals == 0) ValBf = NULL;
 	else ValBf = new TVal[MxVals];
-	for (TSize ValN = 0; ValN < Vals; ValN++) ValBf[ValN] = TVal(SIn);
+	for (TSize ValN = 0; ValN < Vals; ValN++)
+		ValBf[ValN] = TVal(SIn);
 	TInt MxVals(SIn), Vals(SIn);
 	IdToOffV.Gen(Vals);
 	for (int ValN = 0; ValN < Vals; ValN++) {
@@ -1679,7 +1734,8 @@ TVecPool<TVal>& TVecPool<TVal>::operator =(const TVecPool& Pool) {
 		try {
 			ValBf = new TVal[MxVals];
 		} catch (std::exception& Ex) {
-			EFailR(TStr::Fmt("TVec::operator= : %s, MxVals: %d", Ex.what(), MxVals));
+			EFailR(TStr::Fmt("TVec::operator= : %s, MxVals: %d",
+							 Ex.what(), MxVals));
 		}
 		IAssert(ValBf != NULL);
 		if (FastCopy) memcpy(ValBf, Pool.ValBf, Vals * sizeof(TVal));
@@ -1694,9 +1750,13 @@ template<class TVal>
 int TVecPool<TVal>::AddV(const TValV& ValV) {
 	const ::TSize ValVLen = ValV.Len();
 	if (ValVLen == 0) return 0;
-	if (MxVals < Vals + ValVLen) Resize(Vals + max(ValVLen, GrowBy));
-	if (FastCopy) memcpy(ValBf + Vals, ValV.BegI(), sizeof(TVal) * ValV.Len());
-	else for (uint ValN = 0; ValN < ValVLen; ValN++) ValBf[Vals + ValN] = ValV[ValN];
+	if (MxVals < Vals + ValVLen)
+		Resize(Vals + max(ValVLen, GrowBy));
+	if (FastCopy)
+		memcpy(ValBf + Vals, ValV.BegI(), sizeof(TVal) * ValV.Len());
+	else
+		for (uint ValN = 0; ValN < ValVLen; ValN++)
+			ValBf[Vals + ValN] = ValV[ValN];
 	Vals += ValVLen;
 	IdToOffV.Add(Vals);
 	return IdToOffV.Len() - 1;
@@ -1705,7 +1765,8 @@ int TVecPool<TVal>::AddV(const TValV& ValV) {
 template<class TVal>
 int TVecPool<TVal>::AddEmptyV(const int& ValVLen) {
 	if (ValVLen == 0) return 0;
-	if (MxVals < Vals + ValVLen) Resize(Vals + max(TSize(ValVLen), GrowBy));
+	if (MxVals < Vals + ValVLen)
+		Resize(Vals + max(TSize(ValVLen), GrowBy));
 	Vals += ValVLen;
 	IdToOffV.Add(Vals);
 	return IdToOffV.Len() - 1;
@@ -1736,20 +1797,23 @@ void TVecPool<TVal>::CompactPool(const TVal& DelVal) {
 					v++;
 					NDel++;
 				}
-				memcpy(Beg, v, sizeof(TVal) * int(Len - ::TSize(v - ValV)));
+				memcpy(Beg, v,
+					   sizeof(TVal) * int(Len - ::TSize(v - ValV)));
 				v -= NDel;
 			}
 		}
-		memcpy(ValV - TotalDel, ValV, sizeof(TVal) * Len); // move data
+		memcpy(ValV - TotalDel, ValV, sizeof(TVal)*Len); // move data
 		TotalDel += NDel;
 	}
 	IdToOffV.Last() -= TotalDel;
-	for (::TSize i = Vals - TotalDel; i < Vals; i++) ValBf[i] = EmptyVal;
+	for (::TSize i = Vals - TotalDel; i < Vals; i++)
+		ValBf[i] = EmptyVal;
 	Vals -= TotalDel;
 	printf("  deleted %d elements from the pool\n", TotalDel);
 }
 
-// shuffles all the order of elements in the pool (does not respect vector boundaries)
+// shuffles all the order of elements in the pool (does not respect
+// vector boundaries)
 template<class TVal>
 void TVecPool<TVal>::ShuffleAll(TRnd& Rnd) {
 	for (::TSize n = Vals - 1; n > 0; n--) {
@@ -1769,72 +1833,47 @@ private:
 public:
 	TVec<TVal> V;
 public:
-	PVec<TVal> () :
-		V() {
-	}
-	PVec<TVal> (const PVec<TVal>& Vec) :
-		V(Vec.V) {
-	}
-	static TPt<PVec<TVal> > New() {
-		return new PVec<TVal> ();
-	}
-	PVec<TVal> (const int& MxVals, const int& Vals) :
-		V(MxVals, Vals) {
-	}
+	PVec<TVal>(): V() {}
+	PVec<TVal>(const PVec<TVal>& Vec): V(Vec.V) {}
+
+	static TPt<PVec<TVal> > New() { return new PVec<TVal>(); }
+	PVec<TVal>(const int& MxVals, const int& Vals): V(MxVals, Vals) {}
 	static TPt<PVec<TVal> > New(const int& MxVals, const int& Vals) {
-		return new PVec<TVal> (MxVals, Vals);
+		return new PVec<TVal>(MxVals, Vals);
 	}
-	PVec<TVal> (const TVec<TVal>& _V) :
-		V(_V) {
-	}
+	PVec<TVal>(const TVec<TVal>& _V): V(_V) {}
 	static TPt<PVec<TVal> > New(const TVec<TVal>& V) {
 		return new PVec<TVal> (V);
 	}
-	explicit PVec<TVal> (TSIn& SIn) :
-		V(SIn) {
-	}
+
+	explicit PVec<TVal>(TSIn& SIn): V(SIn) {}
 	static TPt<PVec<TVal> > Load(TSIn& SIn) {
 		return new PVec<TVal> (SIn);
 	}
-	void Save(TSOut& SOut) const {
-		V.Save(SOut);
-	}
+	void Save(TSOut& SOut) const { V.Save(SOut); }
 
 	PVec<TVal>& operator=(const PVec<TVal>& Vec) {
-		if (this != &Vec) {
-			V = Vec.V;
-		}
+		if (this != &Vec) V = Vec.V;
 		return *this;
 	}
 	bool operator==(const PVec<TVal>& Vec) const {
 		return V == Vec.V;
 	}
-	bool operator<(const PVec<TVal>& Vec) const {
-		return V < Vec.V;
-	}
-	TVal& operator[](const int& ValN) const {
-		return V[ValN];
-	}
+	bool operator<(const PVec<TVal>& Vec) const { return V < Vec.V;}
+	TVal& operator[](const int& ValN) const { return V[ValN]; }
 
-	bool Empty() const {
-		return V.Empty();
-	}
-	int Len() const {
-		return V.Len();
-	}
-	TVal GetVal(const int& ValN) const {
-		return V[ValN];
-	}
+	bool Empty() const { return V.Empty(); }
+	int Len() const { return V.Len(); }
+	TVal GetVal(const int& ValN) const { return V[ValN]; }
+	int Add(const TVal& Val) { return V.Add(Val); }
 
-	int Add(const TVal& Val) {
-		return V.Add(Val);
-	}
-
-	friend class TPt<PVec<TVal> > ;
+	friend class TPt<PVec<TVal> >;
 };
 
 /////////////////////////////////////////////////
 // Common-Vector-Pointer-Types
+typedef PVec<TInt> TIntVP;
+typedef TPt<TIntVP> PIntV;
 typedef PVec<TFlt> TFltVP;
 typedef TPt<TFltVP> PFltV;
 typedef PVec<TAscFlt> TAscFltVP;
