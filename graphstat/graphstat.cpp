@@ -3,36 +3,42 @@
 int main(int argc, char* argv[]) {
 	TExeTm ExeTm;
 	Env = TEnv(argc, argv, TNotify::StdNotify);
-	Env.PrepArgs(TStr::Fmt("GraphStat. Build: %s, %s. Time: %s", __TIME__, __DATE__, TExeTm::GetCurTm()));
+	Env.PrepArgs(TStr::Fmt("GraphStat. Build: %s, %s. Time: %s",
+						   __TIME__, __DATE__, TExeTm::GetCurTm()));
 	Try
-		const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "graph.txt", "Input graph");
+		const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "graph.txt",
+												 "Input graph");
 	const bool IsEdgeList = Env.GetIfArgPrefixBool("-e:", true, "Edgelist");
 	const bool IsDir = Env.GetIfArgPrefixBool("-d:", true, "Directed graph");
-	const TStr Plot = Env.GetIfArgPrefixStr("-p:", "", "What statistics to plot:"
-											"\n\tc: cummulative degree distribution"
-											"\n\td: degree distribution"
-											"\n\th: hop plot (diameter)"
-											"\n\tw: distribution of weakly connected components"
-											"\n\ts: distribution of strongly connected components"
-											"\n\tC: clustering coefficient"
-											"\n\tv: singular values"
-											"\n\tV: left and right singular vector\n\t");
-	const TStr Calcs = Env.GetIfArgPrefixStr("-c:", "", "What statistics to calculate:"
-											 "\n\tb: basic statistics"
-											 "\n\tt: count closed triads"
-											 "\n\td: dissemination ability (-hops:2 -sample:0.01 -fo:T -fi:F -n:1)"
-											 "\n\tD: BFS diameter (-testnodes:100)"
-											 "\n\tC: average clustering coefficient (-sample:T, default 5%)"
-											 "\n\th: hops (10% effective diameter)"
-											 "\n\tw: largest weakly connected components"
-											 "\n\ts: largest strongly connected components\n\t");
-	const TStr Fmts = Env.GetIfArgPrefixStr("-f:", "", "How to format the graph:"
-											"\n\tb: convert to binary format (for the purpose of fast loading)"
-											"\n\tm: maping graph (assign nid from 0)"
-											"\n\tl: remove self-loops"
-											"\n\tn: save all nodes in the graph to a file"
-											"\n\td: get degree sequence, e.g., (nd deg)"
-											"\n\tr: reverse the edge direction\n\t");
+	const TStr Plot = Env.GetIfArgPrefixStr(
+		"-p:", "",
+		"What statistics to plot:"
+		"\n\tc: cummulative degree distribution"
+		"\n\td: degree distribution"
+		"\n\th: hop plot (diameter)"
+		"\n\tw: dist. of weakly connected components"
+		"\n\ts: dist. of strongly connected components"
+		"\n\tC: clustering coefficient"
+		"\n\tv: singular values"
+		"\n\tV: left and right singular vector\n\t");
+	const TStr Calcs = Env.GetIfArgPrefixStr(
+		"-c:", "", "What statistics to calculate:"
+		"\n\tb: basic statistics"
+		"\n\tt: count closed triads"
+		"\n\td: dissemination ability (-hops:2 -sample:0.01 -fo:T -fi:F -n:1)"
+		"\n\tD: BFS diameter (-testnodes:100)"
+		"\n\tC: average clustering coefficient (-sample:T, default 5%)"
+		"\n\th: hops (10% effective diameter)"
+		"\n\tw: largest weakly connected components"
+		"\n\ts: largest strongly connected components\n\t");
+	const TStr Fmts = Env.GetIfArgPrefixStr(
+		"-f:", "", "How to format the graph:"
+		"\n\tb: convert to binary format (for the purpose of fast loading)"
+		"\n\tm: maping graph (assign nid from 0)"
+		"\n\tl: remove self-loops"
+		"\n\tn: save all nodes in the graph to a file"
+		"\n\td: get degree sequence, e.g., (nd deg)"
+		"\n\tr: reverse the edge direction\n\t");
 	const TStr Save = Env.GetIfArgPrefixStr("-s:", "", "Save graph:"
 											"\n\te: edgelist"
 											"\n\tb: binary");
@@ -158,8 +164,8 @@ int main(int argc, char* argv[]) {
 			bool fo=Env.GetIfArgPrefixBool("-fo:",true);
 			bool fi=Env.GetIfArgPrefixBool("-fi:",false);
 			int n=Env.GetIfArgPrefixInt("-n:", 1);
-			double rst=TSnap::GetDissAbility(
-				Graph, fo, fi, maxHops, sample, n);
+			double rst=TSnap::GetDissAbility(Graph, fo, fi, maxHops,
+											 sample, n);
 			printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
 		}
 		if(Cal_D){
@@ -172,7 +178,8 @@ int main(int argc, char* argv[]) {
 			bool sample=Env.GetIfArgPrefixBool("-sample:", true);
 			int samples=sample?(int)(Graph->GetNodes()*0.05):-1;
 			double cc=TSnap::GetClustCf(Graph, samples);
-			printf("Average clustering coefficient(sampled: %d): %.6f\n", sample, cc);
+			printf("Average clustering coefficient(sampled: %d): %.6f\n",
+				   sample, cc);
 		}
 		if(Cal_h){
 			double eff_diam=TSnap::GetAnfEffDiam(Graph);
@@ -182,39 +189,61 @@ int main(int argc, char* argv[]) {
 			PNGraph wcc=TSnap::GetMxWcc<PNGraph>(Graph);
 			printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
 			printf("Number of edges in WCC: %d\n", wcc->GetEdges());
-			if(Sav_e) TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
-			else if(Sav_b) TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
+			if(Sav_e)
+				TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
+			else if(Sav_b)
+				TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
 		}
 		if(Cal_s){
 			PNGraph scc=TSnap::GetMxScc<PNGraph>(Graph);
 			printf("Number of nodes in SCC: %d\n", scc->GetNodes());
 			printf("Number of edges in SCC: %d\n", scc->GetEdges());
-			if(Sav_e) TSnap::SaveEdgeList(scc, TStr::AddToFMid(InFNm, "_scc"));
-			else if(Sav_b) TSnap::SaveBinary(scc, TStr::AddToFMid(InFNm, "_scc_bin"));
+			if(Sav_e)
+				TSnap::SaveEdgeList(scc, TStr::AddToFMid(InFNm, "_scc"));
+			else if(Sav_b)
+				TSnap::SaveBinary(scc, TStr::AddToFMid(InFNm, "_scc_bin"));
 		}
 		if(Fmt_b){
 			printf("Converting to binary format ...\n");
-			TSnap::SaveBinary<PNGraph>(Graph, TStr::AddToFMid(InFNm, "_bin"));
+			TSnap::SaveBinary<PNGraph>(
+				Graph, TStr::AddToFMid(InFNm, "_bin"));
 		}
 	}else{
 		PUNGraph Graph;
 		if (IsEdgeList) Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm);
 		else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
 		printf("=======================================================\n\n"
-			   "Undirected graph is loaded. Nodes:%d, Edges:%d\n\n", Graph->GetNodes(), Graph->GetEdges());
-		if(PlotDD)	TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_pdf"), "", false, false);
-		if(PlotCDD) TSnap::PlotOutDegDistr(Graph, TStr::AddToFMid(InFNm, "_ccdf"), "", true, false);
-		if(PlotHop) TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"), "", false, 32);
-		if(PlotWcc) TSnap::PlotWccDistr(Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
-		if(PlotClustCf) TSnap::PlotClustCf(Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), "");
+			   "Undirected graph is loaded. Nodes:%d, Edges:%d\n\n",
+			   Graph->GetNodes(), Graph->GetEdges());
+		if(PlotDD)
+			TSnap::PlotOutDegDistr(
+				Graph, TStr::AddToFMid(InFNm, "_pdf"), "", false, false);
+		if(PlotCDD)
+			TSnap::PlotOutDegDistr(
+				Graph, TStr::AddToFMid(InFNm, "_ccdf"), "", true, false);
+		if(PlotHop)
+			TSnap::PlotHops(
+				Graph, TStr::AddToFMid(InFNm, "_hops"), "", false, 32);
+		if(PlotWcc)
+			TSnap::PlotWccDistr(
+				Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
+		if(PlotClustCf)
+			TSnap::PlotClustCf(
+				Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), "");
 		if(PlotSVal){
-			const int Vals = Graph->GetNodes()/2 > 200 ? 200 : Graph->GetNodes()/2;
-			TSnap::PlotEigValRank(Graph, Vals, TStr::AddToFMid(InFNm, "_eig"), "");
+			const int Vals =
+				Graph->GetNodes()/2 > 200 ? 200 : Graph->GetNodes()/2;
+			TSnap::PlotEigValRank(Graph, Vals,
+								  TStr::AddToFMid(InFNm, "_eig"), "");
 		}
 		if(Cal_b){
-			printf("nodes:%d  edges:%d\n", Graph->GetNodes(), Graph->GetEdges());
-			if(Sav_e) TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_graph"));
-			else if(Sav_b) TSnap::SaveBinary(Graph, TStr::AddToFMid(InFNm, "_bin_graph"));
+			printf("nodes:%d  edges:%d\n",
+				   Graph->GetNodes(), Graph->GetEdges());
+			if(Sav_e)
+				TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_graph"));
+			else if(Sav_b)
+				TSnap::SaveBinary(
+					Graph, TStr::AddToFMid(InFNm, "_bin_graph"));
 		}
 		if(Cal_t){
 			int ctriads=TSnap::GetTriads(Graph);
@@ -226,7 +255,8 @@ int main(int argc, char* argv[]) {
 			bool fo=Env.GetIfArgPrefixBool("-fo:",true);
 			bool fi=Env.GetIfArgPrefixBool("-fi:",false);
 			int n=Env.GetIfArgPrefixInt("-n:", 1);
-			double rst=TSnap::GetDissAbility(Graph, fo, fi, maxHops, sample, n);
+			double rst=TSnap::GetDissAbility(
+				Graph, fo, fi, maxHops, sample, n);
 			printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
 		}
 		if(Cal_D){
@@ -238,7 +268,8 @@ int main(int argc, char* argv[]) {
 			bool sample=Env.GetIfArgPrefixBool("-sample:", true);
 			int samples=sample?(int)(Graph->GetNodes()*0.05):-1;
 			double cc=TSnap::GetClustCf(Graph, samples);
-			printf("Average clustering coefficient(sampled: %d): %.6f\n", sample, cc);
+			printf("Average clustering coefficient(sampled: %d): %.6f\n",
+				   sample, cc);
 		}
 		if(Cal_h){
 			double eff_diam=TSnap::GetAnfEffDiam(Graph);
@@ -248,12 +279,15 @@ int main(int argc, char* argv[]) {
 			PUNGraph wcc=TSnap::GetMxWcc<PUNGraph>(Graph);
 			printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
 			printf("Number of edges in WCC: %d\n", wcc->GetEdges());
-			if(Sav_e) TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
-			else if(Sav_b) TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
+			if(Sav_e)
+				TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
+			else if(Sav_b)
+				TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
 		}
 		if(Fmt_b){
 			printf("Converting to binary format ...\n");
-			TSnap::SaveBinary<PUNGraph>(Graph, TStr::AddToFMid(InFNm, "_bin"));
+			TSnap::SaveBinary<PUNGraph>(
+				Graph, TStr::AddToFMid(InFNm, "_bin"));
 		}
 	}
 	CatchAll
