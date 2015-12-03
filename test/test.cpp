@@ -353,6 +353,13 @@ void test_lst(){
 	}
 }
 
+void test_cache() {
+	typedef TLst<int>::PLstNd PNd;
+	TLst<int> cache_key_lst;
+	TIntH cache_key_dat_map;
+	const int cache_capacity = 5;
+}
+
 void fun(TIntV& vec){
 	vec[0]=12;
 }

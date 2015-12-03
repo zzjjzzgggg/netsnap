@@ -30,7 +30,7 @@ public:
 	double GetUniDev(){ return GetNextSeed()/double(m); }
 	int GetUniDevInt(const int& Range=0);
 	int GetUniDevInt(const int& MnVal, const int& MxVal){IAssert(MnVal<=MxVal); return MnVal+GetUniDevInt(MxVal-MnVal+1); }
-	uint GetUniDevUInt(const uint& Range=0);
+  uint GetUniDevUInt(const uint& Range=0); // [0, Range)
 	double GetNrmDev();
 	double GetNrmDev(const double& Mean, const double& SDev, const double& Mn, const double& Mx);
 	double GetExpDev();

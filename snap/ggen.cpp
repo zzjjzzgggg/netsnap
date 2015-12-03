@@ -117,9 +117,9 @@ PUNGraph GenConfModel(const TIntV& DegSeqV, TRnd& Rnd) {
     if (u > v) { Swap(u, v); }
     const int E1 = NIdDegV[u];
     const int E2 = NIdDegV[v];
-    if (v == NIdDegV.Len()-1) { NIdDegV.DelLast(); } 
+    if (v == NIdDegV.Len()-1) { NIdDegV.DelLast(); }
     else { NIdDegV[v] = NIdDegV.Last();  NIdDegV.DelLast(); }
-    if (u == NIdDegV.Len()-1) { NIdDegV.DelLast(); } 
+    if (u == NIdDegV.Len()-1) { NIdDegV.DelLast(); }
     else { NIdDegV[u] = NIdDegV.Last();  NIdDegV.DelLast(); }
     if (E1 == E2 || EdgeH.IsKey(TIntPr(E1, E2))) { continue; }
     EdgeH.AddKey(TIntPr(E1, E2));
@@ -228,7 +228,8 @@ PNGraph GenRewire(const PNGraph& OrigGraph, const int& NSwitch, TRnd& Rnd) {
 // Barabasi-Albert model
 //   See: Emergence of scaling in random networks
 //   http://arxiv.org/abs/cond-mat/9910332
-PUNGraph GenPrefAttach(const int& Nodes, const int& NodeOutDeg, TRnd& Rnd) {
+PUNGraph GenPrefAttach(const int& Nodes, const int& NodeOutDeg,
+                       TRnd& Rnd) {
 	PUNGraph GraphPt = PUNGraph::New();
 	TUNGraph& Graph = *GraphPt;
 	Graph.Reserve(Nodes, NodeOutDeg*Nodes);

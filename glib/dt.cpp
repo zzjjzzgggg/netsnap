@@ -35,8 +35,10 @@ int TRnd::GetUniDevInt(const int& Range){
 
 uint TRnd::GetUniDevUInt(const uint& Range){
   uint Seed=uint(GetNextSeed()%0x10000)*0x10000+uint(GetNextSeed()%0x10000);
-  if (Range==0){return Seed;}
-  else {return Seed%Range;}
+  if (Range==0)
+    return Seed;
+  else
+    return Seed%Range;
 }
 
 double TRnd::GetNrmDev(){

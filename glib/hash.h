@@ -899,7 +899,8 @@ typedef TStrHash<TIntV> TStrToIntVSH;
 template <class TKey, class TDat, class THashFunc = TDefaultHashFunc<TKey> >
 class TCache{
 private:
-	typedef TLst<TKey> TKeyL; typedef TLstNd<TKey>* TKeyLN;
+	typedef TLst<TKey> TKeyL;
+	typedef TLstNd<TKey>* TKeyLN;
 	typedef TPair<TKeyLN, TDat> TKeyLNDatPr;
 	int64 MxMemUsed;
 	int64 CurMemUsed;
@@ -954,8 +955,7 @@ int64 TCache<TKey, TDat, THashFunc>::GetMemUsed() const {
 template <class TKey, class TDat, class THashFunc>
 void TCache<TKey, TDat, THashFunc>::RefreshMemUsed() {
 	CurMemUsed=GetMemUsed();
-	if (CurMemUsed>MxMemUsed) {
-		Purge(CurMemUsed-MxMemUsed); }
+	if (CurMemUsed>MxMemUsed) Purge(CurMemUsed-MxMemUsed);
 }
 
 template <class TKey, class TDat, class THashFunc>

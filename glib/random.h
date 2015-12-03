@@ -12,6 +12,12 @@ public:
 		while(sum<th) sum+=list[++id]+esp;
 		return id;
 	}
+	static int sample(const TFltV& list, const double total, TRnd& rnd) {
+		int id = 0;
+		double r = rnd.GetUniDev()*total, accu = list[0];
+		while(r>accu) accu += list[++id];
+		return id;
+	}
 };
 
 namespace TRandom{
