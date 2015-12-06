@@ -88,3 +88,13 @@ void GetDegSeq(const TStr& InFNm, const bool IsDir) {
 					  "#node degree");
 	}
 }
+
+void FormatBinaryEdgelist(const TStr& InFNm, const TStr& OutFNm) {
+	PSOut pout = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
+	TSsParser Ss(InFNm);
+	while(Ss.Next()) {
+		int src = Ss.GetInt(0), dst = Ss.GetInt(1);
+		pout->Save(src);
+		pout->Save(dst);
+	}
+}

@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
 	const TStr Fmts = Env.GetIfArgPrefixStr(
 		"-f:", "", "How to format the graph:"
 		"\n\tb: convert to binary format (for the purpose of fast loading)"
+		"\n\te: convert to binary edgelist"
 		"\n\tm: maping graph (assign nid from 0)"
 		"\n\tl: remove self-loops"
 		"\n\tn: save all nodes in the graph to a file"
@@ -62,6 +63,7 @@ int main(int argc, char* argv[]) {
 	bool Cal_s = Calcs.SearchCh('s') != -1;
 
 	bool Fmt_b = Fmts.SearchCh('b') != -1;  // need to load graph
+	bool Fmt_e = Fmts.SearchCh('e') != -1;  // need to load graph
 	bool Fmt_m = Fmts.SearchCh('m') != -1;
 	bool Fmt_l = Fmts.SearchCh('l') != -1;
 	bool Fmt_n = Fmts.SearchCh('n') != -1;
@@ -97,197 +99,201 @@ int main(int argc, char* argv[]) {
 			GetDegSeq(InFNm, IsDir);
 		}
 
-		if(!Fmt_b) return 0;
-	}
+		if(Fmt_e) {
+			printf("Formating to binary edgelist ...\n");
+			FormatBinaryEdgelist(InFNm, TStr::AddToFMid(InFNm, "_be"));
+		}
 
-	if(IsDir){
-		PNGraph Graph;
-		if (IsEdgeList) Graph = TSnap::LoadEdgeList<PNGraph>(InFNm);
-		else Graph = TSnap::LoadBinary<PNGraph>(InFNm);
-		printf("=============================================\n\n"
-			   "Directed graph is loaded. Nodes:%d, Edges:%d\n\n",
-			   Graph->GetNodes(), Graph->GetEdges());
-		if(PlotDD){
-			TSnap::PlotOutDegDistr(
-				Graph, TStr::AddToFMid(InFNm, "_out_pdf"),
-				"", false, false);
-			TSnap::PlotInDegDistr(
-				Graph, TStr::AddToFMid(InFNm, "_in_pdf"),
-				"", false, false);
-		}
-		if(PlotCDD){
-			TSnap::PlotOutDegDistr(
-				Graph, TStr::AddToFMid(InFNm, "_out_ccdf"),
-				"", true, false);
-			TSnap::PlotInDegDistr(
-				Graph, TStr::AddToFMid(InFNm, "_in_ccdf"),
-				"", true, false);
-		}
-		if(PlotHop)
-			TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"),
-							"", false, 32);
-		if(PlotWcc)
-			TSnap::PlotWccDistr(
-				Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
-		if(PlotScc)
-			TSnap::PlotSccDistr(
-				Graph, TStr::AddToFMid(InFNm, "_scc_dist"), "");
-		if(PlotClustCf)
-			TSnap::PlotClustCf(
-				Graph, TStr::AddToFMid(InFNm, "_ccf"), "");
-		if(PlotSVal){
-			const int Vals = Graph->GetNodes()/2>200 ?
-				200 : Graph->GetNodes()/2;
-			TSnap::PlotSngValRank(
-				Graph, Vals, TStr::AddToFMid(InFNm, "_sng"), "");
-		}
-		if(PlotSVec)
-			TSnap::PlotSngVec(
-				Graph, TStr::AddToFMid(InFNm, "_sng"), "");
-		if(Cal_b){
-			printf("nodes:%d edges:%d\n", Graph->GetNodes(),
-				   Graph->GetEdges());
-			if(Sav_e)
-				TSnap::SaveEdgeList(
-					Graph, TStr::AddToFMid(InFNm, "_digraph"));
-			else if(Sav_b)
-				TSnap::SaveBinary(
-					Graph, TStr::AddToFMid(InFNm, "_bin_digraph"));
-		}
-		if(Cal_t){
-			int ctriads=TSnap::GetTriads(Graph);
-			printf("# closed triads: %d\n", ctriads);
-		}
-		if(Cal_d){
-			int maxHops=Env.GetIfArgPrefixInt("-hops:",2);
-			double sample=Env.GetIfArgPrefixFlt("-sample:", 0.01);
-			bool fo=Env.GetIfArgPrefixBool("-fo:",true);
-			bool fi=Env.GetIfArgPrefixBool("-fi:",false);
-			int n=Env.GetIfArgPrefixInt("-n:", 1);
-			double rst=TSnap::GetDissAbility(Graph, fo, fi, maxHops,
-											 sample, n);
-			printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
-		}
-		if(Cal_D){
-			int test_nodes=Env.GetIfArgPrefixInt("-testnodes:",100);
-			int dia=TSnap::GetBfsFullDiam<PNGraph>(
-				Graph, test_nodes, true);
-			printf("BFS diameter: %d\n", dia);
-		}
-		if(Cal_C){
-			bool sample=Env.GetIfArgPrefixBool("-sample:", true);
-			int samples=sample?(int)(Graph->GetNodes()*0.05):-1;
-			double cc=TSnap::GetClustCf(Graph, samples);
-			printf("Average clustering coefficient(sampled: %d): %.6f\n",
-				   sample, cc);
-		}
-		if(Cal_h){
-			double eff_diam=TSnap::GetAnfEffDiam(Graph);
-			printf("90%% effective diameter: %.4f\n", eff_diam);
-		}
-		if(Cal_w){
-			PNGraph wcc=TSnap::GetMxWcc<PNGraph>(Graph);
-			printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
-			printf("Number of edges in WCC: %d\n", wcc->GetEdges());
-			if(Sav_e)
-				TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
-			else if(Sav_b)
-				TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
-		}
-		if(Cal_s){
-			PNGraph scc=TSnap::GetMxScc<PNGraph>(Graph);
-			printf("Number of nodes in SCC: %d\n", scc->GetNodes());
-			printf("Number of edges in SCC: %d\n", scc->GetEdges());
-			if(Sav_e)
-				TSnap::SaveEdgeList(scc, TStr::AddToFMid(InFNm, "_scc"));
-			else if(Sav_b)
-				TSnap::SaveBinary(scc, TStr::AddToFMid(InFNm, "_scc_bin"));
-		}
-		if(Fmt_b){
-			printf("Converting to binary format ...\n");
-			TSnap::SaveBinary<PNGraph>(
-				Graph, TStr::AddToFMid(InFNm, "_bin"));
-		}
-	}else{
-		PUNGraph Graph;
-		if (IsEdgeList) Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm);
-		else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
-		printf("=======================================================\n\n"
-			   "Undirected graph is loaded. Nodes:%d, Edges:%d\n\n",
-			   Graph->GetNodes(), Graph->GetEdges());
-		if(PlotDD)
-			TSnap::PlotOutDegDistr(
-				Graph, TStr::AddToFMid(InFNm, "_pdf"), "", false, false);
-		if(PlotCDD)
-			TSnap::PlotOutDegDistr(
-				Graph, TStr::AddToFMid(InFNm, "_ccdf"), "", true, false);
-		if(PlotHop)
-			TSnap::PlotHops(
-				Graph, TStr::AddToFMid(InFNm, "_hops"), "", false, 32);
-		if(PlotWcc)
-			TSnap::PlotWccDistr(
-				Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
-		if(PlotClustCf)
-			TSnap::PlotClustCf(
-				Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), "");
-		if(PlotSVal){
-			const int Vals =
-				Graph->GetNodes()/2 > 200 ? 200 : Graph->GetNodes()/2;
-			TSnap::PlotEigValRank(Graph, Vals,
-								  TStr::AddToFMid(InFNm, "_eig"), "");
-		}
-		if(Cal_b){
-			printf("nodes:%d  edges:%d\n",
+	} else {
+
+		if(IsDir){
+			PNGraph Graph;
+			if (IsEdgeList) Graph = TSnap::LoadEdgeList<PNGraph>(InFNm);
+			else Graph = TSnap::LoadBinary<PNGraph>(InFNm);
+			printf("=============================================\n\n"
+				   "Directed graph is loaded. Nodes:%d, Edges:%d\n\n",
 				   Graph->GetNodes(), Graph->GetEdges());
-			if(Sav_e)
-				TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_graph"));
-			else if(Sav_b)
-				TSnap::SaveBinary(
-					Graph, TStr::AddToFMid(InFNm, "_bin_graph"));
-		}
-		if(Cal_t){
-			int ctriads=TSnap::GetTriads(Graph);
-			printf("# closed triads: %d\n", ctriads);
-		}
-		if(Cal_d){
-			int maxHops=Env.GetIfArgPrefixInt("-hops:",2);
-			double sample=Env.GetIfArgPrefixFlt("-sample:", 0.01);
-			bool fo=Env.GetIfArgPrefixBool("-fo:",true);
-			bool fi=Env.GetIfArgPrefixBool("-fi:",false);
-			int n=Env.GetIfArgPrefixInt("-n:", 1);
-			double rst=TSnap::GetDissAbility(
-				Graph, fo, fi, maxHops, sample, n);
-			printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
-		}
-		if(Cal_D){
-			int test_nodes=Env.GetIfArgPrefixInt("-testnodes:",100);
-			int dia=TSnap::GetBfsFullDiam<PUNGraph>(Graph, test_nodes);
-			printf("BFS diameter: %d\n", dia);
-		}
-		if(Cal_C){
-			bool sample=Env.GetIfArgPrefixBool("-sample:", true);
-			int samples=sample?(int)(Graph->GetNodes()*0.05):-1;
-			double cc=TSnap::GetClustCf(Graph, samples);
-			printf("Average clustering coefficient(sampled: %d): %.6f\n",
-				   sample, cc);
-		}
-		if(Cal_h){
-			double eff_diam=TSnap::GetAnfEffDiam(Graph);
-			printf("90%% effective diameter: %.4f\n", eff_diam);
-		}
-		if(Cal_w){
-			PUNGraph wcc=TSnap::GetMxWcc<PUNGraph>(Graph);
-			printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
-			printf("Number of edges in WCC: %d\n", wcc->GetEdges());
-			if(Sav_e)
-				TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
-			else if(Sav_b)
-				TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
-		}
-		if(Fmt_b){
-			printf("Converting to binary format ...\n");
-			TSnap::SaveBinary<PUNGraph>(
-				Graph, TStr::AddToFMid(InFNm, "_bin"));
+			if(PlotDD){
+				TSnap::PlotOutDegDistr(
+					Graph, TStr::AddToFMid(InFNm, "_out_pdf"),
+					"", false, false);
+				TSnap::PlotInDegDistr(
+					Graph, TStr::AddToFMid(InFNm, "_in_pdf"),
+					"", false, false);
+			}
+			if(PlotCDD){
+				TSnap::PlotOutDegDistr(
+					Graph, TStr::AddToFMid(InFNm, "_out_ccdf"),
+					"", true, false);
+				TSnap::PlotInDegDistr(
+					Graph, TStr::AddToFMid(InFNm, "_in_ccdf"),
+					"", true, false);
+			}
+			if(PlotHop)
+				TSnap::PlotHops(Graph, TStr::AddToFMid(InFNm, "_hops"),
+								"", false, 32);
+			if(PlotWcc)
+				TSnap::PlotWccDistr(
+					Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
+			if(PlotScc)
+				TSnap::PlotSccDistr(
+					Graph, TStr::AddToFMid(InFNm, "_scc_dist"), "");
+			if(PlotClustCf)
+				TSnap::PlotClustCf(
+					Graph, TStr::AddToFMid(InFNm, "_ccf"), "");
+			if(PlotSVal){
+				const int Vals = Graph->GetNodes()/2>200 ?
+					200 : Graph->GetNodes()/2;
+				TSnap::PlotSngValRank(
+					Graph, Vals, TStr::AddToFMid(InFNm, "_sng"), "");
+			}
+			if(PlotSVec)
+				TSnap::PlotSngVec(
+					Graph, TStr::AddToFMid(InFNm, "_sng"), "");
+			if(Cal_b){
+				printf("nodes:%d edges:%d\n", Graph->GetNodes(),
+					   Graph->GetEdges());
+				if(Sav_e)
+					TSnap::SaveEdgeList(
+						Graph, TStr::AddToFMid(InFNm, "_digraph"));
+				else if(Sav_b)
+					TSnap::SaveBinary(
+						Graph, TStr::AddToFMid(InFNm, "_bin_digraph"));
+			}
+			if(Cal_t){
+				int ctriads=TSnap::GetTriads(Graph);
+				printf("# closed triads: %d\n", ctriads);
+			}
+			if(Cal_d){
+				int maxHops=Env.GetIfArgPrefixInt("-hops:",2);
+				double sample=Env.GetIfArgPrefixFlt("-sample:", 0.01);
+				bool fo=Env.GetIfArgPrefixBool("-fo:",true);
+				bool fi=Env.GetIfArgPrefixBool("-fi:",false);
+				int n=Env.GetIfArgPrefixInt("-n:", 1);
+				double rst=TSnap::GetDissAbility(Graph, fo, fi, maxHops,
+												 sample, n);
+				printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
+			}
+			if(Cal_D){
+				int test_nodes=Env.GetIfArgPrefixInt("-testnodes:",100);
+				int dia=TSnap::GetBfsFullDiam<PNGraph>(
+					Graph, test_nodes, true);
+				printf("BFS diameter: %d\n", dia);
+			}
+			if(Cal_C){
+				bool sample=Env.GetIfArgPrefixBool("-sample:", true);
+				int samples=sample?(int)(Graph->GetNodes()*0.05):-1;
+				double cc=TSnap::GetClustCf(Graph, samples);
+				printf("Average clustering coefficient(sampled: %d): %.6f\n",
+					   sample, cc);
+			}
+			if(Cal_h){
+				double eff_diam=TSnap::GetAnfEffDiam(Graph);
+				printf("90%% effective diameter: %.4f\n", eff_diam);
+			}
+			if(Cal_w){
+				PNGraph wcc=TSnap::GetMxWcc<PNGraph>(Graph);
+				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
+				printf("Number of edges in WCC: %d\n", wcc->GetEdges());
+				if(Sav_e)
+					TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
+				else if(Sav_b)
+					TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
+			}
+			if(Cal_s){
+				PNGraph scc=TSnap::GetMxScc<PNGraph>(Graph);
+				printf("Number of nodes in SCC: %d\n", scc->GetNodes());
+				printf("Number of edges in SCC: %d\n", scc->GetEdges());
+				if(Sav_e)
+					TSnap::SaveEdgeList(scc, TStr::AddToFMid(InFNm, "_scc"));
+				else if(Sav_b)
+					TSnap::SaveBinary(scc, TStr::AddToFMid(InFNm, "_scc_bin"));
+			}
+			if(Fmt_b){
+				printf("Converting to binary format ...\n");
+				TSnap::SaveBinary<PNGraph>(Graph, TStr::AddToFMid(InFNm, "_bin"));
+			}
+		}else{
+			PUNGraph Graph;
+			if (IsEdgeList) Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm);
+			else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
+			printf("=======================================================\n\n"
+				   "Undirected graph is loaded. Nodes:%d, Edges:%d\n\n",
+				   Graph->GetNodes(), Graph->GetEdges());
+			if(PlotDD)
+				TSnap::PlotOutDegDistr(
+					Graph, TStr::AddToFMid(InFNm, "_pdf"), "", false, false);
+			if(PlotCDD)
+				TSnap::PlotOutDegDistr(
+					Graph, TStr::AddToFMid(InFNm, "_ccdf"), "", true, false);
+			if(PlotHop)
+				TSnap::PlotHops(
+					Graph, TStr::AddToFMid(InFNm, "_hops"), "", false, 32);
+			if(PlotWcc)
+				TSnap::PlotWccDistr(
+					Graph, TStr::AddToFMid(InFNm, "_wcc_dist"), "");
+			if(PlotClustCf)
+				TSnap::PlotClustCf(
+					Graph, TStr::AddToFMid(InFNm, "_ccf_dist"), "");
+			if(PlotSVal){
+				const int Vals =
+					Graph->GetNodes()/2 > 200 ? 200 : Graph->GetNodes()/2;
+				TSnap::PlotEigValRank(Graph, Vals,
+									  TStr::AddToFMid(InFNm, "_eig"), "");
+			}
+			if(Cal_b){
+				printf("nodes:%d  edges:%d\n",
+					   Graph->GetNodes(), Graph->GetEdges());
+				if(Sav_e)
+					TSnap::SaveEdgeList(Graph, TStr::AddToFMid(InFNm, "_graph"));
+				else if(Sav_b)
+					TSnap::SaveBinary(
+						Graph, TStr::AddToFMid(InFNm, "_bin_graph"));
+			}
+			if(Cal_t){
+				int ctriads=TSnap::GetTriads(Graph);
+				printf("# closed triads: %d\n", ctriads);
+			}
+			if(Cal_d){
+				int maxHops=Env.GetIfArgPrefixInt("-hops:",2);
+				double sample=Env.GetIfArgPrefixFlt("-sample:", 0.01);
+				bool fo=Env.GetIfArgPrefixBool("-fo:",true);
+				bool fi=Env.GetIfArgPrefixBool("-fi:",false);
+				int n=Env.GetIfArgPrefixInt("-n:", 1);
+				double rst=TSnap::GetDissAbility(
+					Graph, fo, fi, maxHops, sample, n);
+				printf("Dissemination ability(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample, n, rst);
+			}
+			if(Cal_D){
+				int test_nodes=Env.GetIfArgPrefixInt("-testnodes:",100);
+				int dia=TSnap::GetBfsFullDiam<PUNGraph>(Graph, test_nodes);
+				printf("BFS diameter: %d\n", dia);
+			}
+			if(Cal_C){
+				bool sample=Env.GetIfArgPrefixBool("-sample:", true);
+				int samples=sample?(int)(Graph->GetNodes()*0.05):-1;
+				double cc=TSnap::GetClustCf(Graph, samples);
+				printf("Average clustering coefficient(sampled: %d): %.6f\n",
+					   sample, cc);
+			}
+			if(Cal_h){
+				double eff_diam=TSnap::GetAnfEffDiam(Graph);
+				printf("90%% effective diameter: %.4f\n", eff_diam);
+			}
+			if(Cal_w){
+				PUNGraph wcc=TSnap::GetMxWcc<PUNGraph>(Graph);
+				printf("Number of nodes in WCC: %d\n", wcc->GetNodes());
+				printf("Number of edges in WCC: %d\n", wcc->GetEdges());
+				if(Sav_e)
+					TSnap::SaveEdgeList(wcc, TStr::AddToFMid(InFNm, "_wcc"));
+				else if(Sav_b)
+					TSnap::SaveBinary(wcc, TStr::AddToFMid(InFNm, "_wcc_bin"));
+			}
+			if(Fmt_b){
+				printf("Converting to binary format ...\n");
+				TSnap::SaveBinary<PUNGraph>(
+					Graph, TStr::AddToFMid(InFNm, "_bin"));
+			}
 		}
 	}
 	CatchAll
