@@ -2435,7 +2435,8 @@ public:
 public:
 	TLstNd(): PrevNd(NULL), NextNd(NULL), Val() { }
 	TLstNd(const TLstNd&);
-	TLstNd(TLstNd* _PrevNd, TLstNd* _NextNd, const TVal& _Val): PrevNd(_PrevNd), NextNd(_NextNd), Val(_Val) { }
+	TLstNd(TLstNd* _PrevNd, TLstNd* _NextNd, const TVal& _Val):
+		PrevNd(_PrevNd), NextNd(_NextNd), Val(_Val) { }
 	TLstNd& operator=(const TLstNd&);
 	TLstNd* Prev() const { Assert(this != NULL); return PrevNd; }
 	TLstNd* Next() const { Assert(this != NULL); return NextNd; }
@@ -2453,7 +2454,7 @@ private:
 	PLstNd FirstNd;
 	PLstNd LastNd;
 public:
-	TLst() : Nds(0), FirstNd(NULL), LastNd(NULL) {}
+	TLst(): Nds(0), FirstNd(NULL), LastNd(NULL) {}
 	TLst(const TLst&);
 	~TLst() {Clr(); }
 	explicit TLst(TSIn& SIn);
@@ -2515,16 +2516,16 @@ void TLst<TVal>::Save(TSOut& SOut) const {
 
 template<class TVal>
 TLstNd<TVal>* TLst<TVal>::AddFront(const TVal& Val) {
-	PLstNd Nd = new TLstNd<TVal> (NULL, FirstNd, Val);
-	if (FirstNd != NULL) {
-		FirstNd->PrevNd = Nd;
-		FirstNd = Nd;
-	} else {
-		FirstNd = Nd;
-		LastNd = Nd;
-	}
-	Nds++;
-	return Nd;
+    PLstNd Nd = new TLstNd<TVal> (NULL, FirstNd, Val);
+    if (FirstNd != NULL) {
+        FirstNd->PrevNd = Nd;
+        FirstNd = Nd;
+    } else {
+        FirstNd = Nd;
+        LastNd = Nd;
+    }
+    Nds++;
+    return Nd;
 }
 
 template<class TVal>
@@ -2542,7 +2543,8 @@ TLstNd<TVal>* TLst<TVal>::AddBack(const TVal& Val) {
 }
 
 template<class TVal>
-TLstNd<TVal>* TLst<TVal>::AddFrontSorted(const TVal& Val, const bool& Asc) {
+TLstNd<TVal>* TLst<TVal>::AddFrontSorted(const TVal& Val,
+                                         const bool& Asc) {
 	if (FirstNd == NULL) return Ins(FirstNd, Val);
 	else {
 		PLstNd Nd = FirstNd;
@@ -2553,7 +2555,8 @@ TLstNd<TVal>* TLst<TVal>::AddFrontSorted(const TVal& Val, const bool& Asc) {
 }
 
 template<class TVal>
-TLstNd<TVal>* TLst<TVal>::AddBackSorted(const TVal& Val, const bool& Asc) {
+TLstNd<TVal>* TLst<TVal>::AddBackSorted(const TVal& Val,
+                                        const bool& Asc) {
 	PLstNd Nd = Last();
 	while ((Nd != NULL) && ((Asc && (Val < Nd->Val)) || (!Asc&& (Val > Nd->Val)))) 	Nd = Nd->Prev();
 	return Ins(Nd, Val);

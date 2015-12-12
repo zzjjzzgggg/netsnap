@@ -6,31 +6,54 @@ public:
 	static double Pi;
 	static double LogOf2;
 	static double Abs(const double& x) { return fabs(x); }
-	static double Inv(const double& x) { IAssert(x!=0.0); return 1.0/x; }
+	static double Inv(const double& x) {
+      IAssert(x!=0.0);
+      return 1.0/x;
+  }
 	static double Sqr(const double& x) { return x*x; }
-	static double Sqrt(const double& x) { IAssert(x>=0); return sqrt(x); }
-	static double Log2(const double& Val) { return log(Val)/LogOf2; }
-	static double Round(const double& Val) { return Val>0?floor(Val+0.5):ceil(Val-0.5); }
-	static double Round(const double & Val, int Decs) { const double pwr=pow(10.0, Decs); return Round(Val*pwr)/pwr; }
-	static int Fac(const int& Val) {if (Val<=1) return 1; else return Val * Fac(Val - 1);}
-	static int NUnits(const int& Val, const int& Unit) { return (Val % Unit ==0) ? (Val/Unit) : (Val/Unit+1); }
+	static double Sqrt(const double& x) {
+      IAssert(x>=0);
+      return sqrt(x);
+  }
+	static double Log2(const double& Val) {
+      return log(Val)/LogOf2;
+  }
+	static double Round(const double& Val) {
+      return Val>0?floor(Val+0.5):ceil(Val-0.5);
+  }
+	static double Round(const double & Val, int Decs) {
+      const double pwr=pow(10.0, Decs);
+      return Round(Val*pwr)/pwr;
+  }
+    static int Fac(const int& Val) {
+        if (Val<=1) return 1;
+        else return Val * Fac(Val - 1);
+    }
+    static int NUnits(const int& Val, const int& Unit) {
+        return (Val % Unit ==0) ? (Val/Unit) : (Val/Unit+1);
+    }
 	// binomial coefficient
 	// original implementation: return Fac(N)/(Fac(K)*Fac(N-K));
-	static int Choose(const int& N, const int& K) {
-		if (K<0 || K>N) return 0;
-		if (K==0 || K==N) return 1;
-		int k = min(K, N-K)+1;
-		double c=1;
-		while (--k>0) c = c*(N-k+1)/k;
-		return (int)c;
-	}
-	static uint Pow2(const int& pow) { return uint(1u << pow); }
-	static double Power(const double& Base, const double& Exponent) { return pow(Base, Exponent); }
-	template<typename T>
-	static int Sign(const T& Val) { return Val < 0 ? -1 : (Val > 0 ? 1 : 0); }
-	template<class T>
-	static const T& Mx(const T& LVal, const T& RVal) { return LVal>RVal?LVal:RVal; }
-	template<class T>
+    static int Choose(const int &N, const int &K) {
+        if (K < 0 || K > N) return 0;
+        if (K == 0 || K == N) return 1;
+        int k = min(K, N - K) + 1;
+        double c = 1;
+        while (--k > 0) c = c * (N - k + 1) / k;
+        return (int)c;
+    }
+    static uint Pow2(const int &pow) { return uint(1u << pow); }
+    static double Power(const double &Base, const double &Exponent) {
+      return pow(Base, Exponent);
+  }
+    template <typename T> static int Sign(const T &Val) {
+      return Val < 0 ? -1 : (Val > 0 ? 1 : 0);
+  }
+    template <class T> static const T &Mx(const T &LVal,
+                                        const T &RVal) {
+      return LVal > RVal ? LVal : RVal;
+  }
+    template<class T>
 	static const T& Mn(const T& LVal, const T& RVal) { return LVal<RVal?LVal:RVal; }
 	template<class T>
 	static const T& Mx(const T& Val1, const T& Val2, const T& Val3) {
