@@ -25,8 +25,10 @@ private:
 public:
 	SynQueue(): capacity_(std::numeric_limits<size_t>::max()) {}
 	SynQueue(const size_t capacity): capacity_(capacity) {}
-	SynQueue(const SynQueue&) = delete;			 // disable copying
-	SynQueue& operator=(const SynQueue&) = delete; // disable assignment
+  // disable copying
+	SynQueue(const SynQueue&) = delete;
+  // disable assignment
+	SynQueue& operator=(const SynQueue&) = delete;
 
 	void SetCapacity(const size_t capacity) { capacity_ = capacity; }
 
@@ -44,11 +46,12 @@ public:
 	 * The method is protected by a mutex, which is locked using scope
 	 * guard std::unique_lock. If the queue is empty, we wait on the
 	 * condition variable item_avail_cond_. This releases the lock to
-	 * other threads and blocks until we are notified that the condition
-	 * has been met. In this case, the call to wait() returns and we check
-	 * the while condition again.  This extra check is because conditions
-	 * may experience spurious wakes: we could be wrongly notified while
-	 * the queue is still empty.
+	 * other threads and blocks until we are notified that the
+	 * condition has been met. In this case, the call to wait()
+	 * returns and we check the while condition again.
+	 * This extra check is because conditions may experience spurious
+	 * wakes: we could be wrongly notified while the queue is still
+	 * empty.
 	 */
 	void Pop(T& item){
 		std::unique_lock<std::mutex> mlock(mutex_);

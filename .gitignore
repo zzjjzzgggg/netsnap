@@ -11,3 +11,6 @@ test/test
 *.bz2
 */.settings/
 graphstat
+GPATH
+GRTAGS
+GTAGS

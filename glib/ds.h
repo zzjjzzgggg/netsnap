@@ -770,7 +770,8 @@ TVec<TVal>& TVec<TVal>::operator=(const TVec<TVal>& Vec) {
 		MxVals = Vals = Vec.Vals;
 		if (MxVals == 0) ValT = NULL;
 		else ValT = new TVal[MxVals];
-		for (int ValN = 0; ValN < Vec.Vals; ValN++) ValT[ValN] = Vec.ValT[ValN];
+		for (int ValN = 0; ValN < Vec.Vals; ValN++)
+        ValT[ValN] = Vec.ValT[ValN];
 	}
 	return *this;
 }
@@ -2565,6 +2566,7 @@ TLstNd<TVal>* TLst<TVal>::AddBackSorted(const TVal& Val,
 template<class TVal>
 void TLst<TVal>::PutFront(const PLstNd& Nd) {
 	Assert(Nd != NULL);
+  if(Nd == FirstNd) return;
 	// unchain
 	if (Nd->PrevNd == NULL) FirstNd = Nd->NextNd;
 	else Nd->PrevNd->NextNd = Nd->NextNd;
@@ -2585,6 +2587,7 @@ void TLst<TVal>::PutFront(const PLstNd& Nd) {
 template<class TVal>
 void TLst<TVal>::PutBack(const PLstNd& Nd) {
 	Assert(Nd != NULL);
+  if(Nd == LastNd) return;
 	// unchain
 	if (Nd->PrevNd == NULL) FirstNd = Nd->NextNd;
 	else Nd->PrevNd->NextNd = Nd->NextNd;
