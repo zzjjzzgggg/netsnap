@@ -389,7 +389,7 @@ public:
 	explicit TVec(const int& _Vals) {
 		IAssert(0 <= _Vals);
 		MxVals = Vals = _Vals;
-		if(_Vals == 0)ValT = NULL;
+		if(_Vals == 0) ValT = NULL;
 		else ValT = new TVal[_Vals];
 	}
 	TVec(const int& _MxVals, const int& _Vals){
@@ -2549,7 +2549,8 @@ TLstNd<TVal>* TLst<TVal>::AddFrontSorted(const TVal& Val,
 	if (FirstNd == NULL) return Ins(FirstNd, Val);
 	else {
 		PLstNd Nd = FirstNd;
-		while (Nd!=NULL && ((Asc && Val>Nd->Val) || (!Asc && Val<Nd->Val))) Nd = Nd->NextNd;
+		while(Nd!=NULL && ((Asc && Val>Nd->Val) || (!Asc && Val<Nd->Val)))
+        Nd = Nd->NextNd;
 		if (Nd == NULL) return Ins(LastNd, Val);
 		else return Ins(Nd->PrevNd, Val);
 	}
