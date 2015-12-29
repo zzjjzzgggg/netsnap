@@ -24,8 +24,8 @@ public:
   TPpVal(): Tag(ptUndef){}
   TPpVal(const TPpVal& PpVal): Tag(PpVal.Tag), Bool(PpVal.Bool),
     Int(PpVal.Int), Flt(PpVal.Flt), Str(PpVal.Str), ValV(PpVal.ValV){}
-  TPpVal(const bool& _Bool): Tag(ptBool), Bool(_Bool){}
-  TPpVal(const TBool& _Bool): Tag(ptBool), Bool(_Bool){}
+  TPpVal(const bool& BoolVal): Tag(ptBool), Bool(BoolVal){}
+  TPpVal(const TBool& BoolVal): Tag(ptBool), Bool(BoolVal){}
   TPpVal(const int& _Int): Tag(ptInt), Int(_Int){}
   TPpVal(const TInt& _Int): Tag(ptInt), Int(_Int){}
   TPpVal(const double& _Flt): Tag(ptFlt), Flt(_Flt){}
@@ -235,4 +235,3 @@ public:
 };
 
 inline PPp MkClone(const PPp& Pp){return new TPp(*Pp);}
-
