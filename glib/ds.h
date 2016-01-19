@@ -2476,6 +2476,11 @@ public:
 	int Len() const { return Nds; }
 	PLstNd First() const { return FirstNd; }
 	PLstNd Last() const { return LastNd; }
+  PLstNd Idx(const int i) const {
+      PLstNd nd =FirstNd;
+      for (int j=0; j<i; j++) nd = nd->NextNd;
+      return nd;
+  }
 	PLstNd AddFront(const TVal& Val);
 	PLstNd AddBack(const TVal& Val);
 	PLstNd AddFrontSorted(const TVal& Val, const bool& Asc = true);
@@ -2560,7 +2565,9 @@ template<class TVal>
 TLstNd<TVal>* TLst<TVal>::AddBackSorted(const TVal& Val,
                                         const bool& Asc) {
 	PLstNd Nd = Last();
-	while ((Nd != NULL) && ((Asc && (Val < Nd->Val)) || (!Asc&& (Val > Nd->Val)))) 	Nd = Nd->Prev();
+	while ((Nd != NULL) &&
+         ((Asc && (Val < Nd->Val)) || (!Asc&& (Val > Nd->Val))))
+      Nd = Nd->Prev();
 	return Ins(Nd, Val);
 }
 
@@ -2668,7 +2675,8 @@ bool TLst<TVal>::IsSorted(const bool& Asc){
 	Assert(Nds>0);
 	PLstNd p=FirstNd->NextNd;
 	while(p!=NULL){
-		if((Asc && p->PrevNd->Val > p->Val) || (!Asc && p->PrevNd->Val < p->Val)) return false;
+		if((Asc && p->PrevNd->Val > p->Val) ||
+       (!Asc && p->PrevNd->Val < p->Val)) return false;
 		p=p->NextNd;
 	}
 	return true;
