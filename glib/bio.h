@@ -65,6 +65,8 @@ void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, con
 	void LoadIntSet(const TStr& fnm, TIntSet& dat, const int col=0);
 	void LoadFltV(const TStr& fnm, TFltV& dat, const int col=0);
 
+    void LoadIntV(const TStr& fnm, std::vector<int>& dat, const int col=0);
+
 	void LoadIntH(const TStr& fnm, TIntH& dat, const int c1=0, const int c2=1);
 	void LoadIntFltH(const TStr& fnm, TIntFltH& dat, const int c1=0, const int c2=1);
 	void LoadIntPrSet(const TStr& fnm, TIntPrSet& dat, const int c1=0, const int c2=1);

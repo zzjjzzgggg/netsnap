@@ -107,6 +107,10 @@ namespace BIO{
 		TSsParser Ss(fnm);
 		while(Ss.Next()) dat.Add(Ss.GetInt(col));
 	}
+    void LoadIntV(const TStr& fnm, std::vector<int>& dat, const int col){
+        TSsParser Ss(fnm);
+        while(Ss.Next()) dat.push_back(Ss.GetInt(col));
+    }
 	void LoadIntSet(const TStr& fnm, TIntSet& dat, const int col){
 		TSsParser Ss(fnm);
 		while(Ss.Next()) dat.AddKey(Ss.GetInt(col));
