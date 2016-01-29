@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	Try
 		const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "graph.txt",
 												 "Input graph");
-	const bool IsEdgeList = Env.GetIfArgPrefixBool("-e:", true, "Edgelist");
+	const int Type = Env.GetIfArgPrefixInt("-t:", 0, "0: edgelist, 1: binary edgelist, 2: binary");
 	const bool IsDir = Env.GetIfArgPrefixBool("-d:", true, "Directed graph");
 	const TStr Plot = Env.GetIfArgPrefixStr(
 		"-p:", "",
@@ -108,8 +108,9 @@ int main(int argc, char* argv[]) {
 
 		if(IsDir){
 			PNGraph Graph;
-			if (IsEdgeList) Graph = TSnap::LoadEdgeList<PNGraph>(InFNm);
-			else Graph = TSnap::LoadBinary<PNGraph>(InFNm);
+			if (Type == 0) Graph = TSnap::LoadEdgeList<PNGraph>(InFNm);
+			else if (Type ==1) Graph=TSnap::LoadBinaryEdgeList<PNGraph>(InFNm);
+      else Graph = TSnap::LoadBinary<PNGraph>(InFNm);
 			printf("=============================================\n\n"
 				   "Directed graph is loaded. Nodes:%d, Edges:%d\n\n",
 				   Graph->GetNodes(), Graph->GetEdges());
@@ -215,8 +216,9 @@ int main(int argc, char* argv[]) {
 			}
 		}else{
 			PUNGraph Graph;
-			if (IsEdgeList) Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm);
-			else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
+			if (Type == 0) Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm);
+			else if (Type ==1) Graph=TSnap::LoadBinaryEdgeList<PUNGraph>(InFNm);
+      else Graph = TSnap::LoadBinary<PUNGraph>(InFNm);
 			printf("=======================================================\n\n"
 				   "Undirected graph is loaded. Nodes:%d, Edges:%d\n\n",
 				   Graph->GetNodes(), Graph->GetEdges());
