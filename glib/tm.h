@@ -327,20 +327,20 @@ public:
 
 class TExeSteadyTm{
 private:
-	std::chrono::steady_clock::time_point LastTick;
+    std::chrono::steady_clock::time_point LastTick;
 public:
-	TExeSteadyTm() { Tick(); }
-	void Tick() { LastTick = std::chrono::steady_clock::now(); }
-	double GetSecs() const {
-		auto CurTime = std::chrono::steady_clock::now();
-		return std::chrono::duration<double, std::milli> (CurTime - LastTick).count()/1000;
-	}
-	double GetMillSecs() const {
-		auto CurTime = std::chrono::steady_clock::now();
-		return std::chrono::duration<double, std::milli> (CurTime - LastTick).count();
-	}
-	const char* GetStr() const { return GetTmStr(); }
-	const char* GetTmStr() const {
+    TExeSteadyTm() { Tick(); }
+    void Tick() { LastTick = std::chrono::steady_clock::now(); }
+    double GetSecs() const {
+        auto CurTime = std::chrono::steady_clock::now();
+        return std::chrono::duration<double, std::milli> (CurTime - LastTick).count()/1000;
+    }
+    double GetMillSecs() const {
+        auto CurTime = std::chrono::steady_clock::now();
+        return std::chrono::duration<double, std::milli> (CurTime - LastTick).count();
+    }
+    const char* GetStr() const { return GetTmStr(); }
+    const char* GetTmStr() const {
 		double Secs = GetSecs();
 		int NSecs = int(Secs);
 		static char TmStr[32];
@@ -349,7 +349,11 @@ public:
 		else sprintf(TmStr, "%02dh%02dm", NSecs/3600, NSecs%3600/60);
 		return TmStr;
 	}
-	static char* GetCurTm() { static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr(); }
+    static char* GetCurTm() { static TStr TmStr=TSecTm::GetCurTm().GetTmStr(); return TmStr.CStr(); }
+    static int GetTmStamp() {
+        auto dur = std::chrono::steady_clock::now().time_since_epoch();
+        return std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    }
 };
 
 /////////////////////////////////////////////////
