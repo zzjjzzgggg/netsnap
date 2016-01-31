@@ -7,13 +7,16 @@
 
 namespace BIO {
 
-template<class TVal> void SaveVec(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno);
+template<class TVal>
+void SaveVec(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const TStr& anno);
 void SaveIntV(const TIntV& IntV, const TStr& Fnm, const TStr& anno="");
 void SaveFltV(const TFltV& FltV, const TStr& Fnm, const TStr& anno="");
 
-template<class TVal1, class TVal2> void SavePrV(const TVec< TPair<TVal1, TVal2> >& Pairs, const TStr& Fnm, const TStr& Fmt, const TStr& anno="");
+template<class TVal1, class TVal2>
+void SavePrV(const TVec< TPair<TVal1, TVal2> >& Pairs, const TStr& Fnm, const TStr& Fmt, const TStr& anno="");
 void SaveIntPrV(const TIntPrV& IntPrV, const TStr& Fnm, const TStr& anno="");
 void SaveFltPrV(const TFltPrV& FltPrV, const TStr& Fnm, const TStr& anno="");
+void SaveFltIntPrV(const TFltIntPrV& FltIntPrV, const TStr& Fnm, const TStr& anno="");
 
 template<class TVal> void SaveVecWithIdx(const TVec<TVal>& Vec, const TStr& Fnm, const TStr& Fmt, const int StartIdx, const TStr& anno);
 void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const int StartIdx=0, const TStr& anno="");

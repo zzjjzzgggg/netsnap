@@ -15,6 +15,9 @@ namespace BIO{
 		SavePrV<TFlt, TFlt>(FltPrV, Fnm, "%.6e\t%.6e", anno);
 	}
 
+    void SaveFltIntPrV(const TFltIntPrV& FltIntPrV, const TStr& Fnm, const TStr& anno) {
+        SavePrV<TFlt, TInt>(FltIntPrV, Fnm, "%.6e\t%d", anno);
+    }
 	void SaveIntVWithIdx(const TIntV& IntV, const TStr& Fnm, const int StartIdx, const TStr& anno) {
 		SaveVecWithIdx<TInt>(IntV, Fnm, "%d\t%d", StartIdx, anno);
 	}
