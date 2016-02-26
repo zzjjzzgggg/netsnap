@@ -61,10 +61,14 @@ int TUNGraph::GetEdges() const {
 }
 
 int TUNGraph::AddEdge(const int& SrcNId, const int& DstNId) {
-	IAssertR(IsNode(SrcNId) && IsNode(DstNId), TStr::Fmt("%d or %d not a node.", SrcNId, DstNId).CStr());
-	if (IsEdge(SrcNId, DstNId)) return -2; // edge already exists
+	IAssertR(IsNode(SrcNId) && IsNode(DstNId),
+           TStr::Fmt("%d or %d not a node.",
+                     SrcNId, DstNId).CStr());
+  // edge already exists
+	if (IsEdge(SrcNId, DstNId)) return -2;
 	GetNode(SrcNId).NIdV.AddSorted(DstNId);
-	if (SrcNId!=DstNId) GetNode(DstNId).NIdV.AddSorted(SrcNId); // not a self edge
+	if (SrcNId!=DstNId) // not a self edge
+      GetNode(DstNId).NIdV.AddSorted(SrcNId);
 	return -1; // edge id
 }
 
@@ -783,5 +787,3 @@ void TBNEGraph::Dump(FILE *OutF) const {
 	}
 	fprintf(OutF, "\n");
 }
-
-
