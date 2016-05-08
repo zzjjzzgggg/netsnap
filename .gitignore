@@ -10,6 +10,9 @@ test/test
 *.gz
 *.bz2
 */.settings/
+*/__pycache__/
+*/.ycm_extra_conf.*
+*/.clang-format
 graphstat
 GPATH
 GRTAGS

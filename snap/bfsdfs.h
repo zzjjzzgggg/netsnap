@@ -126,8 +126,7 @@ int TBreathFS<PGraph>::DoBfs(const int& StartNode,
         Queue.Pop();
         const int Dist = NIdDistH.GetDat(NId);
         if(Dist == MxDist) break;  // max distance limit reached
-        const typename PGraph::TObj::TNodeI NodeI =
-            Graph->GetNI(NId);
+        const typename PGraph::TObj::TNodeI NodeI = Graph->GetNI(NId);
         if(FollowOut) { // out-links
             for(v=0; v<NodeI.GetOutDeg(); v++) {  // out-links
                 const int DstNId = NodeI.GetOutNId(v);

@@ -39,7 +39,7 @@ typedef ptrdiff_t ssize_t;
 #endif
 
 #if defined(GLib_UNIX)
-#define _isnan(x) isnan(x)
+#define _isnan(x) std::isnan(x)
 #define _finite(x) finite(x)
 #endif
 
