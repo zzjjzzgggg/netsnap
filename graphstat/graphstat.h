@@ -22,18 +22,30 @@ void MapingNodes(const TStr& InFNm, const bool IsDir) {
     printf("Node range [0, %d]\n", uid - 1);
 }
 
-void SaveNodes(const TStr& InFNm) {
+void SaveNodes(const TStr& InFNm, const int Type) {
     TIntSet nodes;
     int nedge = 0;
-    TSsParser Ss(InFNm);
-    while (Ss.Next()) {
-        nodes.AddKey(Ss.GetInt(0));
-        nodes.AddKey(Ss.GetInt(1));
-        nedge++;
+    if (Type == 0) {  // common edgelist
+        TSsParser Ss(InFNm);
+        while (Ss.Next()) {
+            nodes.AddKey(Ss.GetInt(0));
+            nodes.AddKey(Ss.GetInt(1));
+            nedge++;
+        }
+    } else if (Type == 1) {  // binary edgelist
+        PSIn pin = TZipIn::IsZipFNm(InFNm) ? TZipIn::New(InFNm)
+                                           : TFIn::New(InFNm);
+        int node;
+        while (!pin->Eof()) {
+            pin->Load(node);
+            nodes.AddKey(node);
+            pin->Load(node);
+            nodes.AddKey(node);
+            nedge++;
+        }
     }
     printf("Nodes: %d, Edges: %d\n", nodes.Len(), nedge);
-    BIO::SaveIntSet(nodes, TStr::AddToFMid(InFNm, "_nodes.gz"),
-                    TStr::Fmt("# Total: %d", nodes.Len()));
+    BIO::SaveIntSet(nodes, TStr::AddToFMid(InFNm, "_nodes"));
 }
 
 void ReverseEdgeDirection(const TStr& InFNm) {

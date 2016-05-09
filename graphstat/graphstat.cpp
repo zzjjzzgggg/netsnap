@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
         "\n\te: convert to binary edgelist"
         "\n\tm: maping graph (assign nid from 0)"
         "\n\tl: remove self-loops"
-        "\n\tn: save all nodes in the graph to a file"
+        "\n\tn: save nodes in a file"
         "\n\td: get degree sequence, e.g., (node degree)"
         "\n\tr: reverse the edge direction\n\t");
     const TStr Save = Env.GetIfArgPrefixStr("-s:", "",
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
             RemoveSelfLoops(InFNm);
         }
         // save nodes in the graph
-        if (Fmt_n) SaveNodes(InFNm);
+        if (Fmt_n) SaveNodes(InFNm, Type);
 
         if (Fmt_d) {
             printf("Geting degree sequence ...\n");
