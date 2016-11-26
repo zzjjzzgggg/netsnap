@@ -1,12 +1,3 @@
-//============================================================================
-// Name        : test.cpp
-// Author      : jzzhao
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C, Ansi-style
-//============================================================================
-
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -544,8 +535,5 @@ void test_argsparser(int argc, char** argv) {
 }
 
 int main(int argc, char* argv[]) {
-	// test_argsparser(argc, argv);
-	TStr FNm = "/home/jzzhao/tst.gz";
-	printf("%s\n", TStr::AddToFMid(FNm, "_hh").CStr());
 	return 0;
 }

@@ -10,8 +10,8 @@ LDFLAGS += -lrt -pthread -std=c++11
 #CXXFLAGS += -Wall
 #LDFLAGS +=
 
-SNAPDIR = ..
-LIB = -I $(SNAPDIR)/glib -I $(SNAPDIR)/snap
+SNAPDIR = /home/jzzhao/git_project/netsnap
+LIB = -I$(SNAPDIR)
 
 ## Main application file
 MAIN = graphstat
@@ -23,8 +23,8 @@ opt: LDFLAGS += -O4
 opt: $(MAIN)
 
 # COMPILE
-$(MAIN): $(MAIN).cpp  $(MAIN).h Snap.o
-	clang++ -o $(MAIN) $(MAIN).cpp Snap.o $(LDFLAGS)
+$(MAIN): $(MAIN).cpp $(MAIN).h Snap.o
+	clang++ -o $(MAIN) $(MAIN).cpp Snap.o $(LIB) $(LDFLAGS)
 
 Snap.o:
 	clang++ -c $(CXXFLAGS) $(LIB) $(SNAPDIR)/snap/Snap.cpp

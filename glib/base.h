@@ -147,9 +147,6 @@
 //  #undef _POSIX_MONOTONIC_CLOCK
 //#endif
 
-#include "synqueue.h"
-
-
 
 #include "bd.h"
 #include "fl.h"
