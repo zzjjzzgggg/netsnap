@@ -2,8 +2,9 @@
 
 void MapingNodes(const TStr& InFNm, const bool IsDir) {
     TStr OutFNm = TStr::AddToFMid(InFNm, "_mapped");
-    PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm)
-                                             : TFOut::New(OutFNm);
+    PSOut FOutPt = TZipOut::IsZipFNm(OutFNm)
+                       ? TZipOut::New(OutFNm)
+                       : TFOut::New(OutFNm);
 
     TStrIntH nidmap;
     int uid = 0;
@@ -14,7 +15,8 @@ void MapingNodes(const TStr& InFNm, const bool IsDir) {
         dststr = Ss.GetFld(1);
         if (!nidmap.IsKey(srcstr)) nidmap(srcstr) = (uid++);
         if (!nidmap.IsKey(dststr)) nidmap(dststr) = (uid++);
-        FOutPt->PutStrLn(TStr::Fmt("%d\t%d", nidmap(srcstr).Val,
+        FOutPt->PutStrLn(TStr::Fmt("%d\t%d",
+                                   nidmap(srcstr).Val,
                                    nidmap(dststr).Val));
     }
     BIO::SaveStrIntH(nidmap, TStr::AddToFMid(InFNm, "_nmap"),
@@ -33,8 +35,9 @@ void SaveNodes(const TStr& InFNm, const int Type) {
             nedge++;
         }
     } else if (Type == 1) {  // binary edgelist
-        PSIn pin = TZipIn::IsZipFNm(InFNm) ? TZipIn::New(InFNm)
-                                           : TFIn::New(InFNm);
+        PSIn pin = TZipIn::IsZipFNm(InFNm)
+                       ? TZipIn::New(InFNm)
+                       : TFIn::New(InFNm);
         int node;
         while (!pin->Eof()) {
             pin->Load(node);
@@ -51,8 +54,9 @@ void SaveNodes(const TStr& InFNm, const int Type) {
 void ReverseEdgeDirection(const TStr& InFNm) {
     int u, v, n = 0;
     TStr OutFNm = TStr::AddToFMid(InFNm, "_reversed");
-    PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm)
-                                             : TFOut::New(OutFNm);
+    PSOut FOutPt = TZipOut::IsZipFNm(OutFNm)
+                       ? TZipOut::New(OutFNm)
+                       : TFOut::New(OutFNm);
     TSsParser Ss(InFNm);
     while (Ss.Next()) {
         u = Ss.GetInt(0);
@@ -66,8 +70,9 @@ void ReverseEdgeDirection(const TStr& InFNm) {
 void RemoveSelfLoops(const TStr& InFNm) {
     int u, v, n = 0;
     TStr OutFNm = TStr::AddToFMid(InFNm, "_looprmed");
-    PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm)
-                                             : TFOut::New(OutFNm);
+    PSOut FOutPt = TZipOut::IsZipFNm(OutFNm)
+                       ? TZipOut::New(OutFNm)
+                       : TFOut::New(OutFNm);
     TSsParser Ss(InFNm);
     while (Ss.Next()) {
         u = Ss.GetInt(0);
@@ -92,8 +97,9 @@ void GetDirDegSeq(const TStr& InFNm, const int Type) {
             InDegSeq(DstNId)++;
         }
     } else if (Type == 1) {  // binary edgelist
-        PSIn pin = TZipIn::IsZipFNm(InFNm) ? TZipIn::New(InFNm)
-                                           : TFIn::New(InFNm);
+        PSIn pin = TZipIn::IsZipFNm(InFNm)
+                       ? TZipIn::New(InFNm)
+                       : TFIn::New(InFNm);
         while (!pin->Eof()) {
             pin->Load(SrcNId);
             pin->Load(DstNId);
@@ -101,8 +107,10 @@ void GetDirDegSeq(const TStr& InFNm, const int Type) {
             InDegSeq(DstNId)++;
         }
     }
-    BIO::SaveIntH(InDegSeq, TStr::AddToFMid(InFNm, "_indegseq"));
-    BIO::SaveIntH(OutDegSeq, TStr::AddToFMid(InFNm, "_outdegseq"));
+    BIO::SaveIntH(InDegSeq,
+                  TStr::AddToFMid(InFNm, "_indegseq"));
+    BIO::SaveIntH(OutDegSeq,
+                  TStr::AddToFMid(InFNm, "_outdegseq"));
 }
 
 void GetUnDirDegSeq(const TStr& InFNm, const int Type) {
@@ -117,8 +125,9 @@ void GetUnDirDegSeq(const TStr& InFNm, const int Type) {
             DegSeq(DstNId)++;
         }
     } else if (Type == 1) {  // binary edgelist
-        PSIn pin = TZipIn::IsZipFNm(InFNm) ? TZipIn::New(InFNm)
-                                           : TFIn::New(InFNm);
+        PSIn pin = TZipIn::IsZipFNm(InFNm)
+                       ? TZipIn::New(InFNm)
+                       : TFIn::New(InFNm);
         while (!pin->Eof()) {
             pin->Load(SrcNId);
             pin->Load(DstNId);
@@ -129,9 +138,11 @@ void GetUnDirDegSeq(const TStr& InFNm, const int Type) {
     BIO::SaveIntH(DegSeq, TStr::AddToFMid(InFNm, "_degseq"));
 }
 
-void FormatBinaryEdgelist(const TStr& InFNm, const TStr& OutFNm) {
-    PSOut pout = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm)
-                                           : TFOut::New(OutFNm);
+void FormatBinaryEdgelist(const TStr& InFNm,
+                          const TStr& OutFNm) {
+    PSOut pout = TZipOut::IsZipFNm(OutFNm)
+                     ? TZipOut::New(OutFNm)
+                     : TFOut::New(OutFNm);
     TSsParser Ss(InFNm);
     while (Ss.Next()) {
         int src = Ss.GetInt(0), dst = Ss.GetInt(1);

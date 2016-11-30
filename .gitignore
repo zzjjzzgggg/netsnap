@@ -2,7 +2,6 @@
 .project
 .cproject
 *.dat
-*.txt
 test/test
 *.Err
 *.exe
@@ -13,7 +12,8 @@ test/test
 */__pycache__/
 */.ycm_extra_conf.*
 */.clang-format
-graphstat
+*/bin/
+*/build/
 GPATH
 GRTAGS
 GTAGS
