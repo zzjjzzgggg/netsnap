@@ -494,6 +494,7 @@ public:
     TNodeI GetRndNI(TRnd& Rnd = TInt::Rnd) {
         return GetNI(GetRndNId(Rnd));
     }
+
     void GetNIdV(TIntV& NIdV) const;
 
     bool Empty() const { return GetNodes() == 0; }

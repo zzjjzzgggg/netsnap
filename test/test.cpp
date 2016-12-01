@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "../snap/Snap.h"
-#include "ThreadPool.h"
+// #include "ThreadPool.h"
 #include "argsparser.h"
 
 class Node{
@@ -443,33 +443,33 @@ void test_c11_chrono(){
 	printf("%f\n", Tm.GetSecs());
 }
 
-void sub_gt(const int id, SynQueue<int>& Que) {
-	TExeSteadyTm tm;
-	int nid, ntrids;
-	printf("[%d] is ready.\n", id);
-	while (Que.TryPop(nid)) {
-		// doing jobs
-		printf("From %d: %d\n", id, nid);
-	}
-	printf("[%d] costs time: %s\n", id, tm.GetStr());
-}
+// void sub_gt(const int id, SynQueue<int>& Que) {
+// 	TExeSteadyTm tm;
+// 	int nid, ntrids;
+// 	printf("[%d] is ready.\n", id);
+// 	while (Que.TryPop(nid)) {
+// 		// doing jobs
+// 		printf("From %d: %d\n", id, nid);
+// 	}
+// 	printf("[%d] costs time: %s\n", id, tm.GetStr());
+// }
 
-void test_syn_queue() {
-	TExeTm tm;
-	// assign jobs
-	SynQueue<int> Qu;
-	for (int i=0; i<1000; i++) Qu.Push(i);
-	// assign threads
-	std::vector<std::thread> threads;
-	for (int n=0; n<2; n++) threads.emplace_back([n, &Qu] { sub_gt(n, Qu); });
-	for(std::thread& t: threads) t.join();
-}
+// void test_syn_queue() {
+// 	TExeTm tm;
+// 	// assign jobs
+// 	SynQueue<int> Qu;
+// 	for (int i=0; i<1000; i++) Qu.Push(i);
+// 	// assign threads
+// 	std::vector<std::thread> threads;
+// 	for (int n=0; n<2; n++) threads.emplace_back([n, &Qu] { sub_gt(n, Qu); });
+// 	for(std::thread& t: threads) t.join();
+// }
 
-void test_thread_pool() {
-	ThreadPool Pool;
-	for (int i=0; i<2; i++) Pool.AssignJob( [i] { printf("%d\n", i); } );
-	Pool.Start();
-}
+// void test_thread_pool() {
+// 	ThreadPool Pool;
+// 	for (int i=0; i<2; i++) Pool.AssignJob( [i] { printf("%d\n", i); } );
+// 	Pool.Start();
+// }
 
 void test_beta_binom2(int s, int n, double alpha, double p){
 	double bin = lgamma(n+1.0) - lgamma(s+1.0) - lgamma(n-s+1.0);
@@ -535,5 +535,6 @@ void test_argsparser(int argc, char** argv) {
 }
 
 int main(int argc, char* argv[]) {
+  PNGraph g = PNGraph::TObj::New();
 	return 0;
 }

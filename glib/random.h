@@ -22,13 +22,21 @@ public:
 
 namespace TRandom{
 
-template<class TKey> TKey& Sample(const TVec<TKey>& samples, TKey& rst);
-template<class TKey> TKey& Sample(const THashSet<TKey>& samples, TKey& rst);
-template<class TKey> TKey& Sample(const THashSet<TKey, TFlt>& samples, TKey& rst);
-template<class TKey> TKey& Sample(const THashSet<TKey, TInt>& samples, TKey& rst);
+template<class TKey> 
+TKey& Sample(const TVec<TKey>& samples, TKey& rst);
+template<class TKey> 
+TKey& Sample(const THashSet<TKey>& samples, TKey& rst);
+template<class TKey> 
+TKey& Sample(const THashSet<TKey, TFlt>& samples, TKey& rst);
+template<class TKey> 
+TKey& Sample(const THashSet<TKey, TInt>& samples, TKey& rst);
+template<class TKey>
+void ChooseWithReplacement(const TVec<TKey>& samples, const int n, TVec<TKey>& rst);
 // choose without replacement from samples
-template<class TKey> void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n);
-template<class TKey> void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n);
+template<class TKey> 
+void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n);
+template<class TKey> 
+void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n);
 
 // initialize uniform distribution of dist in range [pos_start:]
 void InitUni(TFltV& dist, const int pos_start=0);
@@ -87,7 +95,7 @@ TKey& Sample(const THash<TKey, TInt>& samples, TKey& rst){
 }
 
 template<class TKey>
-void ChooseWithReplacement(const TVec<TKey>& samples, TVec<TKey>& rst, const int n){
+void ChooseWithReplacement(const TVec<TKey>& samples, const int n, TVec<TKey>& rst){
 	int L=samples.Len();
 	rst.Gen(n);
 	for(int i=0; i<n; i++){
