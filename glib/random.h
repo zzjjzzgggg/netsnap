@@ -22,21 +22,21 @@ public:
 
 namespace TRandom{
 
-template<class TKey> 
+template<class TKey>
 TKey& Sample(const TVec<TKey>& samples, TKey& rst);
-template<class TKey> 
+template<class TKey>
 TKey& Sample(const THashSet<TKey>& samples, TKey& rst);
-template<class TKey> 
+template<class TKey>
 TKey& Sample(const THashSet<TKey, TFlt>& samples, TKey& rst);
-template<class TKey> 
+template<class TKey>
 TKey& Sample(const THashSet<TKey, TInt>& samples, TKey& rst);
 template<class TKey>
 void ChooseWithReplacement(const TVec<TKey>& samples, const int n, TVec<TKey>& rst);
 // choose without replacement from samples
-template<class TKey> 
-void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n);
-template<class TKey> 
-void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n);
+template<class TKey>
+void Choose(const TVec<TKey>& samples, const int n, TVec<TKey>& rst);
+template<class TKey>
+void Choose(const THashSet<TKey>& samples, const int n, THashSet<TKey>& rst);
 
 // initialize uniform distribution of dist in range [pos_start:]
 void InitUni(TFltV& dist, const int pos_start=0);
@@ -104,7 +104,7 @@ void ChooseWithReplacement(const TVec<TKey>& samples, const int n, TVec<TKey>& r
 }
 
 template<class TKey>
-void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n){
+void Choose(const TVec<TKey>& samples, const int n, TVec<TKey>& rst){
 	int L=samples.Len();
 	AssertR(n<=L, TStr::Fmt("%d > sample length %d!", n, L));
 	rst.Clr();
@@ -117,7 +117,7 @@ void Choose(const TVec<TKey>& samples, TVec<TKey>& rst, const int n){
 }
 
 template<class TKey>
-void Choose(const THashSet<TKey>& samples, THashSet<TKey>& rst, const int n){
+void Choose(const THashSet<TKey>& samples, const int n, THashSet<TKey>& rst){
 	int L=samples.Len();
 	AssertR(n<=L, TStr::Fmt("%d > sample length %d!", n, L));
 	rst.Clr();

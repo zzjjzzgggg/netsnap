@@ -1,0 +1,11 @@
+---
+BasedOnStyle: Google
+ColumnLimit: 63
+IndentWidth: 2
+---
+Language: Cpp
+Standard: Cpp11
+SortIncludes: false
+AccessModifierOffset: -2
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+NamespaceIndentation: None

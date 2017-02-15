@@ -27,7 +27,7 @@ public:
   const TInt& GetRndNId() const { return NIdV[TInt::Rnd.GetUniDevInt(Len())]; }
   static void Dump(const TCnComV& CnComV, const TStr& Desc=TStr());
   static void SaveTxt(const TCnComV& CnComV, const TStr& FNm, const TStr& Desc=TStr());
-    
+
   template <class PGraph, class TVisitor>
   static void GetDfsVisitor(const PGraph& Graph, TVisitor& Visitor);
 };
@@ -171,7 +171,7 @@ void TCnCom::GetDfsVisitor(const PGraph& Graph, TVisitor& Visitor) {
   for (NI = Graph->BegNI(); NI < Graph->EndNI(); NI++) {
     U = NI.GetId();
     if (! ColorH.IsKey(U)) {
-      ColorH.AddDat(U, 1); 
+      ColorH.AddDat(U, 1);
       Visitor.DiscoverNode(U);       // discover
       Stack.Push(TIntTr(U, 0, Graph->GetNI(U).GetOutDeg()));
       while (! Stack.Empty()) {
@@ -186,7 +186,7 @@ void TCnCom::GetDfsVisitor(const PGraph& Graph, TVisitor& Visitor) {
             Visitor.TreeEdge(U, V);  // tree edge
             Stack.Push(TIntTr(U, ++edge, Deg));
             U = V;
-            ColorH.AddDat(U, 1); 
+            ColorH.AddDat(U, 1);
             Visitor.DiscoverNode(U); // discover
             UI = Graph->GetNI(U);
             edge = 0;  Deg = UI.GetOutDeg();
@@ -198,7 +198,7 @@ void TCnCom::GetDfsVisitor(const PGraph& Graph, TVisitor& Visitor) {
             Visitor.FwdEdge(U, V);   // edge downward
             ++edge; }
         }
-        ColorH.AddDat(U, 2); 
+        ColorH.AddDat(U, 2);
         Visitor.FinishNode(U);       // finish
       }
     }
@@ -209,7 +209,7 @@ void TCnCom::GetDfsVisitor(const PGraph& Graph, TVisitor& Visitor) {
 // Implementation
 namespace TSnap {
 
-template <class PGraph> 
+template <class PGraph>
 void GetNodeWcc(const PGraph& Graph, const int& NId, TIntV& CnCom) {
   typename PGraph::TObj::TNodeI NI;
   THashSet<TInt> VisitedNId(Graph->GetNodes()+1);
@@ -237,7 +237,7 @@ void GetNodeWcc(const PGraph& Graph, const int& NId, TIntV& CnCom) {
   }
 }
 
-template <class PGraph> 
+template <class PGraph>
 bool IsConnected(const PGraph& Graph) {
   return IsWeaklyConn(Graph);
 }
@@ -368,16 +368,18 @@ template <class PGraph>
 PGraph GetMxWcc(const PGraph& Graph) {
   TCnComV CnComV;
   GetWccs(Graph, CnComV);
-  if (CnComV.Empty()) { return PGraph::TObj::New(); }
+  if (CnComV.Empty()) return PGraph::TObj::New();
   int CcId = 0, MxSz = 0;
   for (int i = 0; i < CnComV.Len(); i++) {
     if (MxSz < CnComV[i].Len()) {
-      MxSz=CnComV[i].Len();  CcId=i; }
+      MxSz=CnComV[i].Len();
+      CcId=i;
+    }
   }
-  if (CnComV[CcId].Len()==Graph->GetNodes()) { 
+  if (CnComV[CcId].Len()==Graph->GetNodes()) {
     return Graph; }
-  else { 
-    return TSnap::GetSubGraph(Graph, CnComV[CcId]()); 
+  else {
+    return TSnap::GetSubGraph(Graph, CnComV[CcId]());
   }
 }
 
@@ -391,10 +393,10 @@ PGraph GetMxScc(const PGraph& Graph) {
     if (MxSz < CnComV[i].Len()) {
       MxSz=CnComV[i].Len();  CcId=i; }
   }
-  if (CnComV[CcId].Len()==Graph->GetNodes()) { 
+  if (CnComV[CcId].Len()==Graph->GetNodes()) {
     return Graph; }
-  else { 
-    return TSnap::GetSubGraph(Graph, CnComV[CcId]()); 
+  else {
+    return TSnap::GetSubGraph(Graph, CnComV[CcId]());
   }
 }
 
@@ -408,10 +410,10 @@ PGraph GetMxBiCon(const PGraph& Graph) {
     if (MxSz < CnComV[i].Len()) {
       MxSz=CnComV[i].Len();  CcId=i; }
   }
-  if (CnComV[CcId].Len()==Graph->GetNodes()) { 
+  if (CnComV[CcId].Len()==Graph->GetNodes()) {
     return Graph; }
-  else { 
-    return TSnap::GetSubGraph(Graph, CnComV[CcId]()); 
+  else {
+    return TSnap::GetSubGraph(Graph, CnComV[CcId]());
   }
 }
 
