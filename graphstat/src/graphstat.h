@@ -233,5 +233,7 @@ void sampleNodes(const PGraph graph, const bool wr,
   else
     TRandom::Choose(nodes, num, samples);
   TStr sufix = TStr::Fmt("_samples_%d", num);
-  BIO::SaveIntV(samples, TStr::AddToFMid(graph_fnm, sufix));
+  TStr fnm = TStr::AddToFMid(graph_fnm, sufix);
+  BIO::SaveIntV(samples, fnm);
+  printf("\nsaved to %s\n", fnm.CStr());
 }
