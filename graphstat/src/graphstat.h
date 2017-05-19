@@ -1,10 +1,8 @@
 #include "stdafx.h"
 
-void SaveBinaryEdgelist(const TStr& graph_fnm,
-                        const TStr& OutFNm) {
-  PSOut pout = TZipOut::IsZipFNm(OutFNm)
-                   ? TZipOut::New(OutFNm)
-                   : TFOut::New(OutFNm);
+void SaveBinaryEdgelist(const TStr& graph_fnm, const TStr& OutFNm) {
+  PSOut pout =
+      TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
   TSsParser ss(graph_fnm);
   while (ss.Next()) {
     int src = ss.GetInt(0), dst = ss.GetInt(1);
@@ -14,12 +12,9 @@ void SaveBinaryEdgelist(const TStr& graph_fnm,
 }
 
 template <class PGraph>
-void saveGraph(const PGraph graph, const bool is_dir,
-               const string& save_opt, const TStr& graph_fnm,
-               const TStr& sufix = "") {
-  TStr filename = sufix.Empty()
-                      ? graph_fnm
-                      : TStr::AddToFMid(graph_fnm, sufix);
+void saveGraph(const PGraph graph, const bool is_dir, const string& save_opt,
+               const TStr& graph_fnm, const TStr& sufix = "") {
+  TStr filename = sufix.Empty() ? graph_fnm : TStr::AddToFMid(graph_fnm, sufix);
   if (save_opt.find('e') != string::npos) {
     TSnap::SaveEdgeList(graph, filename);
   } else if (save_opt.find('b') != string::npos) {
@@ -36,70 +31,44 @@ void saveGraph(const PGraph graph, const bool is_dir,
 
 template <class PGraph>
 void plotStatistics(const string& cmd_str, const PGraph graph,
-                    const bool is_dir,
-                    const TStr& graph_fnm) {
+                    const bool is_dir, const TStr& graph_fnm) {
+  TStr prefix = graph_fnm.GetFMid();
   // degree distritution
   if (cmd_str.find('d') != string::npos) {
     if (is_dir) {
-      TSnap::PlotOutDegDistr(
-          graph, TStr::AddToFMid(graph_fnm, "_out_pdf"), "",
-          false, false);
-      TSnap::PlotInDegDistr(
-          graph, TStr::AddToFMid(graph_fnm, "_in_pdf"), "",
-          false, false);
-    } else {
-      TSnap::PlotOutDegDistr(
-          graph, TStr::AddToFMid(graph_fnm, "_pdf"), "",
-          false, false);
-    }
+      TSnap::PlotOutDegDistr(graph, prefix + "_out_dist.dat", false);
+      TSnap::PlotInDegDistr(graph, prefix + "_in_dist.dat", false);
+    } else
+      TSnap::PlotOutDegDistr(graph, prefix + "_dist.dat", false);
   }
-  // complementary cummulative distritution
+  // CCDF
   if (cmd_str.find('c') != string::npos) {
     if (is_dir) {
-      TSnap::PlotOutDegDistr(
-          graph, TStr::AddToFMid(graph_fnm, "_out_ccdf"), "",
-          true, false);
-      TSnap::PlotInDegDistr(
-          graph, TStr::AddToFMid(graph_fnm, "_in_ccdf"), "",
-          true, false);
-    } else {
-      TSnap::PlotOutDegDistr(
-          graph, TStr::AddToFMid(graph_fnm, "_ccdf"), "",
-          true, false);
-    }
+      TSnap::PlotOutDegDistr(graph, prefix + "_out_ccdf.dat", true);
+      TSnap::PlotInDegDistr(graph, prefix + "_in_ccdf.dat", true);
+    } else
+      TSnap::PlotOutDegDistr(graph, prefix + "_ccdf.dat", true);
   }
   // hop plot
-  if (cmd_str.find('h') != string::npos) {
-    TSnap::PlotHops(graph,
-                    TStr::AddToFMid(graph_fnm, "_hops"), "",
-                    false, 32);
-  }
+  if (cmd_str.find('h') != string::npos)
+    TSnap::PlotHops(graph, prefix + "_hops.dat", "", false, 32);
   // weakly connected component
-  if (cmd_str.find('w') != string::npos) {
-    TSnap::PlotWccDistr(
-        graph, TStr::AddToFMid(graph_fnm, "_wcc_dist"), "");
-  }
+  if (cmd_str.find('w') != string::npos)
+    TSnap::PlotWccDistr(graph, prefix + "_wcc_dist.dat", "");
   // strongly connected component
-  if (cmd_str.find('s') != string::npos) {
-    TSnap::PlotSccDistr(
-        graph, TStr::AddToFMid(graph_fnm, "_scc_dist"), "");
-  }
+  if (cmd_str.find('s') != string::npos)
+    TSnap::PlotSccDistr(graph, prefix + "_scc_dist.dat", "");
   // clustering coefficient
-  if (cmd_str.find('C') != string::npos) {
-    TSnap::PlotClustCf(
-        graph, TStr::AddToFMid(graph_fnm, "_ccf_dist"), "");
-  }
+  if (cmd_str.find('C') != string::npos)
+    TSnap::PlotClustCf(graph, prefix + "_ccf_dist.dat", "");
 }
 
 template <class PGraph>
-void calcStatistics(const string cmd_str,
-                    const string& save_opt,
-                    const ArgsParser& parser,
-                    const PGraph graph, const bool is_dir,
-                    const TStr& graph_fnm) {
+void calcStatistics(const string cmd_str, const string& save_opt,
+                    const ArgsParser& parser, const PGraph graph,
+                    const bool is_dir, const TStr& graph_fnm) {
   if (cmd_str.find('b') != string::npos) {
-    printf("nodes:%d edges:%d\n", graph->GetNodes(),
-           graph->GetEdges());
+    printf("nodes:%d edges:%d\n", graph->GetNodes(), graph->GetEdges());
     saveGraph(graph, is_dir, save_opt, graph_fnm);
   }
   if (cmd_str.find('t') != string::npos) {
@@ -112,11 +81,9 @@ void calcStatistics(const string cmd_str,
     bool fo = parser.getBool("-out", true);
     bool fi = parser.getBool("-in", false);
     int n = parser.getInt("-n", 1);
-    double rst = TSnap::GetDissAbility(graph, fo, fi, maxHops,
-                                       sample, n);
-    printf(
-        "Dissemination(hops=%d, sample=%.4f, n=%d): %.4f\n",
-        maxHops, sample, n, rst);
+    double rst = TSnap::GetDissAbility(graph, fo, fi, maxHops, sample, n);
+    printf("Dissemination(hops=%d, sample=%.4f, n=%d): %.4f\n", maxHops, sample,
+           n, rst);
   }
   if (cmd_str.find('D') != string::npos) {
     int test_nodes = parser.getInt("-testnodes", 100);
@@ -125,11 +92,9 @@ void calcStatistics(const string cmd_str,
   }
   if (cmd_str.find('C') != string::npos) {
     bool sample = parser.getBool("-sample", true);
-    int samples =
-        sample ? (int)(graph->GetNodes() * 0.05) : -1;
+    int samples = sample ? (int)(graph->GetNodes() * 0.05) : -1;
     double cc = TSnap::GetClustCf(graph, samples);
-    printf("Avg. clustering coefficient(sampled: %d): %.6f\n",
-           sample, cc);
+    printf("Avg. clustering coefficient(sampled: %d): %.6f\n", sample, cc);
   }
   if (cmd_str.find('h') != string::npos) {
     double eff_diam = TSnap::GetAnfEffDiam(graph);
@@ -145,9 +110,8 @@ void calcStatistics(const string cmd_str,
 
 void MapingNodes(const TStr& graph_fnm, const bool IsDir) {
   TStr OutFNm = TStr::AddToFMid(graph_fnm, "_mapped");
-  PSOut FOutPt = TZipOut::IsZipFNm(OutFNm)
-                     ? TZipOut::New(OutFNm)
-                     : TFOut::New(OutFNm);
+  PSOut FOutPt =
+      TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
   TStrIntH nidmap;
   int uid = 0;
   TSsParser ss(graph_fnm);
@@ -157,12 +121,10 @@ void MapingNodes(const TStr& graph_fnm, const bool IsDir) {
     dststr = ss.GetFld(1);
     if (!nidmap.IsKey(srcstr)) nidmap(srcstr) = (uid++);
     if (!nidmap.IsKey(dststr)) nidmap(dststr) = (uid++);
-    FOutPt->PutStrLn(TStr::Fmt("%d\t%d", nidmap(srcstr).Val,
-                               nidmap(dststr).Val));
+    FOutPt->PutStrLn(
+        TStr::Fmt("%d\t%d", nidmap(srcstr).Val, nidmap(dststr).Val));
   }
-  BIO::SaveStrIntH(nidmap,
-                   TStr::AddToFMid(graph_fnm, "_nmap"),
-                   "# Node\tNID");
+  BIO::SaveStrIntH(nidmap, TStr::AddToFMid(graph_fnm, "_nmap"), "# Node\tNID");
   printf("Node range [0, %d]\n", uid - 1);
 }
 
@@ -177,9 +139,8 @@ void SaveNodes(const TStr& graph_fnm, const int type) {
       nedge++;
     }
   } else if (type == 1) {  // binary edgelist
-    PSIn pin = TZipIn::IsZipFNm(graph_fnm)
-                   ? TZipIn::New(graph_fnm)
-                   : TFIn::New(graph_fnm);
+    PSIn pin = TZipIn::IsZipFNm(graph_fnm) ? TZipIn::New(graph_fnm)
+                                           : TFIn::New(graph_fnm);
     int node;
     while (!pin->Eof()) {
       pin->Load(node);
@@ -190,12 +151,10 @@ void SaveNodes(const TStr& graph_fnm, const int type) {
     }
   }
   printf("Nodes: %d, Edges: %d\n", nodes.Len(), nedge);
-  BIO::SaveIntSet(nodes,
-                  TStr::AddToFMid(graph_fnm, "_nodes"));
+  BIO::SaveIntSet(nodes, TStr::AddToFMid(graph_fnm, "_nodes"));
 }
 
-void getDegreeSequence(const TStr& graph_fnm,
-                       const bool is_dir) {
+void getDegreeSequence(const TStr& graph_fnm, const bool is_dir) {
   int src, dst;
   TSsParser ss(graph_fnm);
   if (is_dir) {
@@ -206,10 +165,8 @@ void getDegreeSequence(const TStr& graph_fnm,
       out_deg_seq(src)++;
       in_deg_seq(dst)++;
     }
-    BIO::SaveIntH(in_deg_seq,
-                  TStr::AddToFMid(graph_fnm, "_indegseq"));
-    BIO::SaveIntH(out_deg_seq,
-                  TStr::AddToFMid(graph_fnm, "_outdegseq"));
+    BIO::SaveIntH(in_deg_seq, TStr::AddToFMid(graph_fnm, "_indegseq"));
+    BIO::SaveIntH(out_deg_seq, TStr::AddToFMid(graph_fnm, "_outdegseq"));
   } else {
     TIntH deg_seq;
     while (ss.Next()) {
@@ -218,14 +175,13 @@ void getDegreeSequence(const TStr& graph_fnm,
       deg_seq(src)++;
       deg_seq(dst)++;
     }
-    BIO::SaveIntH(deg_seq,
-                  TStr::AddToFMid(graph_fnm, "_degseq"));
+    BIO::SaveIntH(deg_seq, TStr::AddToFMid(graph_fnm, "_degseq"));
   }
 }
 
 template <class PGraph>
-void sampleNodes(const PGraph graph, const bool wr,
-                 const int num, const TStr& graph_fnm) {
+void sampleNodes(const PGraph graph, const bool wr, const int num,
+                 const TStr& graph_fnm) {
   TIntV samples, nodes;
   graph->GetNIdV(nodes);
   if (wr)

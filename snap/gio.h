@@ -32,27 +32,23 @@ PNGraph LoadDyNet(const TStr &FNm);
 // DyNetML format, loads all the networks in the file
 TVec<PNGraph> LoadDyNetGraphV(const TStr &FNm);
 
-PBNEGraph LoadBNEGraph(const TStr &FNm,
-                       const bool &HasDat = true);
+PBNEGraph LoadBNEGraph(const TStr &FNm, const bool &HasDat = true);
 
 // Save
 template <class PGraph>
 void SaveEdgeList(const PGraph &Graph, const TStr &OutFNm,
-                  const TStr &Desc = TStr(),
-                  const bool rev = false);
+                  const TStr &Desc = TStr(), const bool rev = false);
 template <class PGraph>
 void SavePajek(const PGraph &Graph, const TStr &OutFNm);
 template <class PGraph>
 void SavePajek(const PGraph &Graph, const TStr &OutFNm,
                const TIntStrH &NIdClrH);
 template <class PGraph>
-void SavePajek(const PGraph &Graph, const TStr &OutFNm,
-               const TIntStrH &NIdClrH,
+void SavePajek(const PGraph &Graph, const TStr &OutFNm, const TIntStrH &NIdClrH,
                const TIntStrH &NIdLabelH);
 template <class PGraph>
-void SavePajek(const PGraph &Graph, const TStr &OutFNm,
-               const TIntStrH &NIdClrH, const TIntStrH &NIdLabelH,
-               const TIntStrH &EIdClrH);
+void SavePajek(const PGraph &Graph, const TStr &OutFNm, const TIntStrH &NIdClrH,
+               const TIntStrH &NIdLabelH, const TIntStrH &EIdClrH);
 // template <class PGraph> SaveGml(const PGraph& Graph, const
 // TStr&
 // OutFNm,
@@ -65,8 +61,7 @@ void SaveDot(const PGraph &Graph, const TStr &OutFNm);
 template <class PGraph>
 void SaveBinary(const PGraph &Graph, const TStr &ZipOutFNm);
 template <class PGraph>
-void SaveBinaryEdgelist(const PGraph &graph,
-                        const TStr &ZipOutFNm);
+void SaveBinaryEdgelist(const PGraph &graph, const TStr &ZipOutFNm);
 /////////////////////////////////////////////////
 // Implementation
 
@@ -83,9 +78,7 @@ PGraph LoadEdgeList(const TStr &InFNm, const int &SrcColId,
   PGraph Graph = PGraph::TObj::New();
   int SrcNId, DstNId;
   while (Ss.Next()) {
-    if (!Ss.GetInt(SrcColId, SrcNId) ||
-        !Ss.GetInt(DstColId, DstNId))
-      continue;
+    if (!Ss.GetInt(SrcColId, SrcNId) || !Ss.GetInt(DstColId, DstNId)) continue;
     if (!Graph->IsNode(SrcNId)) Graph->AddNode(SrcNId);
     if (!Graph->IsNode(DstNId)) Graph->AddNode(DstNId);
     Graph->AddEdge(SrcNId, DstNId);
@@ -143,8 +136,7 @@ PGraph LoadPajek(const TStr &InFNm) {
   EAssert(strstr(Ss[0], "*vertices") != NULL);
   while (Ss.Next()) {
     Ss.ToLc();
-    if (strstr(Ss[0], "*arcs") != NULL ||
-        strstr(Ss[0], "*edges") != NULL)
+    if (strstr(Ss[0], "*arcs") != NULL || strstr(Ss[0], "*edges") != NULL)
       break;
     Graph->AddNode(Ss.GetInt(0));
   }
@@ -155,20 +147,25 @@ PGraph LoadPajek(const TStr &InFNm) {
 
 template <class PGraph>
 PGraph LoadBinary(const TStr &ZipInFNm) {
+  AssertR(TZipIn::IsZipFNm(ZipInFNm),
+          TStr::Fmt("%s is not a zip file.", ZipInFNm.CStr()));
+  printf("Loading %s ... ", ZipInFNm.CStr());
+  fflush(stdout);
   TZipIn in(ZipInFNm);
   PGraph Graph = PGraph::TObj::New();
   Graph = PGraph::TObj::Load(in);
+  printf("loaded. (Nodes: %d Edges: %d)\n", Graph->GetNodes(),
+         Graph->GetEdges());
   return Graph;
 }
 
 template <class PGraph>
 PGraph LoadBinaryEdgeList(const TStr &InFNm) {
-  printf("Loading %s...", InFNm.CStr());
+  printf("Loading %s ... ", InFNm.CStr());
   fflush(stdout);
   PGraph Graph = PGraph::TObj::New();
   int SrcNId, DstNId;
-  PSIn pin = TZipIn::IsZipFNm(InFNm) ? TZipIn::New(InFNm)
-                                     : TFIn::New(InFNm);
+  PSIn pin = TZipIn::IsZipFNm(InFNm) ? TZipIn::New(InFNm) : TFIn::New(InFNm);
   while (!pin->Eof()) {
     pin->Load(SrcNId);
     pin->Load(DstNId);
@@ -183,10 +180,10 @@ PGraph LoadBinaryEdgeList(const TStr &InFNm) {
 }
 
 template <class PGraph>
-void SaveEdgeList(const PGraph &Graph, const TStr &OutFNm,
-                  const TStr &Desc, const bool rev) {
-  PSOut FOutPt = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm)
-                                           : TFOut::New(OutFNm);
+void SaveEdgeList(const PGraph &Graph, const TStr &OutFNm, const TStr &Desc,
+                  const bool rev) {
+  PSOut FOutPt =
+      TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
   if (HasGraphFlag(typename PGraph::TObj, gfDirected))
     FOutPt->PutStrLn("# Directed graph: " + OutFNm);
   else
@@ -195,23 +192,20 @@ void SaveEdgeList(const PGraph &Graph, const TStr &OutFNm,
         "saved once): " +
         OutFNm);
   if (!Desc.Empty()) FOutPt->PutStrLn("#" + Desc);
-  FOutPt->PutStrLn(TStr::Fmt("# Nodes: %d Edges: %d",
-                             Graph->GetNodes(),
-                             Graph->GetEdges()));
+  FOutPt->PutStrLn(
+      TStr::Fmt("# Nodes: %d Edges: %d", Graph->GetNodes(), Graph->GetEdges()));
   if (HasGraphFlag(typename PGraph::TObj, gfDirected))
     FOutPt->PutStrLn("# FromNodeId\tToNodeId");
   else
     FOutPt->PutStrLn("# NodeId\tNodeId");
   if (!rev) {
-    for (typename PGraph::TObj::TEdgeI ei = Graph->BegEI();
-         ei < Graph->EndEI(); ei++)
-      FOutPt->PutStrLn(
-          TStr::Fmt("%d\t%d", ei.GetSrcNId(), ei.GetDstNId()));
+    for (typename PGraph::TObj::TEdgeI ei = Graph->BegEI(); ei < Graph->EndEI();
+         ei++)
+      FOutPt->PutStrLn(TStr::Fmt("%d\t%d", ei.GetSrcNId(), ei.GetDstNId()));
   } else {
-    for (typename PGraph::TObj::TEdgeI ei = Graph->BegEI();
-         ei < Graph->EndEI(); ei++)
-      FOutPt->PutStrLn(
-          TStr::Fmt("%d\t%d", ei.GetDstNId(), ei.GetSrcNId()));
+    for (typename PGraph::TObj::TEdgeI ei = Graph->BegEI(); ei < Graph->EndEI();
+         ei++)
+      FOutPt->PutStrLn(TStr::Fmt("%d\t%d", ei.GetDstNId(), ei.GetSrcNId()));
   }
 }
 
@@ -221,8 +215,8 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm) {
   FILE *F = fopen(OutFNm.CStr(), "wt");
   fprintf(F, "*Vertices %d\n", Graph->GetNodes());
   int i = 0;
-  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI();
-       NI < Graph->EndNI(); NI++, i++) {
+  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI();
+       NI++, i++) {
     fprintf(F, "%d  \"%d\" ic Red fos 10\n", i + 1,
             NI.GetId());  // ic: internal color, fos: font size
     NIdToIdH.AddDat(NI.GetId(), i + 1);
@@ -233,12 +227,11 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm) {
   else {
     fprintf(F, "*Edges %d\n", Graph->GetEdges());
   }
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int SrcNId = NIdToIdH.GetDat(EI.GetSrcNId());
     const int DstNId = NIdToIdH.GetDat(EI.GetDstNId());
-    fprintf(F, "%d %d %d c Black\n", SrcNId, DstNId,
-            1);  // width=1
+    fprintf(F, "%d %d %d c Black\n", SrcNId, DstNId, 1);  // width=1
   }
   fclose(F);
 }
@@ -250,12 +243,11 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm,
   FILE *F = fopen(OutFNm.CStr(), "wt");
   fprintf(F, "*Vertices %d\n", Graph->GetNodes());
   int i = 0;
-  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI();
-       NI < Graph->EndNI(); NI++, i++) {
-    fprintf(F, "%d  \"%d\" ic %s fos 10\n", i + 1, NI.GetId(),
-            NIdClrH.IsKey(NI.GetId())
-                ? NIdClrH.GetDat(NI.GetId()).CStr()
-                : "Red");
+  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI();
+       NI++, i++) {
+    fprintf(
+        F, "%d  \"%d\" ic %s fos 10\n", i + 1, NI.GetId(),
+        NIdClrH.IsKey(NI.GetId()) ? NIdClrH.GetDat(NI.GetId()).CStr() : "Red");
     NIdToIdH.AddDat(NI.GetId(), i + 1);
   }
   if (HasGraphFlag(typename PGraph::TObj, gfDirected)) {
@@ -264,8 +256,8 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm,
   else {
     fprintf(F, "*Edges %d\n", Graph->GetEdges());
   }
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int SrcNId = NIdToIdH.GetDat(EI.GetSrcNId());
     const int DstNId = NIdToIdH.GetDat(EI.GetDstNId());
     fprintf(F, "%d %d %d c Black\n", SrcNId, DstNId, 1);
@@ -274,22 +266,19 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm,
 }
 
 template <class PGraph>
-void SavePajek(const PGraph &Graph, const TStr &OutFNm,
-               const TIntStrH &NIdClrH,
+void SavePajek(const PGraph &Graph, const TStr &OutFNm, const TIntStrH &NIdClrH,
                const TIntStrH &NIdLabelH) {
   TIntH NIdToIdH(Graph->GetNodes(), true);
   FILE *F = fopen(OutFNm.CStr(), "wt");
   fprintf(F, "*Vertices %d\n", Graph->GetNodes());
   int i = 0;
-  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI();
-       NI < Graph->EndNI(); NI++, i++) {
-    fprintf(F, "%d  \"%s\" ic %s fos 10\n", i + 1,
-            NIdLabelH.IsKey(NI.GetId())
-                ? NIdLabelH.GetDat(NI.GetId()).CStr()
-                : TStr::Fmt("%d", NI.GetId()).CStr(),
-            NIdClrH.IsKey(NI.GetId())
-                ? NIdClrH.GetDat(NI.GetId()).CStr()
-                : "Red");
+  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI();
+       NI++, i++) {
+    fprintf(
+        F, "%d  \"%s\" ic %s fos 10\n", i + 1,
+        NIdLabelH.IsKey(NI.GetId()) ? NIdLabelH.GetDat(NI.GetId()).CStr()
+                                    : TStr::Fmt("%d", NI.GetId()).CStr(),
+        NIdClrH.IsKey(NI.GetId()) ? NIdClrH.GetDat(NI.GetId()).CStr() : "Red");
     NIdToIdH.AddDat(NI.GetId(), i + 1);
   }
   if (HasGraphFlag(typename PGraph::TObj, gfDirected)) {
@@ -298,8 +287,8 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm,
   else {
     fprintf(F, "*Edges %d\n", Graph->GetEdges());
   }
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int SrcNId = NIdToIdH.GetDat(EI.GetSrcNId());
     const int DstNId = NIdToIdH.GetDat(EI.GetDstNId());
     fprintf(F, "%d %d %d c Black\n", SrcNId, DstNId, 1);
@@ -308,25 +297,21 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm,
 }
 
 template <class PGraph>
-void SavePajek(const PGraph &Graph, const TStr &OutFNm,
-               const TIntStrH &NIdClrH, const TIntStrH &NIdLabelH,
-               const TIntStrH &EIdClrH) {
-  CAssert(HasGraphFlag(
-      typename PGraph::TObj,
-      gfMultiGraph));  // network needs to have edge ids
+void SavePajek(const PGraph &Graph, const TStr &OutFNm, const TIntStrH &NIdClrH,
+               const TIntStrH &NIdLabelH, const TIntStrH &EIdClrH) {
+  CAssert(HasGraphFlag(typename PGraph::TObj,
+                       gfMultiGraph));  // network needs to have edge ids
   TIntH NIdToIdH(Graph->GetNodes(), true);
   FILE *F = fopen(OutFNm.CStr(), "wt");
   fprintf(F, "*Vertices %d\n", Graph->GetNodes());
   int i = 0;
-  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI();
-       NI < Graph->EndNI(); NI++, i++) {
-    fprintf(F, "%d  \"%s\" ic %s fos 10\n", i + 1,
-            NIdLabelH.IsKey(NI.GetId())
-                ? NIdLabelH.GetDat(NI.GetId()).CStr()
-                : TStr::Fmt("%d", NI.GetId()).CStr(),
-            NIdClrH.IsKey(NI.GetId())
-                ? NIdClrH.GetDat(NI.GetId()).CStr()
-                : "Red");
+  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI();
+       NI++, i++) {
+    fprintf(
+        F, "%d  \"%s\" ic %s fos 10\n", i + 1,
+        NIdLabelH.IsKey(NI.GetId()) ? NIdLabelH.GetDat(NI.GetId()).CStr()
+                                    : TStr::Fmt("%d", NI.GetId()).CStr(),
+        NIdClrH.IsKey(NI.GetId()) ? NIdClrH.GetDat(NI.GetId()).CStr() : "Red");
     NIdToIdH.AddDat(NI.GetId(), i + 1);
   }
   if (HasGraphFlag(typename PGraph::TObj, gfDirected)) {
@@ -335,33 +320,30 @@ void SavePajek(const PGraph &Graph, const TStr &OutFNm,
   else {
     fprintf(F, "*Edges %d\n", Graph->GetEdges());
   }
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int SrcNId = NIdToIdH.GetDat(EI.GetSrcNId());
     const int DstNId = NIdToIdH.GetDat(EI.GetDstNId());
     fprintf(F, "%d %d 1 c %s\n", SrcNId, DstNId, 1,
-            EIdClrH.IsKey(EI.GetId())
-                ? EIdClrH.GetDat(EI.GetId()).CStr()
-                : "Black");
+            EIdClrH.IsKey(EI.GetId()) ? EIdClrH.GetDat(EI.GetId()).CStr()
+                                      : "Black");
   }
   fclose(F);
 }
 
 template <class PGraph>
-void SaveMatlabSparseMtx(const PGraph &Graph,
-                         const TStr &OutFNm) {
+void SaveMatlabSparseMtx(const PGraph &Graph, const TStr &OutFNm) {
   FILE *F = fopen(OutFNm.CStr(), "wt");
   TIntSet NIdSet(Graph->GetNodes());  // so that
-  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI();
-       NI < Graph->EndNI(); NI++)
+  for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI();
+       NI++)
     NIdSet.AddKey(NI.GetId());
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int Src = NIdSet.GetKeyId(EI.GetSrcNId()) + 1;
     const int Dst = NIdSet.GetKeyId(EI.GetDstNId()) + 1;
     fprintf(F, "%d\t%d\t1\n", Src, Dst);
-    if (!HasGraphFlag(typename PGraph::TObj, gfDirected) &&
-        Src != Dst)
+    if (!HasGraphFlag(typename PGraph::TObj, gfDirected) && Src != Dst)
       fprintf(F, "%d\t%d\t1\n", Dst, Src);
   }
   fclose(F);
@@ -383,8 +365,8 @@ void SaveDot(const PGraph &Graph, const TStr &OutFNm) {
           "\tnode[shape=point,width=.1,color=red];\n\tedge[color="
           "\".7 .3 1.0\",weight=2];\n");
   TIntSet NIdSet(Graph->GetNodes());  // so that
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int Src = EI.GetSrcNId();
     const int Dst = EI.GetDstNId();
     fprintf(F, "\t%d%s%d;\n", Src, edge, Dst);
@@ -393,10 +375,9 @@ void SaveDot(const PGraph &Graph, const TStr &OutFNm) {
   }
   if (NIdSet.Len() != Graph->GetNodes()) {
     fprintf(F, "\n\t");
-    for (typename PGraph::TObj::TNodeI NI = Graph->BegNI();
-         NI < Graph->EndNI(); NI++) {
-      if (!NIdSet.IsKey(NI.GetId()))
-        fprintf(F, "%d; ", NI.GetId());
+    for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI();
+         NI++) {
+      if (!NIdSet.IsKey(NI.GetId())) fprintf(F, "%d; ", NI.GetId());
     }
   }
   fprintf(F, "\n}\n");
@@ -411,10 +392,10 @@ void SaveBinary(const PGraph &Graph, const TStr &ZipOutFNm) {
 
 template <class PGraph>
 void SaveBinaryEdgelist(const PGraph &Graph, const TStr &OutFNm) {
-  PSOut pout = TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm)
-                                         : TFOut::New(OutFNm);
-  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI();
-       EI < Graph->EndEI(); EI++) {
+  PSOut pout =
+      TZipOut::IsZipFNm(OutFNm) ? TZipOut::New(OutFNm) : TFOut::New(OutFNm);
+  for (typename PGraph::TObj::TEdgeI EI = Graph->BegEI(); EI < Graph->EndEI();
+       EI++) {
     const int Src = EI.GetSrcNId();
     const int Dst = EI.GetDstNId();
     pout->Save(Src);

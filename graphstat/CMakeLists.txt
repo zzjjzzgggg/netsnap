@@ -26,7 +26,9 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BUILD_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BUILD_DIR})
 
 # cmake package search directories
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{GIT_REPO})
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{GIT_REPO})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/home/jzzhao/git_project")
+message(STATUS "cmake search path: " ${CMAKE_MODULE_PATH})
 
 # required libraries from system
 find_package(Threads REQUIRED)
@@ -44,6 +46,8 @@ find_package(NETSNAP REQUIRED)
 add_definitions(${NETSNAP_DEFINITIONS})
 include_directories(${NETSNAP_INCLUDE_DIRS})
 
+
+# libraries
 set(LIBRARIES ${LIBRARIES} gflags ${CPPLIB_LIBRARIES} ${NETSNAP_LIBRARIES})
 
 add_subdirectory(src)
