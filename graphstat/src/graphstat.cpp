@@ -87,12 +87,6 @@ int main(int argc, char *argv[]) {
       if (!stat_opt.empty()) plotStatistics(stat_opt, graph, true, graph_fnm);
       if (!calc_opt.empty()) {
         calcStatistics(calc_opt, save_opt, parser, graph, true, graph_fnm);
-        if (calc_opt.find('v') != string::npos) {
-          const int Vals =
-              graph->GetNodes() / 2 > 200 ? 200 : graph->GetNodes() / 2;
-          TSnap::PlotSngValRank(graph, Vals, TStr::AddToFMid(graph_fnm, "_eig"),
-                                "");
-        }
         // singular vector
         if (calc_opt.find('V') != string::npos) {
           TSnap::PlotSngVec(graph, TStr::AddToFMid(graph_fnm, "_sng"), "");
@@ -121,15 +115,8 @@ int main(int argc, char *argv[]) {
              graph->GetNodes(), graph->GetEdges());
 
       if (!stat_opt.empty()) plotStatistics(stat_opt, graph, false, graph_fnm);
-      if (!calc_opt.empty()) {
+      if (!calc_opt.empty())
         calcStatistics(calc_opt, save_opt, parser, graph, false, graph_fnm);
-        if (calc_opt.find('v') != string::npos) {
-          const int Vals =
-              graph->GetNodes() / 2 > 200 ? 200 : graph->GetNodes() / 2;
-          TSnap::PlotEigValRank(graph, Vals, TStr::AddToFMid(graph_fnm, "_eig"),
-                                "");
-        }
-      }
       if (!sample_opt.empty()) {
         int sample_size = parser.getInt("-num", 100, "sample size");
         bool wr = parser.getBool("-wr", false, "with replacement?");
