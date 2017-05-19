@@ -72,7 +72,7 @@ void SaveBinaryEdgelist(const PGraph &graph, const TStr &ZipOutFNm);
 template <class PGraph>
 PGraph LoadEdgeList(const TStr &InFNm, const int &SrcColId,
                     const int &DstColId) {
-  printf("Loading %s...", InFNm.CStr());
+  printf("Loading %s ... ", InFNm.CStr());
   fflush(stdout);
   TSsParser Ss(InFNm);
   PGraph Graph = PGraph::TObj::New();
