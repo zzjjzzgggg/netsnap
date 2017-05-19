@@ -59,6 +59,7 @@ void PlotInDegDistr(const PGraph& Graph, const TStr& FNm,
     Fw->PutStrLn(TStr::Fmt("%d\t%d\t%.6e", DegCntV[i].Val1.Val - shift,
                            DegCntV[i].Val2.Val,
                            DegCntV[i].Val2.Val / num_nodes));
+  printf("Saved to %s.\n", FNm.CStr());
 }
 
 template <class PGraph>
@@ -77,6 +78,7 @@ void PlotOutDegDistr(const PGraph& Graph, const TStr& FNm,
     Fw->PutStrLn(TStr::Fmt("%d\t%d\t%.6e", DegCntV[i].Val1.Val - shift,
                            DegCntV[i].Val2.Val,
                            DegCntV[i].Val2.Val / num_nodes));
+  printf("Saved to %s.\n", FNm.CStr());
 }
 
 template <class PGraph>
