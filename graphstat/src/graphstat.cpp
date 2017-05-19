@@ -46,6 +46,11 @@ int main(int argc, char *argv[]) {
                                     "without replacement\n"
                                     "u: sample nodes uniformly\n"
                                     "d: sample nodes by degree");
+  string convert_opt = parser.getStr("-convert", "",
+                                     "Convert graph to:\n"
+                                     "e: edgelist\n"
+                                     "b: binary\n"
+                                     "B: binary edgelist");
   string save_opt = parser.getStr("-save", "",
                                   "Save graph:\n"
                                   "e: edgelist\n"
@@ -103,6 +108,8 @@ int main(int argc, char *argv[]) {
         bool wr = parser.getBool("-wr", false, "with replacement?");
         sampleNodes(graph, wr, sample_size, graph_fnm);
       }
+      if (!convert_opt.empty())
+        saveGraph(graph, is_dir, convert_opt, graph_fnm);
     } else {
       PUNGraph graph;
       if (type == 0)
@@ -122,7 +129,9 @@ int main(int argc, char *argv[]) {
         bool wr = parser.getBool("-wr", false, "with replacement?");
         sampleNodes(graph, wr, sample_size, graph_fnm);
       }
-    }
+      if (!convert_opt.empty())
+        saveGraph(graph, is_dir, convert_opt, graph_fnm);
+    }  // end else (undirected graph)
   }
   printf("\nTime duration: %s\n", ExeTm.GetTmStr());
   return 0;

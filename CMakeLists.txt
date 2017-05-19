@@ -16,6 +16,7 @@ else()
   message(FATAL_ERROR "Please install a modern C++ compiler.")
 endif()
 
+set(CMAKE_BUILD_TYPE Release)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/build/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
