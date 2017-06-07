@@ -29,8 +29,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 # cmake package search directories
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{GIT_REPO})
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/home/jzzhao/git_project")
-message(STATUS "cmake search path: " ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/git_project/misc/cmake_modules")
+message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 
 # required libraries from system
 find_package(Threads REQUIRED)
