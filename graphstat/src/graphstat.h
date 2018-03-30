@@ -16,6 +16,7 @@ void saveGraph(const PGraph graph, const bool is_dir, const string& save_opt,
                const TStr& graph_fnm, const TStr& sufix = "") {
   TStr filename = sufix.Empty() ? graph_fnm : TStr::AddToFMid(graph_fnm, sufix);
   if (save_opt.find('e') != string::npos) {
+    filename = TStr::AddToFMid(filename, "_edges");
     TSnap::SaveEdgeList(graph, filename);
   } else if (save_opt.find('b') != string::npos) {
     filename = TStr::AddToFMid(filename, "_bin");
@@ -23,9 +24,8 @@ void saveGraph(const PGraph graph, const bool is_dir, const string& save_opt,
   } else if (save_opt.find('B') != string::npos) {
     filename = TStr::AddToFMid(filename, "_be");
     TSnap::SaveBinaryEdgelist(graph, filename);
-  } else {  // do not save
+  } else
     return;
-  }
   printf("Saved to %s.\n", filename.CStr());
 }
 

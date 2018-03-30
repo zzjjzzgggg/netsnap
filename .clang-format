@@ -1,11 +1,10 @@
 ---
 BasedOnStyle: Google
 ColumnLimit: 80
-IndentWidth: 2
+IndentWidth: 4
 ---
 Language: Cpp
 Standard: Cpp11
 SortIncludes: false
-AccessModifierOffset: -2
+AccessModifierOffset: -4
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
-NamespaceIndentation: None
